@@ -1,22 +1,5 @@
 [
   {
-    "path": "posts/welcome/",
-    "title": "Welcome to Simulation of Ecological Data",
-    "description": "Welcome to our new blog, Simulation of Ecological Data. We hope you enjoy \nreading what we have to say!",
-    "author": [
-      {
-        "name": "Nora Jones",
-        "url": "https://example.com/norajones"
-      }
-    ],
-    "date": "2022-05-26",
-    "categories": [],
-    "contents": "\n\n\n\n",
-    "preview": {},
-    "last_modified": "2022-05-26T11:42:41-04:00",
-    "input_file": {}
-  },
-  {
     "path": "posts/2022-05-26-fid-when-to-run-away/",
     "title": "FID: When to run away",
     "description": "Modelling a decay to a constant",
@@ -28,9 +11,26 @@
     ],
     "date": "2022-05-26",
     "categories": [],
-    "contents": "\n\\[\n\\begin{align}\n\\text{FID}_{crj} \\sim& \\text{Gamma}\\left(\\frac{\\mu_{cr}}{\\sigma^2}, \\frac{\\mu_{cr}^2}{\\sigma^2}\\right)\\\\\n\\mu_{cr} =& m_{cr} \\times 1000 \\times \\left( 1 - \\frac{p_{cr} \\times X_j}{d_{cr} + X_j}  \\right) \\\\\n\\text{logit}(m_{cr}) =& \\bar{m} + \\beta_{m,r} + m_{c,r}\\\\\n\\text{logit}(p_{cr}) =& \\bar{p} + \\beta_{p,r} + p_{c,r}\\\\\n\\text{log}(d_{cr})   =& \\bar{d} + \\beta_{d,r} + d_{c,r}\\\\\n\\begin{bmatrix}\nm_{r}\\\\\np_{r}\\\\\nd_{r}\n\\end{bmatrix} &\\sim \\text{MVnormal}\\left(\\begin{bmatrix}0\\\\0\\\\0\\end{bmatrix}, \\textbf{S}_{r}\\right)\n\\end{align}\n\\]\n\\[\n\\begin{align}\n\\text{FID}_i \\sim& \\text{Gamma}\\left(\\frac{\\mu_i}{\\sigma^2}, \\frac{\\mu_i^2}{\\sigma^2}\\right)\\\\\n\\mu_i =& m_i \\times 1000 \\times \\left( 1 - \\frac{p_i \\times \\text{Obs}}{d_i + \\text{Obs}}  \\right) \\\\\n\\text{logit}(m_i) =& \\bar{m} + \\beta_{m,\\text{risk}[i]} + m_{\\text{tamia}[i], \\text{risk}[i]}\\\\\n\\text{logit}(p_i) =& \\bar{p} + \\beta_{p,\\text{risk}[i]} + p_{\\text{tamia}[i], \\text{risk}[i]}\\\\\n\\text{log}(d_i)   =& \\bar{d} + \\beta_{d,\\text{risk}[i]} + d_{\\text{tamia}[i], \\text{risk}[i]}\\\\\n\\begin{bmatrix}\nm_{\\text{tamia}, \\text{risk}[i]}\\\\\np_{\\text{tamia}, \\text{risk}[i]}\\\\\nd_{\\text{tamia}, \\text{risk}[i]}\n\\end{bmatrix} &\\sim \\text{MVnormal}\\left(\\begin{bmatrix}0\\\\0\\\\0\\end{bmatrix}, \\textbf{S}_{\\text{risk}[i]}\\right)\n\\end{align}\n\\]\n\\(j\\) indicates the chipmunks present in each treatment, of which there are \\(J_r\\)\nput real numbers in? why not?\n\n\n\n\n\n\n\n",
+    "contents": "\r\n\\[\r\n\\begin{align}\r\n\\text{FID}_{crj} \\sim& \\text{Gamma}\\left(\\frac{\\mu_{cr}}{\\sigma^2}, \\frac{\\mu_{cr}^2}{\\sigma^2}\\right)\\\\\r\n\\mu_{cr} =& m_{cr} \\times 1000 \\times \\left( 1 - \\frac{p_{cr} \\times X_j}{d_{cr} + X_j}  \\right) \\\\\r\n\\text{logit}(m_{cr}) =& \\bar{m} + \\beta_{m,r} + m_{c,r}\\\\\r\n\\text{logit}(p_{cr}) =& \\bar{p} + \\beta_{p,r} + p_{c,r}\\\\\r\n\\text{log}(d_{cr})   =& \\bar{d} + \\beta_{d,r} + d_{c,r}\\\\\r\n\\begin{bmatrix}\r\nm_{r}\\\\\r\np_{r}\\\\\r\nd_{r}\r\n\\end{bmatrix} &\\sim \\text{MVnormal}\\left(\\begin{bmatrix}0\\\\0\\\\0\\end{bmatrix}, \\textbf{S}_{r}\\right)\r\n\\end{align}\r\n\\]\r\n\\[\r\n\\begin{align}\r\n\\text{FID}_i \\sim& \\text{Gamma}\\left(\\frac{\\mu_i}{\\sigma^2}, \\frac{\\mu_i^2}{\\sigma^2}\\right)\\\\\r\n\\mu_i =& m_i \\times 1000 \\times \\left( 1 - \\frac{p_i \\times \\text{Obs}}{d_i + \\text{Obs}}  \\right) \\\\\r\n\\text{logit}(m_i) =& \\bar{m} + \\beta_{m,\\text{risk}[i]} + m_{\\text{tamia}[i], \\text{risk}[i]}\\\\\r\n\\text{logit}(p_i) =& \\bar{p} + \\beta_{p,\\text{risk}[i]} + p_{\\text{tamia}[i], \\text{risk}[i]}\\\\\r\n\\text{log}(d_i)   =& \\bar{d} + \\beta_{d,\\text{risk}[i]} + d_{\\text{tamia}[i], \\text{risk}[i]}\\\\\r\n\\begin{bmatrix}\r\nm_{\\text{tamia}, \\text{risk}[i]}\\\\\r\np_{\\text{tamia}, \\text{risk}[i]}\\\\\r\nd_{\\text{tamia}, \\text{risk}[i]}\r\n\\end{bmatrix} &\\sim \\text{MVnormal}\\left(\\begin{bmatrix}0\\\\0\\\\0\\end{bmatrix}, \\textbf{S}_{\\text{risk}[i]}\\right)\r\n\\end{align}\r\n\\]\r\n\\(j\\) indicates the chipmunks present in each treatment, of which there are \\(J_r\\)\r\nput real numbers in? why not?\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
     "preview": "posts/2022-05-26-fid-when-to-run-away/fid-when-to-run-away_files/figure-html5/unnamed-chunk-1-1.png",
-    "last_modified": "2022-05-31T16:01:21-04:00",
-    "input_file": "fid-when-to-run-away.knit.md"
+    "last_modified": "2022-06-06T09:54:34-04:00",
+    "input_file": {}
+  },
+  {
+    "path": "posts/welcome/",
+    "title": "Welcome to Simulation of Ecological Data",
+    "description": "Welcome to our new blog, Simulation of Ecological Data. We hope you enjoy \nreading what we have to say!",
+    "author": [
+      {
+        "name": "Nora Jones",
+        "url": "https://example.com/norajones"
+      }
+    ],
+    "date": "2022-05-26",
+    "categories": [],
+    "contents": "\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2022-06-06T09:54:34-04:00",
+    "input_file": {}
   }
 ]

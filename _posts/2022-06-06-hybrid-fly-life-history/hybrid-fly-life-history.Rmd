@@ -2,31 +2,56 @@
 title: "Hybrid fly life history"
 description: |
   A short description of the post.
-author:
-  - name: Andrew MacDonald
-    url: https://example.com/norajones
+author: "Allen and Andrew"
 date: 06-06-2022
 output:
   distill::distill_article:
     self_contained: false
+editor_options: 
+  chunk_output_type: console
 ---
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
+library(brms)
+library(tidyverse)
+library(tidybayes)
 ```
 
----
-title: "Simulating bayesian hybrid flies"
-author: "Allen and Andrew"
-date: "`r Sys.Date()`"
-output:
-  prettydoc::html_pretty:
-    theme: architect
-    highlight: github
----
-
 ## studying the gamma distribution
+
+
+$$
+\text{Gamma}(a, b)
+$$
+
+
+$$
+\begin{align}
+\mu = a/b \\
+\sigma^2 = a/b^2
+\end{align}
+$$
+
+
+
+$$
+\text{Gamma}\left(\frac{\mu^2}{\sigma^2}, \frac{\mu}{\sigma^2}\right)
+$$
+
+
+
+$$
+\text{Gamma}(\mu b, b)
+$$
+
+
+
+$$
+\text{Gamma}\left(a, \frac{a}{\mu}\right)
+$$
+
 
 ```{r}
 gamma_var <- rgamma(n = 570, shape = 6, scale = 1.5)
@@ -43,7 +68,6 @@ sqrt(6*1.5^2)
 ```
 
 
-browseVignettes()
 
 see the [brms vignettes](https://cran.r-project.org/web/packages/brms/vignettes/brms_families.html)
 
@@ -156,7 +180,7 @@ rnorm(4000, mean = 2, sd = .2) |> exp() |> hist()
 ```
 
 
-```{r}
+```{r, eval = FALSE}
 
 gamma_form <- bf(xx ~ 1,
                  family = brmsfamily("Gamma",
@@ -181,4 +205,230 @@ data.frame(nn = 1:450) |>
 ```
 
 
+## experimental design
+
+H, N, and hybrid -- three kinds of flies
+
+is development time different among the three lines? Does the *variance* in development time differ between the lines?
+
+
+begin by modelling one fly species, one life history stage
+
+using the brms parameterization
+
+```{r}
+# larval development times
+hist(rgamma(570, shape = 30, rate = 30/12))
+
+# pupal development times
+hist(rgamma(570, shape = 30, rate = 30/13))
+```
+
+```{r}
+gamma_form <- bf(xx ~ 1,
+                 family = brmsfamily("Gamma",
+                                     link = "log",
+                                     link_shape = "log")) + 
+  lf(shape ~ 1)
+
+simple_gamma <- brm(gamma_form, 
+                    data = data.frame(xx = rgamma(570,
+                                                  shape = 30,
+                                                  rate = 30/13)),
+                    here::here("_posts", 
+                               "2022-06-06-hybrid-fly-life-history",
+                               "simple_gamma.rds"),
+                    backend = "cmdstanr", cores = 4)
+
+simple_gamma |> 
+  gather_rvars(Intercept, Intercept_shape) |> 
+  mutate(.value = exp(.value)) |> 
+  ggplot(aes(y = .variable, dist = .value)) + 
+  stat_dist_halfeye()
+
+```
+
+
+duration and variance are approximately (but not necessarily) equal
+
+Start with: many individuals all with the same expected duration of each life history stage.
+
+correlated both stages
+
+```{r}
+corr_larva_pupa <- .8
+
+corr_mat <- matrix(c(1, corr_larva_pupa,
+                     corr_larva_pupa, 1), byrow = TRUE, ncol = 2)
+
+larv_sd <- .5
+pupa_sd <- .7
+
+sds <- c(larv_sd, pupa_sd)
+
+Sigma <- diag(sds) %*% corr_mat %*% diag(sds)
+
+larv_pupa <- MASS::mvrnorm(570, mu = c(13, 13), Sigma = Sigma)
+
+plot(larv_pupa[,1], larv_pupa[,2])
+
+```
+
+Add observation variance
+
+```{r}
+
+true_shape <- 70
+
+fake_development_times <- tibble(fly_id = 1:570,
+       fly_code = paste0("fly", fly_id)) |> 
+  mutate(avg_larva = larv_pupa[fly_id, 1],
+         avg_pupae = larv_pupa[fly_id, 2]) |> 
+  rowwise() |> 
+  mutate(
+    # add observation variance
+    obs_larva = rgamma(1, shape = true_shape, rate = true_shape/avg_larva),
+    obs_pupae = rgamma(1, shape = true_shape, rate = true_shape/avg_pupae)
+  )
+
+```
+
+plot, then model
+
+```{r}
+fake_development_times |> 
+  ggplot(aes(x = obs_larva, y = obs_pupae)) + geom_point()
+
+
+fake_development_times |> 
+  ggplot(aes(x = avg_larva, y = avg_pupae)) + geom_point()
+
+```
+
+correlation is hard to see under the gamma errors!
+
+
+let's see if a model can recover that
+
+```{r}
+fake_devo_long <- fake_development_times |> 
+  select(-starts_with("avg")) |> 
+  pivot_longer(starts_with("obs"),
+               names_to = "stage",
+               values_to = "days")
+
+
+gamma_form_correlated_stages <- bf(days ~ stage + (1 + stage | fly_code),
+                 family = brmsfamily("Gamma",
+                                     link = "log",
+                                     link_shape = "log")) + 
+  lf(shape ~ 1)
+
+
+get_prior(gamma_form_correlated_stages, data = fake_devo_long)
+
+
+corr_stages_priors <- c(
+  prior(normal(0,1), class = "b"),
+  prior(lkj(2), class = "cor"),
+  prior(normal(2.5,1), class = "Intercept"),
+  prior(exponential(2), class = "sd"),
+  prior(normal(4,2), class = "Intercept", dpar = "shape")
+)
+
+
+correlated_stages_gamma <- brm(gamma_form_correlated_stages,
+                               data = fake_devo_long, 
+                               prior = corr_stages_priors,
+                               file = here::here("_posts", "2022-06-06-hybrid-fly-life-history", "corr_gamma.rds"),
+                               cores = 4)
+
+correlated_stages_gamma
+
+```
+
+
+
+Maybe a simpler model (the above seems overparameterized) where each larva has a single offset (e.g. proportional to "quality" or "resource use efficiency").
+
+```{r}
+
+nfly <- 570
+# average time you spend as a larva
+log_avg_larva_time <-  log(13)
+# average time DIFFERECE to the time you spend as a pupa (might be close to 0)
+log_to_pupa <- -.2
+# your "quality", some idea of how much above and below the population you are
+log_indiv_quality <- rnorm(n = nfly, mean = 0, sd = .2)
+
+exp(log_avg_larva_time)
+
+exp(log_avg_larva_time + log_to_pupa)
+
+
+fake_flies_intercept <- tibble(
+  fly_id = 1:570,
+  fly_code = paste0("fly", fly_id)
+) |> 
+  rowwise() |> 
+  mutate(lh = list(data.frame(stage_id = c(0,1),
+                              stage_nm = c("larv", "pupa"))))
+
+true_shape_intercept <- 72
+
+fake_intercept_obs <- fake_flies_intercept |> 
+  unnest(cols = c("lh")) |> 
+  mutate(avg_duration = log_avg_larva_time + log_to_pupa*stage_id,
+         ecart_indiv = log_indiv_quality[fly_id],
+         fly_duration = avg_duration + ecart_indiv) |> 
+  rowwise() |> 
+  mutate(obs_duration = rgamma(1, true_shape_intercept, rate = true_shape_intercept/exp(fly_duration)))
+
+fake_intercept_obs |> 
+  ggplot(aes(x = obs_duration, fill = stage_nm)) + geom_histogram()
+
+
+
+
+```
+
+```{r}
+
+fake_intercept_obs |> 
+  select(fly_id, stage_nm, obs_duration) |> 
+  ungroup() |> 
+  pivot_wider(names_from = stage_nm, values_from = obs_duration) |> 
+  ggplot(aes(x = larv, y = pupa)) + geom_point()
+
+```
+
+model to recover
+
+```{r}
+gamma_form_intercept <- bf(obs_duration ~ stage_nm + (1| fly_code),
+                                   family = brmsfamily("Gamma",
+                                                       link = "log",
+                                                       link_shape = "log")) + 
+  lf(shape ~ 1)
+
+
+get_prior(gamma_form_intercept, data = fake_intercept_obs)
+
+
+intercept_priors <- c(
+  prior(normal(0,1), class = "b"),
+  prior(normal(2.5,1), class = "Intercept"),
+  prior(exponential(2), class = "sd"),
+  prior(normal(4,2), class = "Intercept", dpar = "shape")
+)
+
+
+intercept_stages_gamma <- brm(gamma_form_intercept,
+                               data = fake_intercept_obs, 
+                               prior = intercept_priors,
+                               file = here::here("_posts", "2022-06-06-hybrid-fly-life-history", "intercept_gamma.rds"),
+                               cores = 4)
+
+
+```
 
