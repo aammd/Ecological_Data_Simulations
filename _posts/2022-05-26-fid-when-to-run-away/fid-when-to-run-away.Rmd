@@ -1,0 +1,67 @@
+---
+title: "FID: When to run away"
+description: |
+  Modelling a decay to a constant
+author:
+  - name: Nora Jones
+    url: https://example.com/norajones
+date: 05-26-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+$$
+\begin{align}
+\text{FID}_{crj} \sim& \text{Gamma}\left(\frac{\mu_{cr}}{\sigma^2}, \frac{\mu_{cr}^2}{\sigma^2}\right)\\
+\mu_{cr} =& m_{cr} \times 1000 \times \left( 1 - \frac{p_{cr} \times X_j}{d_{cr} + X_j}  \right) \\
+\text{logit}(m_{cr}) =& \bar{m} + \beta_{m,r} + m_{c,r}\\
+\text{logit}(p_{cr}) =& \bar{p} + \beta_{p,r} + p_{c,r}\\
+\text{log}(d_{cr})   =& \bar{d} + \beta_{d,r} + d_{c,r}\\
+\begin{bmatrix}
+m_{r}\\
+p_{r}\\
+d_{r}
+\end{bmatrix} &\sim \text{MVnormal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \textbf{S}_{r}\right)
+\end{align}
+$$
+
+
+
+
+$$
+\begin{align}
+\text{FID}_i \sim& \text{Gamma}\left(\frac{\mu_i}{\sigma^2}, \frac{\mu_i^2}{\sigma^2}\right)\\
+\mu_i =& m_i \times 1000 \times \left( 1 - \frac{p_i \times \text{Obs}}{d_i + \text{Obs}}  \right) \\
+\text{logit}(m_i) =& \bar{m} + \beta_{m,\text{risk}[i]} + m_{\text{tamia}[i], \text{risk}[i]}\\
+\text{logit}(p_i) =& \bar{p} + \beta_{p,\text{risk}[i]} + p_{\text{tamia}[i], \text{risk}[i]}\\
+\text{log}(d_i)   =& \bar{d} + \beta_{d,\text{risk}[i]} + d_{\text{tamia}[i], \text{risk}[i]}\\
+\begin{bmatrix}
+m_{\text{tamia}, \text{risk}[i]}\\
+p_{\text{tamia}, \text{risk}[i]}\\
+d_{\text{tamia}, \text{risk}[i]}
+\end{bmatrix} &\sim \text{MVnormal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \textbf{S}_{\text{risk}[i]}\right)
+\end{align}
+$$
+
+$j$ indicates the chipmunks present in each treatment, of which there are $J_r$
+
+put real numbers in? why not?
+
+ <!-- \begin{bmatrix}\sigma_{m, \text{risk}[i]}\\\sigma_{p, \text{risk}[i]}\\\sigma_{d, \text{risk}[i]}\end{bmatrix}, R_{\text{risk}[i]}\right -->
+
+```{r}
+mygamma <- function(x, a, u){
+  (a/u)^a/gamma(a)*x^(a-1)*exp(-a*x/u)
+}
+
+curve(mygamma(x, 50, 10), xlim = c(0, 24))
+
+```
+

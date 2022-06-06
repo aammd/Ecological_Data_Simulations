@@ -1,0 +1,184 @@
+---
+title: "Hybrid fly life history"
+description: |
+  A short description of the post.
+author:
+  - name: Andrew MacDonald
+    url: https://example.com/norajones
+date: 06-06-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+---
+title: "Simulating bayesian hybrid flies"
+author: "Allen and Andrew"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+---
+
+## studying the gamma distribution
+
+```{r}
+gamma_var <- rgamma(n = 570, shape = 6, scale = 1.5)
+
+gamma_var |> mean()
+gamma_var |> sd()
+
+# theoretical average
+6*1.5
+
+# theory sd
+sqrt(6*1.5^2)
+
+```
+
+
+browseVignettes()
+
+see the [brms vignettes](https://cran.r-project.org/web/packages/brms/vignettes/brms_families.html)
+
+
+brms uses mean $\mu$ rate = $\alpha/\mu$
+
+```{r}
+
+a <- 3
+m <- 16
+xx <- rgamma(571, shape = m^2/a^2, rate = m/a^2)
+hist(xx)
+mean(xx)
+sd(xx)
+
+# could also define beta = mean/variance
+beta <- m/a^2
+beta
+
+xx2 <- rgamma(571, shape = m*beta, rate = beta)
+mean(xx2)
+
+sd(xx2)
+
+```
+
+
+```{r}
+library(brms)
+
+gamma_form <- bf(xx ~ 1,
+                 family = brmsfamily("Gamma",
+                                     link = "log",
+                                     link_shape = "log")) + 
+  lf(shape ~ 1)
+
+simple_gamma <- brm(gamma_form, 
+                    data = data.frame(xx), 
+                    backend = "cmdstanr", cores = 4)
+
+summary(simple_gamma)
+
+stancode(simple_gamma)
+```
+
+
+ANdrew is going to ask in the Stan forum WTF is happening when you use the gamma family -- why does LF behave differently thank the alternative
+
+```{r}
+library(tidybayes)
+
+simple_gamma |> get_variables()
+
+# gather_draws(simple_gamma, b_Intercept, b_shape_Intercept)
+
+gather_rvars(simple_gamma, b_Intercept, b_shape_Intercept) |> 
+  mutate(.value = exp(.value),
+         true_vals =  c(m, m^2/a^2)) |> 
+  ggplot(aes(y = .variable, dist = .value))  + 
+  stat_dist_dots() + 
+  facet_wrap(~.variable, scales = "free") + 
+  geom_vline(aes(xintercept = true_vals))
+
+```
+
+
+```{r}
+## the Stan and brms parameterization of gamma translates into R like this: 
+
+mean <- 42
+shape <- 2
+
+rr <- rgamma(300, shape, shape/mean)
+
+
+rr |> mean()
+rr |> sd()
+rr |> var()
+
+42^2/2
+
+gamma_form <- bf(xx ~ 1,
+                 family = brmsfamily("Gamma",
+                                     link = "identity",
+                                     link_shape = "identity")) + 
+  lf(shape ~ 1)
+
+make_stancode(gamma_form, data = data.frame(xx))
+
+```
+
+
+```{r}
+# stancode(simple_gamma)
+```
+
+## prior simulations
+
+```{r}
+get_prior(gamma_form, data = data.frame(xx))
+
+andrew_prior <- c(prior(normal(2, .3), class = "Intercept"),
+                  prior(normal(2, .4), class = "Intercept", dpar = "shape"))
+```
+
+```{r}
+# visualizing in base R 
+
+rnorm(4000, mean = 2, sd = .2) |> exp() |> hist()
+```
+
+
+```{r}
+
+gamma_form <- bf(xx ~ 1,
+                 family = brmsfamily("Gamma",
+                                     link = "log",
+                                     link_shape = "log")) + 
+  lf(shape ~ 1)
+
+gamma_prior_predict <- brm(gamma_form, data = data.frame(xx), 
+    prior = andrew_prior,
+    backend = "cmdstanr", cores = 4, sample_prior = "only")
+
+# visualize
+gamma_prior_predict |> 
+  gather_draws( b_Intercept, b_shape_Intercept, ndraws = 6)
+
+data.frame(nn = 1:450) |> 
+  add_predicted_draws(gamma_prior_predict, ndraws = 12) |> 
+  ggplot(aes(x = .prediction)) + 
+  geom_histogram() + 
+  facet_wrap(~.draw, ncol = 4)
+
+```
+
+
+
