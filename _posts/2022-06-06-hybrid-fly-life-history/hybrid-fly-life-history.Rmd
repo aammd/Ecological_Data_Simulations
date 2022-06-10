@@ -432,3 +432,51 @@ intercept_stages_gamma <- brm(gamma_form_intercept,
 
 ```
 
+## Genetic lines
+
+* avg for one genotype
+* average for the second
+* diff between their average and the hybrid
+
+H, N, and hybrid
+
+```{r}
+
+genotype_mean <- c(H = 0 , N = -.2, HN = -.3)
+
+genotype["H"]
+
+
+nfly <- 570
+# average time you spend as a larva
+log_avg_larva_time <-  log(13)
+# average time DIFFERECE to the time you spend as a pupa (might be close to 0)
+log_to_pupa <- -.2
+# your "quality", some idea of how much above and below the population you are
+log_indiv_quality <- rnorm(n = nfly, mean = 0, sd = .2)
+
+exp(log_avg_larva_time)
+
+exp(log_avg_larva_time + log_to_pupa)
+
+genotype_vals <- tibble(genotype = rep(c("H", "N", "HN"), each = 100),
+       fly_id = 1:300) |> 
+   rowwise() |> 
+  mutate(lh = list(data.frame(stage_id = c(0,1),
+                              stage_nm = c("larv", "pupa")))) |> 
+  unnest(cols ="lh")
+ 
+true_shape_intercept <- 72
+
+genotype_vals |> 
+  rowwise() |> 
+  mutate(avg_duration = log_avg_larva_time + 
+           log_to_pupa*stage_id +  
+           log_indiv_quality[fly_id] + genotype_mean[genotype])
+
+
+```
+
+
+
+
