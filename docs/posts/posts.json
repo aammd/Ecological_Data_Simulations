@@ -11,9 +11,9 @@
     ],
     "date": "2022-06-15",
     "categories": [],
-    "contents": "\n\n\n\n\n\n\nSample, but keep effort the same!\n\n\n\nsample NEGATIVELY correlated with the environment (birds that like deep forest)\n\n\n\n\n\n\n",
+    "contents": "\n\n\ncurve(exp(-.2*(x)^2), xlim = c(-5, 5))\n\n\n\nenv <- seq(from = -6, to = 6, length.out = 100)\nprob_occ_1d <- exp(-.2*(env)^2)\ny <- rbinom(100, 1, prob = prob_occ_1d)\n\nplot(env, y)\n\nlibrary(tidyverse)\n\n\n\nenv_grid <- expand_grid(x = env,\n            y = env) |> \n  mutate(prob_occ = exp(-.2*(x)^2) *  exp(-.2*(y)^2))\n\nenv_grid |> \n  ggplot(aes( x = x, y = y, fill = prob_occ)) + geom_raster()\n\n\n\n\n\n\nenv_sampling <- env_grid |> \n  mutate(presabs = rbinom(n = nrow(env_grid), size = 1, prob = prob_occ),\n         is_samp = rbinom(n = nrow(env_grid), size = 1, prob = .1))\n\nenv_sampling |> \n  ggplot(aes(x = x, y = y, fill = presabs)) + geom_raster() + \n  geom_point(col = \"red\", data = env_sampling |> \n               filter(is_samp == 1))\n\n\n\n\nSample, but keep effort the same!\n\n\nnsamp <- 40\nrandsamp <- sample(1:nrow(env_sampling), size = 100, replace = FALSE)\n\nenv_samp_effort_control <- env_sampling |> \n  rownames_to_column(\"rownum\") |> \n  mutate(is_samp_better = as.numeric(rownum %in% randsamp))\n\nenv_samp_effort_control |>\n  ggplot(aes(x = x, y = y, fill = presabs)) + \n  geom_raster() + \n  geom_point(col = \"red\", data = env_samp_effort_control |> \n               filter(is_samp_better == 1))\n\n\n\n\nsample NEGATIVELY correlated with the environment (birds that like deep forest)\n\n\nnsamp <- 40\ninverse_samp <- sample(1:nrow(env_sampling), size = 100, replace = FALSE,\n                   prob = 1-env_samp_effort_control$prob_occ)\n\nenv_inverse <- env_samp_effort_control |> \n  mutate(inverse_samp = as.numeric(rownum %in% inverse_samp))\n\nenv_inverse |> \n  ggplot(aes(x = x, y = y, fill = presabs)) + \n  geom_raster() + \n  geom_point(col = \"red\", data = env_inverse |> \n               filter(inverse_samp == 1))\n\n\n\n\n\n\n\n",
     "preview": "posts/2022-06-15-detection-in-space/detection-in-space_files/figure-html5/unnamed-chunk-1-1.png",
-    "last_modified": "2022-06-15T15:18:21-04:00",
+    "last_modified": "2022-06-15T15:24:50-04:00",
     "input_file": "detection-in-space.knit.md"
   },
   {
