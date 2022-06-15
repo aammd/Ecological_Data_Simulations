@@ -1,5 +1,22 @@
 [
   {
+    "path": "posts/2022-06-15-detection-in-space/",
+    "title": "Detection in space",
+    "description": "What you look and where you look.",
+    "author": [
+      {
+        "name": "Vincent B  and Andrew",
+        "url": {}
+      }
+    ],
+    "date": "2022-06-15",
+    "categories": [],
+    "contents": "\n\n\n\n\n\n\nSample, but keep effort the same!\n\n\n\nsample NEGATIVELY correlated with the environment (birds that like deep forest)\n\n\n\n\n\n\n",
+    "preview": "posts/2022-06-15-detection-in-space/detection-in-space_files/figure-html5/unnamed-chunk-1-1.png",
+    "last_modified": "2022-06-15T15:18:21-04:00",
+    "input_file": "detection-in-space.knit.md"
+  },
+  {
     "path": "posts/2022-06-10-many-small-models-the-secret-weapon/",
     "title": "Many small models -- the Secret Weapon",
     "description": "how to fit and visualize small multiples",

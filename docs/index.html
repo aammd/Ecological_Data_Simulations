@@ -2086,7 +2086,7 @@ function init_posts_list() {
     var src = $(img).attr('data-src');
     if (src) {
       $(img).attr('src', src);
-      $(img).on("load", function() {
+      $(img).load(function() {
         img.removeAttribute('data-src');
       });
     }
@@ -2132,7 +2132,6 @@ function init_posts_list() {
 
       // mark posts that match the category visible
       var page_category = window.location.hash.replace(/^#category:/, "");
-      page_category = decodeURIComponent(page_category)
       var posts = $('.post-metadata').map(function(idx, script) {
         var metadata = $.parseJSON($(script).html());
         var post = null;
@@ -2148,7 +2147,7 @@ function init_posts_list() {
       set_posts_visible(posts, true);
 
       // mark the hash active
-      $('.categories li>a[href="' + decodeURIComponent(window.location.hash) + '"]').addClass('active');
+      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
 
       // update the list_caption
       var list_caption = $('.posts-list-caption');
@@ -2211,6 +2210,23 @@ function init_posts_list() {
 <div class="posts-container posts-apply-limit l-page">
 <div class="posts-list">
 <h1 class="posts-list-caption" data-caption="Simulation of Ecological Data">Simulation of Ecological Data</h1>
+<a href="posts/2022-06-15-detection-in-space/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":[]}</script>
+<div class="metadata">
+<div class="publishedDate">June 15, 2022</div>
+<div class="dt-authors">
+<div class="dt-author">Vincent B  and Andrew</div>
+</div>
+</div>
+<div class="thumbnail">
+<img src="posts/2022-06-15-detection-in-space/detection-in-space_files/figure-html5/unnamed-chunk-1-1.png"/>
+</div>
+<div class="description">
+<h2>Detection in space</h2>
+<div class="dt-tags"></div>
+<p>What you look and where you look.</p>
+</div>
+</a>
 <a href="posts/2022-06-10-many-small-models-the-secret-weapon/" class="post-preview">
 <script class="post-metadata" type="text/json">{"categories":[]}</script>
 <div class="metadata">
