@@ -1,0 +1,167 @@
+---
+title: "Estimating the posterior distribution of residuals"
+description: |
+  A short description of the post.
+author:
+  - name: Andrew
+    url: {}
+date: 06-14-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+Everything in a Bayesian model has a distribution: there are distributions for the slope coeffiecients, distributions for the residual variance. The model makes a distribution of lines that form the average, and can produce a distribution of predicted values. 
+
+When we measure residuals, therefore, these have distributions too. This is useful because it lets us transmit model uncertainty into these uncertain values.
+
+let's look at bill characteristics of the GEntoo penguin
+
+```{r}
+library(palmerpenguins)
+suppressPackageStartupMessages(library(tidyverse))
+library(patchwork)
+
+gentoo <- penguins |> 
+  filter(species == "Gentoo") |> 
+  filter(!is.na(bill_depth_mm) & !is.na(bill_length_mm))
+
+depth_fig <- gentoo |> 
+  ggplot(aes(x = body_mass_g, y = bill_depth_mm)) + 
+  geom_count(alpha = 0.4)
+
+length_fig <- gentoo |> 
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) + 
+  geom_count(alpha = .4)
+
+depth_fig + length_fig
+```
+
+
+Not surprisingly, both change with size. let's model this, with a simple gaussian bayesian model
+
+```{r}
+library(brms)
+
+len_mass <- brm(bill_length_mm ~ body_mass_g, 
+                data = gentoo, refresh = 0,
+                backend = "cmdstanr",
+                file = here::here("_posts",
+                                  "2022-06-14-estimating-the-posterior-distribution-of-residuals",
+                                  "len_mass.rds")) 
+
+
+dep_mass <- brm(bill_depth_mm ~ body_mass_g,
+                data = gentoo,
+                refresh = 0,
+                backend = "cmdstanr",
+                file = here::here("_posts",
+                                  "2022-06-14-estimating-the-posterior-distribution-of-residuals",
+                                  "dep_mass.rds")) 
+
+```
+
+The only essential things here are the model formulae. the arguments `refresh = 0` means the chain progress is not printed to the screen. `backend = cmdstanr` means use `cmdstan` to run the model -- the default `Rstan` would work the same way.
+
+let's look at these modesl
+
+```{r}
+len_mass
+dep_mass
+```
+
+
+let's draw lines with them
+
+```{r}
+library(modelr)
+library(tidybayes)
+
+gentoo_lines <- gentoo |> 
+  data_grid(body_mass_g = seq_range(body_mass_g, n = 40)) |> 
+  add_epred_rvars(len_mass, value = ".epred_len") |> 
+  add_epred_rvars(dep_mass, value = ".epred_dep")
+
+
+dep_epred_fig <- depth_fig + 
+  stat_dist_lineribbon(aes(x = body_mass_g, dist = .epred_dep), 
+                       data = gentoo_lines, inherit.aes = FALSE) + 
+  geom_count(pch = 21, col = "white", fill = "black", alpha = 1)
+
+len_epred_fig <- length_fig + 
+  stat_dist_lineribbon(aes(x = body_mass_g, dist = .epred_len), 
+                       data = gentoo_lines, inherit.aes = FALSE) + 
+  geom_count(pch = 21, col = "white", fill = "black", alpha = 1)
+
+dep_epred_fig + len_epred_fig
+
+```
+
+### Extract residuals
+
+```{r}
+gentoo_len_resid <- gentoo |> 
+  select(species, bill_length_mm, bill_depth_mm, body_mass_g) |> 
+  add_residual_draws(len_mass, value = ".resid_len") |> 
+  summarise(.resid_len_mean = mean (.resid_len), 
+            .resid_len_sd = sd(.resid_len))
+
+gentoo_dep_resid <- gentoo |> 
+  select(species, bill_length_mm, bill_depth_mm, body_mass_g) |> 
+  add_residual_draws(dep_mass, value = ".resid_dep") |> 
+  summarise(.resid_dep_mean = mean (.resid_dep), 
+            .resid_dep_sd    =   sd(.resid_dep))
+```
+
+We can visualize thse at the same time
+
+```{r}
+gentoo_two_resid <- gentoo_len_resid |> 
+  ungroup() |> 
+  left_join(ungroup(gentoo_dep_resid), 
+            by = c("species", "bill_length_mm", 
+                   "bill_depth_mm", "body_mass_g", ".row"))
+
+gentoo_two_resid |> 
+  ggplot(aes(x = .resid_len_mean, y = .resid_dep_mean,
+             xmin = .resid_len_mean - .resid_len_sd,
+             xmax = .resid_len_mean + .resid_len_sd)) + 
+  geom_pointrange() + 
+  geom_linerange(aes(x = .resid_len_mean, y = .resid_dep_mean,
+                     ymin = .resid_dep_mean - .resid_dep_sd,
+                     ymax = .resid_dep_mean + .resid_dep_sd))
+```
+
+
+Before moving on, lets demonstrate that the posterior is well-described by a normal distribution
+
+```{r}
+one_resid <-  gentoo[5,] |> 
+  select(species, bill_length_mm, bill_depth_mm, body_mass_g) |> 
+  add_residual_draws(dep_mass, value = ".resid_dep")
+
+mean_draws <-  mean(one_resid$.resid_dep)
+sd_draws <- sd(one_resid$.resid_dep)
+one_resid |> 
+  ggplot(aes(x = .resid_dep)) + 
+  geom_histogram(aes(y = ..density..)) + 
+  stat_function(fun = function(x) dnorm(x, mean = mean_draws, sd = sd_draws))
+```
+
+### error-in-variables regression
+
+```{r}
+error_in_var_regression <- brm(.resid_dep_mean | mi(.resid_dep_sd) ~ me(.resid_len_mean, .resid_len_sd),
+                               data = gentoo_two_resid,
+                               backend = "cmdstanr", file = here::here("_posts",
+                                  "2022-06-14-estimating-the-posterior-distribution-of-residuals",
+                                  "error_in_var_regression.rds"))
+```
+
