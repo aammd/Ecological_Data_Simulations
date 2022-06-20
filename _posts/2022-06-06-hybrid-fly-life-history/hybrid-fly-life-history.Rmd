@@ -95,46 +95,11 @@ sd(xx2)
 ```
 
 
-```{r}
-library(brms)
-
-gamma_form <- bf(xx ~ 1,
-                 family = brmsfamily("Gamma",
-                                     link = "log",
-                                     link_shape = "log")) + 
-  lf(shape ~ 1)
-
-simple_gamma <- brm(gamma_form, 
-                    data = data.frame(xx), 
-                    backend = "cmdstanr", cores = 4)
-
-summary(simple_gamma)
-
-stancode(simple_gamma)
-```
-
-
 ANdrew is going to ask in the Stan forum WTF is happening when you use the gamma family -- why does LF behave differently thank the alternative
 
 ```{r}
 library(tidybayes)
-
-simple_gamma |> get_variables()
-
-# gather_draws(simple_gamma, b_Intercept, b_shape_Intercept)
-
-gather_rvars(simple_gamma, b_Intercept, b_shape_Intercept) |> 
-  mutate(.value = exp(.value),
-         true_vals =  c(m, m^2/a^2)) |> 
-  ggplot(aes(y = .variable, dist = .value))  + 
-  stat_dist_dots() + 
-  facet_wrap(~.variable, scales = "free") + 
-  geom_vline(aes(xintercept = true_vals))
-
-```
-
-
-```{r}
+        
 ## the Stan and brms parameterization of gamma translates into R like this: 
 
 mean <- 42
@@ -159,10 +124,6 @@ make_stancode(gamma_form, data = data.frame(xx))
 
 ```
 
-
-```{r}
-# stancode(simple_gamma)
-```
 
 ## prior simulations
 
@@ -190,7 +151,9 @@ gamma_form <- bf(xx ~ 1,
 
 gamma_prior_predict <- brm(gamma_form, data = data.frame(xx), 
     prior = andrew_prior,
-    backend = "cmdstanr", cores = 4, sample_prior = "only")
+    backend = "cmdstanr", cores = 4, sample_prior = "only", file = here::here("_posts", 
+                               "2022-06-06-hybrid-fly-life-history",
+                               "gamma_prior_predict.rds"))
 
 # visualize
 gamma_prior_predict |> 
@@ -440,11 +403,129 @@ intercept_stages_gamma <- brm(gamma_form_intercept,
 
 H, N, and hybrid
 
+We can generate this with Helmert contrasts
+
+```{r}
+three_helmerts_default <- contr.helmert(3)
+three_helmerts <- sweep(cbind(1, three_helmerts_default), MARGIN = 2, STATS = 1:3, FUN = `/`)
+three_helmerts
+
+solve(three_helmerts)
+```
+
+
+We have effects and we want to make group differences out of them:
+
+```{r}
+# units in days
+grand_mean <- 7
+# n develops 2 days slower
+h_n_contr <- 2
+# hybrids develop 5 days slower 
+hybrid_effect <- 0
+
+geno_names <- c("H", "N", "HN")
+
+rownames(three_helmerts) <- geno_names
+
+avg_effects <- tibble(geno = rep(geno_names, each = 20),
+       geno_mean = grand_mean*three_helmerts[geno, 1] + h_n_contr*three_helmerts[geno, 2] + hybrid_effect*three_helmerts[geno, 3])
+
+avg_effects |> 
+  ggplot(aes(x = factor(geno, levels = geno_names), y = geno_mean)) + geom_point()
+
+distinct(avg_effects)
+
+```
+
+This also works on the log scale:
+
+```{r}
+# units in days
+log_grand_mean <- log(7)
+# n develops 30% longer
+log_h_n_contr <- log(1.3)
+# hybrids develop 10% longer than expected 
+log_hybrid_effect <- log(1.1)
+
+avg_effects <- tibble(geno = rep(geno_names, each = 20),
+       geno_mean = log_grand_mean*three_helmerts[geno, 1] + 
+         log_h_n_contr*three_helmerts[geno, 2] +
+         log_hybrid_effect*three_helmerts[geno, 3])
+
+avg_effects |> 
+  ggplot(aes(x = factor(geno, levels = geno_names), y = exp(geno_mean))) + 
+  geom_point()
+
+distinct(avg_effects) |> 
+  mutate(exp(geno_mean))
+```
+
+### extend this to variation effects
+
+
+```{r}
+# reminder of how the gamma works
+
+rr <- rgamma(3000, shape = exp(4), rate = exp(4)/30)
+hist(rr)
+mean(rr)
+var(rr)
+30^2/exp(4)
+
+sd(rr)
+
+30/sqrt(exp(4))
+
+
+curve(1/sqrt(exp(x)), xlim = c(-3, 6))
+
+```
+
+
+Use parameterization of gamma used by brms: the parameter $\alpha$ scales the square of the variance to the mean.
+
+```{r}
+# start with shape = 1 for simplicity!
+
+log_shape <- 6
+library(ggridges)
+avg_effects |> 
+  mutate(obs_time = rgamma(nrow(avg_effects), shape = exp(log_shape), rate = exp(log_shape)/exp(geno_mean))) |> 
+  ggplot(aes(y = geno, x = obs_time)) + 
+  stat_density_ridges() + 
+  coord_cartesian(xlim = c(2, 10))
+  
+  
+```
+
+## now let genotype control the variance AND the average
+
 ```{r}
 
-genotype_mean <- c(H = 0 , N = -.2, HN = -.3)
+shape_params <- c(grand_var = log(9), diff_h_n = log(1), hybrid_effect = log(.7))
+three_helmerts %*% shape_params
+exp(three_helmerts %*% shape_params)
 
-genotype["H"]
+avg_var_effects <- avg_effects |> 
+  # add shape AKA concentration parameters
+  mutate(geno_shape = shape_params[1]*three_helmerts[geno, 1] + 
+           shape_params[2]*three_helmerts[geno, 2] +
+           shape_params[3]*three_helmerts[geno, 3])
+
+time_observations_onestage <- avg_var_effects |> 
+  mutate(obs_time = rgamma(nrow(avg_var_effects), shape = exp(geno_shape), rate = exp(geno_shape)/exp(geno_mean)))
+
+
+time_observations_onestage |> 
+  ggplot(aes(x = obs_time, y = geno)) + stat_density_ridges()
+
+```
+
+
+
+
+```{r eval=FALSE}
 
 
 nfly <- 570
@@ -460,17 +541,18 @@ exp(log_avg_larva_time)
 exp(log_avg_larva_time + log_to_pupa)
 
 genotype_vals <- tibble(genotype = rep(c("H", "N", "HN"), each = 100),
-       fly_id = 1:300) |> 
-   rowwise() |> 
+                        fly_id = 1:300) |> 
+  rowwise() |> 
   mutate(lh = list(data.frame(stage_id = c(0,1),
                               stage_nm = c("larv", "pupa")))) |> 
   unnest(cols ="lh")
- 
+
 true_shape_intercept <- 72
 
 genotype_vals |> 
   rowwise() |> 
-  mutate(avg_duration = log_avg_larva_time + 
+  mutate(avg_duration = 
+           log_avg_larva_time + 
            log_to_pupa*stage_id +  
            log_indiv_quality[fly_id] + genotype_mean[genotype])
 
