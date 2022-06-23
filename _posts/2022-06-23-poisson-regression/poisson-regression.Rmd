@@ -1,9 +1,9 @@
 ---
 title: "Poisson regression"
 description: |
-  A short description of the post.
+  Let's count limpets!
 author:
-  - name: Vincent B  and Andrew
+  - name: Andrew, Jake and Salix
     url: {}
 date: 2022-06-23
 output:
