@@ -1,0 +1,32 @@
+---
+title: "Multiple evidence for seedling growth"
+description: |
+  A short description of the post.
+author:
+  - name: Andrew and Will
+    url: {}
+date: 2022-06-22
+output:
+  distill::distill_article:
+    self_contained: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+wd <- here::here("2022-06-22-multiple-evidence-for-seedling-growth/")
+
+```
+
+
+
+```{r}
+avg_size_tree <- 20
+
+# area
+log(7.3^2 * pi)
+```
+
