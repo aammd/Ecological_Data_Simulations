@@ -1,0 +1,59 @@
+---
+title: "data_manipulation_and_mixed_models"
+description: |
+  A short description of the post.
+author:
+  - name: 
+    url: {}
+date: 2022-06-08
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+
+exp -- experiment
+
+species
+
+sections -- 1 to 5, with 1 being the top of the moss
+
+replicates --
+
+mass measurements
+
+d15BN_pourmil
+
+
+each carrot is a replicate, each replicate contains both species
+sometimes carrots are missing
+
+
+5 carrots per year over 3 years
+
+canopy closed vs open -- but these are different experiments
+
+
+deposition --- labelled mosses in unlabelled field -- atmospheric deposition
+
+recyclage --- mosses with  
+
+transfer -- labelled soil, unlabelled mosses
+
+Consider just one experiment
+
+```{r}
+library(tidyverse)
+
+# 
+
+```
+
+
+
