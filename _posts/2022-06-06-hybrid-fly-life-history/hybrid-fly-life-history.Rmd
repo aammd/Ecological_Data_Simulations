@@ -1,7 +1,7 @@
 ---
 title: "Hybrid fly life history"
 description: |
-  A short description of the post.
+  Modelling two parts of the life history of insect development.
 author: "Allen and Andrew"
 date: 06-06-2022
 output:
@@ -11,6 +11,24 @@ editor_options:
   chunk_output_type: console
 ---
 
+The goal of this simulation is to simulate the growth and development of insects. 
+Two stages of insect development were measured: the time spent as a larva, and time spent as a pupa. We have data on individual flies.
+
+In this experiment, flies come in three kinds: "H", "N", and a hybrid fly "HN"
+
+Flies are developed in batches called "groups", which contain a variable amount of larvae. The members of a group share environments (e.g. the same batch of growing media).
+
+Development time can be variable. However, not every genotype or life history stage will prove equally variable. 
+That is, more factors could be relevant to the development of a pupa (which has to melt and reform all its organs) compared to a maggot (a stomach bag with a mouth on one end)
+
+## This example
+
+This is a walkthrough of simulating a Gamma regression. In it we'll discuss:
+
+* the Gamma distribution, and how to cook and eat it.
+* Helmert contrasts, aka One Cool Trick for measuring "non additive" effects.
+* random effects, both single and multivariate
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -19,152 +37,133 @@ library(tidyverse)
 library(tidybayes)
 ```
 
-## studying the gamma distribution
+## The gamma distribution
 
+The Gamma distribution is handy for studying continuous positive numbers -- in this case, the number of days in development. There are three ways to write a gamma distribution:
+
+#### The classic
 
 $$
 \text{Gamma}(a, b)
 $$
 
-
+The mean $\mu$ and variance $\sigma^2$ is: 
 $$
 \begin{align}
-\mu = a/b \\
-\sigma^2 = a/b^2
+\mu &= \frac{a}{b} \\
+\sigma^2 &= \frac{a}{b^2}
 \end{align}
 $$
 
+#### The Moment-matcher: mean and sd
 
+You can do some algebra on the expressions above and find out what $a$ and $b$ should be if the mean is $\mu$ and the standard deviation is $\sigma$.
+This technique is called Moment Matching.
 
 $$
 \text{Gamma}\left(\frac{\mu^2}{\sigma^2}, \frac{\mu}{\sigma^2}\right)
 $$
 
-
+## Mean and rate
 
 $$
 \text{Gamma}(\mu b, b)
 $$
 
+In this version, the average is $\mu$ and the variance is $\sigma^2 = \mu/b$.  
+In other words, the parameter $b$ _describes how the variance scales with the mean._
 
+### Mean and shape
+
+This is the version that you'll find in a lot of stats software, including `brms`. 
+It is: 
 
 $$
 \text{Gamma}\left(a, \frac{a}{\mu}\right)
 $$
 
+Here the mean is once again $\mu$ but the variance is $\sigma^2 = \mu^2/a$
 
-```{r}
-gamma_var <- rgamma(n = 570, shape = 6, scale = 1.5)
+In other words, $a$ _scales the square of the mean to be the variance._ 
 
-gamma_var |> mean()
-gamma_var |> sd()
-
-# theoretical average
-6*1.5
-
-# theory sd
-sqrt(6*1.5^2)
-
-```
+<aside>
+Is it less confusing to say: $a$ is the square of the number that scales the mean to the standard deviation?
+$$
+\sigma = \mu/\sqrt{a}
+$$
+</aside>
 
 
+see the [brms families vignettes](https://cran.r-project.org/web/packages/brms/vignettes/brms_families.html)
 
-see the [brms vignettes](https://cran.r-project.org/web/packages/brms/vignettes/brms_families.html)
-
-
-brms uses mean $\mu$ rate = $\alpha/\mu$
-
-```{r}
-
-a <- 3
-m <- 16
-xx <- rgamma(571, shape = m^2/a^2, rate = m/a^2)
-hist(xx)
-mean(xx)
-sd(xx)
-
-# could also define beta = mean/variance
-beta <- m/a^2
-beta
-
-xx2 <- rgamma(571, shape = m*beta, rate = beta)
-mean(xx2)
-
-sd(xx2)
-
-```
-
-
-ANdrew is going to ask in the Stan forum WTF is happening when you use the gamma family -- why does LF behave differently thank the alternative
+Andrew is going to ask in the Stan forum WTF is happening when you use the gamma family -- why does LF behave differently than the alternative
 
 ```{r}
 library(tidybayes)
-        
+library(brms)
+library(tidyverse)
 ## the Stan and brms parameterization of gamma translates into R like this: 
 
 mean <- 42
 shape <- 2
 
-rr <- rgamma(300, shape, shape/mean)
+rr <- rgamma(3000, shape, shape/mean)
 
 
 rr |> mean()
-rr |> sd()
 rr |> var()
-
 42^2/2
 
-gamma_form <- bf(xx ~ 1,
-                 family = brmsfamily("Gamma",
-                                     link = "identity",
-                                     link_shape = "identity")) + 
-  lf(shape ~ 1)
+# equivalently
 
-make_stancode(gamma_form, data = data.frame(xx))
-
+rr |> sd()
+42/sqrt(2)
 ```
 
-
-## prior simulations
-
-```{r}
-get_prior(gamma_form, data = data.frame(xx))
-
-andrew_prior <- c(prior(normal(2, .3), class = "Intercept"),
-                  prior(normal(2, .4), class = "Intercept", dpar = "shape"))
-```
-
-```{r}
-# visualizing in base R 
-
-rnorm(4000, mean = 2, sd = .2) |> exp() |> hist()
-```
-
+### Recovering these parameters
 
 ```{r, eval = FALSE}
 
-gamma_form <- bf(xx ~ 1,
+gamma_form <- bf(rr ~ 1,
                  family = brmsfamily("Gamma",
                                      link = "log",
                                      link_shape = "log")) + 
   lf(shape ~ 1)
 
-gamma_prior_predict <- brm(gamma_form, data = data.frame(xx), 
+andrew_prior <- c(prior(normal(4, .5), class = "Intercept"),
+                  prior(normal(2, .5), class = "Intercept", dpar = "shape"))
+
+gamma_prior_predict <- brm(gamma_form, data = data.frame(rr), 
     prior = andrew_prior,
-    backend = "cmdstanr", cores = 4, sample_prior = "only", file = here::here("_posts", 
-                               "2022-06-06-hybrid-fly-life-history",
-                               "gamma_prior_predict.rds"))
+    backend = "cmdstanr", 
+    cores = 4, refresh = 0,
+    sample_prior = "yes", 
+    file = here::here("_posts", 
+                      "2022-06-06-hybrid-fly-life-history",
+                      "gamma_prior_predict.rds"),
+    file_refit = "on_change")
+
+# get_variables(gamma_prior_predict)
 
 # visualize
 gamma_prior_predict |> 
-  gather_draws( b_Intercept, b_shape_Intercept, ndraws = 6)
-
-data.frame(nn = 1:450) |> 
-  add_predicted_draws(gamma_prior_predict, ndraws = 12) |> 
-  ggplot(aes(x = .prediction)) + 
-  geom_histogram() + 
-  facet_wrap(~.draw, ncol = 4)
-
+  gather_rvars(prior_Intercept, prior_Intercept_shape, b_Intercept, b_shape_Intercept) |> 
+  mutate(is_prior = if_else(condition = str_detect(string = .variable, pattern = "prior.*"),
+                            true = "prior", 
+                            false = "posterior"),
+         param = if_else(condition = str_detect(string = .variable, "shape"),
+                         true = "shape", 
+                         false = "mean")) |> 
+  ggplot(aes(dist = .value, y = param, fill = is_prior)) + 
+  stat_dist_halfeye() +
+  # coord_cartesian(xlim = c(0,10)) +
+  facet_wrap(~param, scales = "free") + 
+  geom_vline(aes(xintercept = val), 
+             data = tribble(~param, ~val,
+                            "mean",  log(mean),
+                            "shape", log(shape))
+  )
+  
 ```
 
 
