@@ -2,12 +2,13 @@
 title: "Histogram data"
 description: |
   A short description of the post.
-Andrew
 date: 07-07-2022
 output:
   distill::distill_article:
     self_contained: false
 draft: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -18,7 +19,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 rr <- rnorm(400)
-
 rr_cut <- cut(rr, breaks = seq(from = -7, to = 7, by = .5))
 table(rr_cut) |> plot()
 
@@ -119,9 +119,11 @@ multin_samp <- multinom_norm$sample(data = datlist)
 midpoint_norm <- cmdstanr::cmdstan_model(stan_file = here::here(
   "_posts", "2022-07-07-histogram-data", "midpoint.stan"))
 
-rr <- rnorm(400, -3, .2)
+rr <- rnorm(400, 0, .5)
 breaks <- seq(from = -7, to = 7, by = .5)
 rr_cut <- cut(rr, breaks)
+
+plot(table(rr_cut))
 
 levels(rr_cut)
 
@@ -131,9 +133,125 @@ datlist <- list(y = midpts,
                 N = length(rr))
 
 
-cat_samp <- midpoint_norm$sample(data = datlist)
+mid_samp <- midpoint_norm$sample(data = datlist, refresh = 0)
 
-cat_samp
+mid_samp
+
+
+
+```
+
+
+lcdf
+
+```{r}
+curve(dnorm(x), xlim = c(-4, 4))
+abline(v = -1)
+abline(v = 0)
+curve(pnorm(x), xlim = c(-4, 4))
+abline(v = -1)
+
+abline(v =  seq(from = -7, to = 7, by = .5))
+```
+
+
+### binning and histogram comparison
+
+let's make some `bayesplot` predictions for our dataset
+
+```{r}
+library(tidybayes)
+
+
+# have response rr
+# rr
+
+# need to make some fake ones
+
+
+rr_df <- spread_draws(mid_samp, mu, sigma, ndraws = 50) |> 
+  rowwise() |> 
+  mutate(fake_rr = list(rnorm(400, mean = mu, sd = sigma)))
+
+
+rr_rep <- do.call(rbind, rr_df$fake_rr)
+
+library(bayesplot)
+ppc_dens_overlay(rr, rr_rep)
+
+# ppc_ecdf_overlay(rr, rr_rep)
+
+```
+
+
+OKAY so not exactly inspiring! it looks as if our model has failed to get the variance right
+
+In real life we don't have the `rr` variable, we ahve `rr_cut`
+
+```{r}
+
+ppc_dens_overlay(midpts, rr_rep)
+```
+
+
+
+let's try binning the response
+
+```{r}
+
+# same as above
+make_midpoints <- function(vec,
+                           breaks = seq(from = -7, to = 7, by = .5),
+                           midpts = seq(from = -6.75, to = 6.75, by = .5)) {
+  vec_cut <- cut(vec, breaks)
+  midpts[as.numeric(vec_cut)]
+}
+
+rr_df_cut <- rr_df |> 
+  mutate(fake_cut = list(make_midpoints(fake_rr)))
+
+rr_rep <- do.call(rbind, rr_df_cut$fake_cut)
+
+ppc_dens_overlay(midpts, rr_rep)
+
+```
+
+## binning a Gamma
+
+```{r}
+curve(dgamma(x, 20, 20/14), xlim = c(0, 25))
+```
+
+
+create a vector `rg`, which imitates posterior predictions from a gamma model.
+
+```{r}
+rg <- rgamma(200, 20, 20/14)
+rg
+# checking growth every even-numbered day
+
+evenbreaks <- seq(0,30, by = 2)
+evenbreaks
+
+rg_evencut <- cut(rg, breaks = evenbreaks)
+
+# note that for 16 cuts we have 15 levels
+nlevels(rg_evencut)
+length(evenbreaks)
+
+# midpoints via logic
+seq(1, 29, by =2)
+
+# midpoints from math
+mids <- (evenbreaks[-1] + evenbreaks[-length(evenbreaks)])/2
+mids
+
+mids[as.numeric(rg_evencut)]
+
+```
+
+```{r}
+
 ```
 
 
