@@ -1,0 +1,139 @@
+---
+title: "Histogram data"
+description: |
+  A short description of the post.
+Andrew
+date: 07-07-2022
+output:
+  distill::distill_article:
+    self_contained: false
+draft: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+rr <- rnorm(400)
+
+rr_cut <- cut(rr, breaks = seq(from = -7, to = 7, by = .5))
+table(rr_cut) |> plot()
+
+library(tidyverse)
+
+rr_cut <- cut(rnorm(4000), breaks = seq(from = -4, to = 4, by = .5))
+cut_rr_tbl <- as_tibble(table(rr_cut)) |> 
+  mutate(low = seq(from = -4, to = 3.5, by = .5),
+         up = low + .5,
+         mid = (low+up)/2)
+
+rr_mean <- with(cut_rr_tbl, sum(mid*n)/sum(n))
+rr_mean
+with(cut_rr_tbl, sum(up*n)/sum(n))
+```
+
+
+Can we do this same trick with the variance
+
+```{r}
+with(cut_rr_tbl, sum((mid - rr_mean)^2*n)/sum(n))
+```
+
+yes for sure. 
+
+
+Now let's try something in Stan
+
+```{r}
+categorical_hist <- cmdstanr::cmdstan_model(stan_file = here::here(
+  "_posts", "2022-07-07-histogram-data", "categorical_hist.stan"))
+
+rr <- rnorm(400)
+breaks <- seq(from = -7, to = 7, by = .5)
+
+rr_cut <- cut(rr, breaks)
+as.numeric(rr_cut)
+breaks
+nlevels(rr_cut)
+
+datlist <- list(y = as.numeric(rr_cut),
+                K = nlevels(rr_cut),
+                N = length(rr),
+                breaks = breaks[-1])
+
+
+cat_samp <- categorical_hist$sample(data = datlist)
+```
+
+
+This is bizarre because WHY does the sum of the probabilities parameter end up being so HIGH??
+
+
+
+```{r}
+categorical_hist_norm <- cmdstanr::cmdstan_model(stan_file = here::here(
+  "_posts", "2022-07-07-histogram-data", "categorical_hist_norm.stan"))
+
+rr <- rnorm(400)
+breaks <- seq(from = -7, to = 7, by = .5)
+rr_cut <- cut(rr, breaks)
+
+datlist <- list(y = as.numeric(rr_cut),
+                K = nlevels(rr_cut),
+                N = length(rr),
+                breaks = breaks[-1])
+
+
+cat_samp <- categorical_hist_norm$sample(data = datlist)
+
+```
+
+
+## via multinomial
+
+```{r}
+multinom_norm <- cmdstanr::cmdstan_model(stan_file = here::here(
+  "_posts", "2022-07-07-histogram-data", "multinom_norm.stan"))
+
+rr <- rnorm(400)
+breaks <- seq(from = -7, to = 7, by = .5)
+rr_cut <- cut(rr, breaks)
+
+datlist <- list(y = as.numeric(table(rr_cut)),
+                K = nlevels(rr_cut),
+                breaks = breaks[-1])
+
+
+multin_samp <- multinom_norm$sample(data = datlist)
+
+```
+
+
+## sampling midpoints
+
+
+```{r}
+midpoint_norm <- cmdstanr::cmdstan_model(stan_file = here::here(
+  "_posts", "2022-07-07-histogram-data", "midpoint.stan"))
+
+rr <- rnorm(400, -3, .2)
+breaks <- seq(from = -7, to = 7, by = .5)
+rr_cut <- cut(rr, breaks)
+
+levels(rr_cut)
+
+midpts <- seq(from = -6.75, to = 6.75, by = .5)[as.numeric(rr_cut)]
+
+datlist <- list(y = midpts,
+                N = length(rr))
+
+
+cat_samp <- midpoint_norm$sample(data = datlist)
+
+cat_samp
+```
+
+
