@@ -1,7 +1,7 @@
 ---
 title: "Histogram data"
 description: |
-  A short description of the post.
+  Modelling and binning Histogram data for fun and profit.
 date: 07-07-2022
 output:
   distill::distill_article:
