@@ -3,8 +3,7 @@ title: "FID: When to run away"
 description: |
   Modelling a decay to a constant
 author:
-  - name: Nora Jones
-    url: https://example.com/norajones
+  - name: Catherine Capkun-Huot and Andrew MacDonald
 date: 05-26-2022
 output:
   distill::distill_article:
@@ -16,19 +15,34 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+```{r eval = FALSE}
+form_fit4 <- bf(FID    ~ inv_logit(logitM) * 1000 * (1 - inv_logit(logitp)*num_obs/(exp(logd) + num_obs)),
+                logitM ~ 1 + risk + scale(capt) + (1 |t| ID),
+                logitp ~ 1 + risk + sex + scale(docil) + scale(explo) + (1 |t| ID),
+                logd   ~ 1 + risk + (1 |t| ID),
+                nl     = TRUE,
+                family = Gamma(link = "identity"))
+```
+
+
+* i for observations (obs, exposure)
+* j for individuals / groups / units (individual chipmunks)
+* k for risk
+* 
+* k, l, m etc for others
 
 $$
 \begin{align}
-\text{FID}_{crj} \sim& \text{Gamma}\left(\frac{\mu_{cr}}{\sigma^2}, \frac{\mu_{cr}^2}{\sigma^2}\right)\\
-\mu_{cr} =& m_{cr} \times 1000 \times \left( 1 - \frac{p_{cr} \times X_j}{d_{cr} + X_j}  \right) \\
-\text{logit}(m_{cr}) =& \bar{m} + \beta_{m,r} + m_{c,r}\\
-\text{logit}(p_{cr}) =& \bar{p} + \beta_{p,r} + p_{c,r}\\
-\text{log}(d_{cr})   =& \bar{d} + \beta_{d,r} + d_{c,r}\\
+\text{FID}_{ijk} \sim& \text{gamma}\left(\alpha, \frac{\alpha}{\mu_{ijk}}\right)\\
+\mu_{ijk} =& m_{jk} \times 1000 \times \left( 1 - \frac{p_{jk} \times X_i}{d_{jk} + X_i}  \right) \\
+\text{logit}(m_{jk}) =& \bar{m} + \beta_k^m + m_{jk}\\
+\text{logit}(p_{jk}) =& \bar{p} + \beta_k^p + p_{jk}\\
+\text{log}(d_{jk})   =& \bar{d} + \beta_k^d + d_{jk}\\
 \begin{bmatrix}
-m_{r}\\
-p_{r}\\
-d_{r}
-\end{bmatrix} &\sim \text{MVnormal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \textbf{S}_{r}\right)
+m_{k}\\
+p_{k}\\
+d_{k}\\
+\end{bmatrix} \sim& \text{multivariate normal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \textbf{S}_{k}\right)
 \end{align}
 $$
 
