@@ -2086,7 +2086,7 @@ function init_posts_list() {
     var src = $(img).attr('data-src');
     if (src) {
       $(img).attr('src', src);
-      $(img).on("load", function() {
+      $(img).load(function() {
         img.removeAttribute('data-src');
       });
     }
@@ -2132,7 +2132,6 @@ function init_posts_list() {
 
       // mark posts that match the category visible
       var page_category = window.location.hash.replace(/^#category:/, "");
-      page_category = decodeURIComponent(page_category)
       var posts = $('.post-metadata').map(function(idx, script) {
         var metadata = $.parseJSON($(script).html());
         var post = null;
@@ -2148,7 +2147,7 @@ function init_posts_list() {
       set_posts_visible(posts, true);
 
       // mark the hash active
-      $('.categories li>a[href="' + decodeURIComponent(window.location.hash) + '"]').addClass('active');
+      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
 
       // update the list_caption
       var list_caption = $('.posts-list-caption');
@@ -2211,6 +2210,23 @@ function init_posts_list() {
 <div class="posts-container posts-apply-limit l-page">
 <div class="posts-list">
 <h1 class="posts-list-caption" data-caption="Simulation of Ecological Data">Simulation of Ecological Data</h1>
+<a href="posts/2022-06-28-nonlinear-functions-for-growth/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":[]}</script>
+<div class="metadata">
+<div class="publishedDate">June 28, 2022</div>
+<div class="dt-authors">
+<div class="dt-author">Andrew and Will</div>
+</div>
+</div>
+<div class="thumbnail">
+<img src="posts/2022-06-28-nonlinear-functions-for-growth/nonlinear-functions-for-growth_files/figure-html5/unnamed-chunk-1-1.png"/>
+</div>
+<div class="description">
+<h2>Nonlinear functions for growth</h2>
+<div class="dt-tags"></div>
+<p>Bayesian models for nonlinear functions in a few dimensions.</p>
+</div>
+</a>
 <a href="posts/2022-06-23-poisson-regression/" class="post-preview">
 <script class="post-metadata" type="text/json">{"categories":[]}</script>
 <div class="metadata">
@@ -2288,7 +2304,7 @@ function init_posts_list() {
 </div>
 </div>
 <div class="thumbnail">
-<img src="posts/2022-06-06-hybrid-fly-life-history/hybrid-fly-life-history_files/figure-html5/unnamed-chunk-2-1.png"/>
+<img data-src="posts/2022-06-06-hybrid-fly-life-history/hybrid-fly-life-history_files/figure-html5/unnamed-chunk-2-1.png"/>
 </div>
 <div class="description">
 <h2>Hybrid fly life history</h2>

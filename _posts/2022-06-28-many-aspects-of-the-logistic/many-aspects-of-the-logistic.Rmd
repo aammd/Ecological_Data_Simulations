@@ -1,0 +1,133 @@
+---
+title: "Many aspects of the Logistic"
+description: |
+  A short description of the post.
+author:
+  - name: Andrew, Jake and Salix
+    url: {}
+date: 06-28-2022
+draft: true
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Distill is a publication format for scientific and technical writing, native to the web.
+
+Learn more about using Distill at <https://rstudio.github.io/distill>.
+
+```{r}
+curve(plogis(x), xlim = c(-3, 3))
+
+curve(1/(1 + exp(-x)), xlim = c(-3, 3))
+
+
+curve(exp(x)/(1 + exp(x)), xlim = c(-3, 3))
+
+
+
+curve(1/(1 + exp(-1*(x - 0))), xlim = c(-3, 3))
+
+curve(1/(1 + exp(-2*(x - 0))), xlim = c(-3, 3), add = TRUE)
+curve(1/(1 + exp(-.2*(x - 0))), xlim = c(-3, 3), add = TRUE)
+curve(1/(1 + exp(-2*(x - 2))), xlim = c(-3, 3), add = TRUE)
+curve(1/(1 + exp(-2*(x - (-1)))), xlim = c(-3, 3), add = TRUE)
+
+
+curve(exp(2*(x - (-1)))/(1 + exp(2*(x - (-1)))), 
+      xlim = c(-3, 3), add = TRUE, col = 2, lwd = 2)
+
+
+# modified logistic from volnesh (?) and Ben bolker
+curve(exp(2*(x - (-1)))/(1 + exp((1 + 2)*2*(x - (-1)))), 
+      xlim = c(-3, 3), col = 2, lwd = 2)
+
+## type 2 functiona lresponse but fancy
+
+
+curve(1*x/(2 + x), xlim = c(0, 25), ylim = c(0, 1))
+
+
+g <- 2.5
+curve(1*x^g/(5 + x^g), xlim = c(0, 20), ylim = c(0, 1))
+
+
+g <- 2.5
+curve(1*x^g/(5 + x^(g*1.5)), xlim = c(0, 20), ylim = c(0, 1))
+
+curve(x*exp(.6*(1 - x)), xlim = c(0, 11))
+curve(x*exp(1*(1 - x)), xlim = c(0, 11), add = TRUE)
+curve(x*exp(1.1*(1 - x)), xlim = c(0, 11), add = TRUE)
+curve(x*exp(1.7*(1 - x)), xlim = c(0, 11), add = TRUE)
+
+curve(x*exp(.7*(1 - x/5)^3), xlim = c(0, 15))
+abline(h = 5)
+
+e1 <- 0.7 # probability of extinction?
+es <- 8
+curve((1 - e1) * x^2 / (es^2 + x ^ 2), xlim = c(0, 30), ylim = c(0, 1))
+abline(h = 1-e1)
+
+# okay simplify
+
+
+surviv <- 0.7 # probability of extinction?
+halfsize <- 8
+curve(surviv * x^2 / (halfsize^2 + x ^ 2), xlim = c(0, 30), ylim = c(0, 1))
+abline(h = surviv/2, v = halfsize, lty = 2)
+abline(h = surviv, lty = 3)
+
+
+
+curve(1/(1 + exp(-.7*x)), xlim = c(-3,3))
+
+
+betas <- rnorm(20, mean = log(.45), sd = .8)
+
+curve(1/(1 + exp(-.45*x)), xlim = c(-10, 10))
+
+for(i in 1:length(betas)){
+  curve(1 / (1 + exp(-exp(betas[i]) * x)), add = TRUE)
+}
+
+
+## ----------------
+
+
+betas <- rlnorm(20, meanlog = log(.45), sdlog = .8)
+betas
+curve(1/(1 + exp(-.45*x)), xlim = c(-10, 10))
+
+for(i in 1:length(betas)){
+  curve(1 / (1 + exp(-betas[i] * x)), add = TRUE)
+}
+
+rnorm(1e5, mean = -.8, sd = .3) |> exp() |> hist()
+
+
+curve(1/(1 + exp(-1.5*x)), xlim = c(-10, 10))
+
+```
+
+
+## HOF functions
+
+```{r}
+curve(plogis(2*(x-(-1))), xlim = c(-3,3))
+
+
+curve(plogis(2*(x-(-1))) * plogis(-1*(x - (+1))),
+      xlim = c(-3,3), ylim = c(0, 1))
+```
+
+
+```{r}
+
+```
+
+

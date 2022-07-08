@@ -1,0 +1,286 @@
+---
+title: "Nonlinear functions for growth"
+description: |
+  Bayesian models for nonlinear functions in a few dimensions.
+author:
+  - name: Andrew and Will
+    url: {}
+date: 06-28-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+library(cmdstanr)
+library(tidybayes)
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to make a simple and simulated version of Will's logistic model. 
+
+thinking about treating L_o on the log scale -- ie the log of a number between 0 and 1
+
+```{r}
+curve(log(x))
+```
+
+$$
+\begin{align}
+y &= L + \frac{1 - L}{1 + e^{-\beta}} \\ 
+ &= L + (1 - L) \times \frac{1}{1 + e^{-\beta}}\\
+\text{log}(y) &= \text{log}\left(L + (1-L)\times \frac{1}{1 + e^{-\beta}}\right)
+\end{align}
+$$
+
+Return the log mixture of the log densities lp1 and lp2 with mixing proportion theta, defined by \[\begin{eqnarray*} \mathrm{log\_mix}(\theta, \lambda_1, \lambda_2) & = & \log \!\left( \theta \exp(\lambda_1) + \left( 1 - \theta \right) \exp(\lambda_2) \right) \\[3pt] & = & \mathrm{log\_sum\_exp}\!\left(\log(\theta) + \lambda_1, \ \log(1 - \theta) + \lambda_2\right). \end{eqnarray*}\]
+Available since 2.6
+
+
+
+```{r}
+
+
+log_mix_logistic <- cmdstanr::cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/log_mix_logistic.stan"))
+
+datlist <- list(n = 50,
+                x = runif(50, min = -40, max = 40))
+
+demo_samples <- log_mix_logistic$sample(data = datlist, refresh = 0)
+
+
+
+```
+
+Very VERY interesting note -- if you do this in `tranformed parameters` it doesn't work at all! 
+
+```{r}
+
+
+demo_draws <- gather_draws(demo_samples, y[i], ndraws = 50)
+
+demo_draws |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y = exp(.value), group = .draw)) + geom_line()
+
+```
+
+```{r}
+
+demo_draws |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y = .value, group = .draw)) + geom_line()
+
+```
+
+
+```{r}
+
+log_sum_exp_logistic <- cmdstanr::cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/log_sum_exp_logistic.stan"))
+
+datlist <- list(n = 50,
+                x = seq(from = -40, to = 40, length.out = 50))
+
+demo_samples <- log_sum_exp_logistic$sample(data = datlist, refresh = 0)
+```
+
+
+```{r}
+
+
+demo_draws <- gather_draws(demo_samples, y[i], ndraws = 50)
+
+demo_draws |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y = exp(.value), group = .draw)) + geom_line()
+```
+
+could the expression be vectorized easily? does that matter?
+
+```{r}
+
+vec_logistic <- cmdstanr::cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/vec_logistic.stan"))
+
+datlist <- list(n = 50,
+                x = seq(from = -40, to = 40, length.out = 50))
+
+demo_samples <- vec_logistic$sample(data = datlist, refresh = 0)
+```
+
+```{r}
+demo_draws <- gather_draws(demo_samples, y[i], ndraws = 50)
+
+demo_draws |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y =.value, group = .draw)) + geom_line()
+
+```
+
+prior simulations in R 
+
+```{r}
+x <-  seq(from = -40, to = 40, length.out = 50)
+L <- rnorm(1, -1, 1)
+alpha <- exp(rnorm(1, -.8, 1))
+y <- plogis(L) + (1 - plogis(L))*plogis(alpha*x)
+plot(x, y, ylim = c(0, 1))
+```
+
+```{r}
+over_vectorized <- cmdstanr::cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/over_vectorized.stan"))
+
+datlist <- list(n = 50,
+                x = seq(from = -40, to = 40, length.out = 50))
+
+demo_samples <- over_vectorized$sample(data = datlist, refresh = 0)
+```
+
+
+```{r}
+demo_draws <- gather_draws(demo_samples, y[i], ndraws = 50)
+
+demo_draws |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y =exp(.value), group = .draw)) + geom_line()
+
+```
+
+### adding a maximum
+
+Here I'm adding another parameter to control the (log) of the maximum:
+
+```{r}
+vec_logistic_max <- cmdstanr::cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/vec_logistic_max.stan"))
+
+datlist <- list(n = 50,
+                x = seq(from = -40, to = 40, length.out = 50))
+
+demo_samples <- vec_logistic_max$sample(data = datlist, refresh = 0)
+```
+
+
+```{r}
+demo_draws <- gather_draws(demo_samples, y[i], ndraws = 50)
+
+demo_draws |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y =.value, group = .draw)) + geom_line()
+
+```
+
+That looks about right! We can take the same approach with the approach using `log_sum_exp`
+
+
+
+
+```{r}
+log_sum_exp_logistic_max <- cmdstanr::cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/log_sum_exp_logistic_max.stan"))
+
+datlist <- list(n = 50,
+                x = seq(from = -40, to = 40, length.out = 50))
+
+demo_samples <- log_sum_exp_logistic_max$sample(data = datlist, refresh = 0)
+```
+
+
+```{r}
+demo_draws <- gather_draws(demo_samples, y[i], ndraws = 50)
+
+demo_draws |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y =exp(.value), group = .draw)) + geom_line()
+
+```
+
+### simulate lognormal data
+
+I'd like to try to tack on a logistic simulation to each of these, just to see!
+
+
+
+```{r}
+log_sum_exp_ln_rng <- cmdstanr::cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/log_sum_exp_ln_rng.stan"))
+
+datlist <- list(n = 50,
+                x = seq(from = -40, to = 40, length.out = 50))
+
+demo_samples <- log_sum_exp_ln_rng$sample(data = datlist, refresh = 0)
+```
+
+
+```{r}
+get_variables(demo_samples)
+demo_dots <- gather_draws(demo_samples, y_obs[i], ndraws = 5)
+
+demo_dots |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y = .value, group = .draw)) + geom_point() + 
+  facet_wrap(~.draw)
+
+```
+
+could also draw the line ribbon
+
+```{r}
+
+demo_draws <- gather_rvars(demo_samples, y_obs[i])
+
+demo_draws |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, dist = .value)) + stat_dist_lineribbon()
+
+```
+
+Now try to fit it, why not!?
+
+```{r}
+log_sum_exp_ln_model <- cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/log_sum_exp_ln_model.stan"))
+
+
+datlist <- list(n = 50,
+                x = seq(from = -40, to = 40, length.out = 50),
+                yy = demo_dots |> filter(.draw == max(.draw)) |> pull(.value)
+                )
+model_samples <- log_sum_exp_ln_model$sample(data = datlist, refresh = 0)
+
+model_samples
+```
+
+```{r}
+
+model_mean <- gather_rvars(model_samples, log_mu[i])
+
+model_mean |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, dist = exp(.value))) + 
+  stat_dist_lineribbon() + 
+  geom_point(aes(x = x, y = yy), inherit.aes = FALSE,
+             data = as.data.frame(datlist))
+```
+
+```{r}
+
+model_pred <- gather_rvars(model_samples, y_obs[i])
+
+model_pred |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, dist = .value)) + 
+  stat_dist_lineribbon() + 
+  geom_point(aes(x = x, y = yy), inherit.aes = FALSE,
+             data = as.data.frame(datlist), pch = 21, fill = "orange") + 
+  scale_fill_brewer(palette = "Greens")
+```
+

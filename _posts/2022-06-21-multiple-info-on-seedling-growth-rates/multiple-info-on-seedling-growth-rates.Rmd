@@ -1,0 +1,19 @@
+---
+title: "Multiple info on seedling growth rates"
+description: |
+  With what probability do seedlings "ingrow" to become trees?.
+author:
+  - name: Andrew and Will
+    url: {}
+date: 06-21-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+There are two 

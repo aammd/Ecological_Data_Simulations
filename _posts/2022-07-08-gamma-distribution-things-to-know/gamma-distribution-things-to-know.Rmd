@@ -1,0 +1,49 @@
+---
+title: "Gamma distribution things to know"
+description: |
+  A short description of the post.
+author:
+  - name: Andrew and Will
+    url: {}
+date: 07-08-2022
+output:
+  distill::distill_article:
+    self_contained: false
+draft: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Distill is a publication format for scientific and technical writing, native to the web.
+
+Learn more about using Distill at <https://rstudio.github.io/distill>.
+
+```{r}
+shape <- 20
+curve(dgamma(x, shape, shape/12), xlim = c(0, 30))
+
+1/20
+# can also be paramaterized with 
+
+# if the inverse is this
+rs <- rexp(30, 4)
+# then the shape parameters are this
+1/rs
+
+# or 
+
+# if the inverse is this
+rs <- abs(rnorm(50, 0, 1))
+# then the shape parameters are this
+1/rs
+
+curve(dgamma(x, shape, shape/12), xlim = c(0, 30))
+for(s in rs){
+  curve(dgamma(x, 1/s, 1/(s*12)), add = TRUE)
+}
+
+```
+
