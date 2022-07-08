@@ -6,14 +6,14 @@
       "description": "Some additional details about the blog",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2022-07-08T15:56:23-04:00"
+      "last_modified": "2022-07-08T17:09:13-04:00"
     },
     {
       "path": "index.html",
       "title": "Simulation of Ecological Data",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2022-07-08T15:56:24-04:00"
+      "last_modified": "2022-07-08T17:09:14-04:00"
     }
   ],
   "collections": ["posts/posts.json"]

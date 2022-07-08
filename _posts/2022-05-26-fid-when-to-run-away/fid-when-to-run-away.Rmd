@@ -43,14 +43,15 @@ m_{k}\\
 p_{k}\\
 d_{k}\\
 \end{bmatrix} \sim& \text{multivariate normal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \text{diag}(\sigma)\times \textbf{R}\times\text{diag}(\sigma)\right) \\ 
-\bar{m} \sim& \text{normal}(.5, .5)\\
+\bar{m}, \beta_k^m \sim& \text{normal}(.5, .5)\\
 
-\bar{p} \sim& \text{normal}(-1, .2)\\
+\bar{p},\beta_k^p \sim& \text{normal}(-1, .2)\\
 
-\bar{d} \sim& \text{normal}(1.5, .5)\\
+\bar{d},\beta_k^d \sim& \text{normal}(1.5, .5)\\
 \alpha \sim& \text{gamma}(6.25, .25) \\ 
-\textbf{R}_k \sim&\text{LKJ}(2) \\
-\sigma \sim& \text{exponential}(2)
+\textbf{R} \sim&\text{LKJ}(2) \\
+\sigma \sim& \text{exponential}(2) \\
+\beta_k
 \end{align}
 $$
 

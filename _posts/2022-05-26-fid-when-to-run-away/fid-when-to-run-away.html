@@ -1499,14 +1499,15 @@ m_{k}\\
 p_{k}\\
 d_{k}\\
 \end{bmatrix} \sim&amp; \text{multivariate normal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \text{diag}(\sigma)\times \textbf{R}\times\text{diag}(\sigma)\right) \\ 
-\bar{m} \sim&amp; \text{normal}(.5, .5)\\
+\bar{m}, \beta_k^m \sim&amp; \text{normal}(.5, .5)\\
 
-\bar{p} \sim&amp; \text{normal}(-1, .2)\\
+\bar{p},\beta_k^p \sim&amp; \text{normal}(-1, .2)\\
 
-\bar{d} \sim&amp; \text{normal}(1.5, .5)\\
+\bar{d},\beta_k^d \sim&amp; \text{normal}(1.5, .5)\\
 \alpha \sim&amp; \text{gamma}(6.25, .25) \\ 
-\textbf{R}_k \sim&amp;\text{LKJ}(2) \\
-\sigma \sim&amp; \text{exponential}(2)
+\textbf{R} \sim&amp;\text{LKJ}(2) \\
+\sigma \sim&amp; \text{exponential}(2) \\
+\beta_k
 \end{align}\]</span> $$</p>
 <p>All models were fit with the following priors: the fixed effects had normal distributions (logitM: mean = 0.5, sd = 0.5; logitp: mean = – 1, sd = 0.2; logd: mean = 1.5, sd = 0.5), the random effects had exponential distributions (lamda = 2), the shape parameter had a gamma distribution (alpha = 6.25, beta = 0.25)[CCH1] , and the covariance matrix had a Lewandowski-Kurowicka-Joe (LKJ) distribution (eta = 2) .</p>
 <hr />
