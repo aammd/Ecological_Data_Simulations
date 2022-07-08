@@ -42,12 +42,26 @@ $$
 m_{k}\\
 p_{k}\\
 d_{k}\\
-\end{bmatrix} \sim& \text{multivariate normal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \textbf{S}_{k}\right)
+\end{bmatrix} \sim& \text{multivariate normal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \text{diag}(\sigma)\times \textbf{R}\times\text{diag}(\sigma)\right) \\ 
+\bar{m} \sim& \text{normal}(.5, .5)\\
+
+\bar{p} \sim& \text{normal}(-1, .2)\\
+
+\bar{d} \sim& \text{normal}(1.5, .5)\\
+\alpha \sim& \text{gamma}(6.25, .25) \\ 
+\textbf{R}_k \sim&\text{LKJ}(2) \\
+\sigma \sim& \text{exponential}(2)
 \end{align}
 $$
 
 
+All models were fit with the following priors: the fixed effects had normal distributions (logitM: mean = 0.5, sd = 0.5; logitp: mean = – 1, sd = 0.2; logd: mean = 1.5, sd = 0.5), the random effects had exponential distributions (lamda = 2), the shape parameter had a gamma distribution (alpha = 6.25, beta = 0.25)[CCH1] , and the covariance matrix had a Lewandowski-Kurowicka-Joe (LKJ) distribution (eta = 2) .
 
+
+
+
+
+---------------------
 
 $$
 \begin{align}
