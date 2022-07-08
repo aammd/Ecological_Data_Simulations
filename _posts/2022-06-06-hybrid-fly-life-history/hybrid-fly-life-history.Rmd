@@ -272,7 +272,7 @@ correlation is hard to see under the gamma errors!
 
 let's see if a model can recover that
 
-```{r}
+```{}
 fake_devo_long <- fake_development_times |> 
   select(-starts_with("avg")) |> 
   pivot_longer(starts_with("obs"),
@@ -557,6 +557,13 @@ genotype_vals |>
 
 
 ```
+
+
+## alternative distributions
+
+https://en.wikipedia.org/wiki/Skew_normal_distribution
+
+http://paul-buerkner.github.io/brms/reference/SkewNormal.html
 
 
 

@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ad0000; } /* Alert */
+code span.an { color: #5e5e5e; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #ad0000; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007ba5; } /* ControlFlow */
+code span.ch { color: #20794d; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #5e5e5e; } /* Comment */
+code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+code span.dt { color: #ad0000; } /* DataType */
+code span.dv { color: #ad0000; } /* DecVal */
+code span.er { color: #ad0000; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #ad0000; } /* Float */
+code span.fu { color: #4758ab; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #5e5e5e; } /* Information */
+code span.kw { color: #007ba5; } /* Keyword */
+code span.op { color: #5e5e5e; } /* Operator */
+code span.ot { color: #007ba5; } /* Other */
+code span.pp { color: #ad0000; } /* Preprocessor */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
+code span.ss { color: #20794d; } /* SpecialString */
+code span.st { color: #20794d; } /* String */
+code span.va { color: #111111; } /* Variable */
+code span.vs { color: #20794d; } /* VerbatimString */
+code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+</style>
+
+
+  <!--radix_placeholder_meta_tags-->
+  <title>Histogram data</title>
+
+  <meta property="description" itemprop="description" content="Modelling and binning Histogram data for fun and profit."/>
+
+
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2022-07-07"/>
+  <meta property="article:created" itemprop="dateCreated" content="2022-07-07"/>
+
+  <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+  <meta property="og:title" content="Histogram data"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Modelling and binning Histogram data for fun and profit."/>
+  <meta property="og:locale" content="en_US"/>
+
+  <!--  https://dev.twitter.com/cards/types/summary -->
+  <meta property="twitter:card" content="summary"/>
+  <meta property="twitter:title" content="Histogram data"/>
+  <meta property="twitter:description" content="Modelling and binning Histogram data for fun and profit."/>
+
+  <!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+  <script type="text/json" id="radix-rmarkdown-metadata">
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output","draft","editor_options"]}},"value":[{"type":"character","attributes":{},"value":["Histogram data"]},{"type":"character","attributes":{},"value":["Modelling and binning Histogram data for fun and profit.\n"]},{"type":"character","attributes":{},"value":["07-07-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"logical","attributes":{},"value":[true]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["chunk_output_type"]}},"value":[{"type":"character","attributes":{},"value":["console"]}]}]}
+  </script>
+  <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["categorical_hist","categorical_hist.exe","categorical_hist.stan","categorical_hist_norm","categorical_hist_norm.exe","categorical_hist_norm.stan","histogram-data_files/anchor-4.2.2/anchor.min.js","histogram-data_files/bowser-1.9.3/bowser.min.js","histogram-data_files/distill-2.2.21/template.v2.js","histogram-data_files/figure-html5/unnamed-chunk-1-1.png","histogram-data_files/figure-html5/unnamed-chunk-10-1.png","histogram-data_files/figure-html5/unnamed-chunk-11-1.png","histogram-data_files/figure-html5/unnamed-chunk-6-1.png","histogram-data_files/figure-html5/unnamed-chunk-7-1.png","histogram-data_files/figure-html5/unnamed-chunk-7-2.png","histogram-data_files/figure-html5/unnamed-chunk-8-1.png","histogram-data_files/figure-html5/unnamed-chunk-9-1.png","histogram-data_files/header-attrs-2.13/header-attrs.js","histogram-data_files/jquery-3.6.0/jquery-3.6.0.js","histogram-data_files/jquery-3.6.0/jquery-3.6.0.min.js","histogram-data_files/jquery-3.6.0/jquery-3.6.0.min.map","histogram-data_files/popper-2.6.0/popper.min.js","histogram-data_files/tippy-6.2.7/tippy-bundle.umd.min.js","histogram-data_files/tippy-6.2.7/tippy-light-border.css","histogram-data_files/tippy-6.2.7/tippy.css","histogram-data_files/tippy-6.2.7/tippy.umd.min.js","histogram-data_files/webcomponents-2.0.0/webcomponents.js","manual_probit_categorical.stan","midpoint","midpoint.exe","midpoint.stan","multinom_norm","multinom_norm.exe","multinom_norm.stan","Untitled.stan"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+  <!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+  <style type="text/css">
+
+  body {
+    background-color: white;
+  }
+
+  .pandoc-table {
+    width: 100%;
+  }
+
+  .pandoc-table>caption {
+    margin-bottom: 10px;
+  }
+
+  .pandoc-table th:not([align]) {
+    text-align: left;
+  }
+
+  .pagedtable-footer {
+    font-size: 15px;
+  }
+
+  d-byline .byline {
+    grid-template-columns: 2fr 2fr;
+  }
+
+  d-byline .byline h3 {
+    margin-block-start: 1.5em;
+  }
+
+  d-byline .byline .authors-affiliations h3 {
+    margin-block-start: 0.5em;
+  }
+
+  .authors-affiliations .orcid-id {
+    width: 16px;
+    height:16px;
+    margin-left: 4px;
+    margin-right: 4px;
+    vertical-align: middle;
+    padding-bottom: 2px;
+  }
+
+  d-title .dt-tags {
+    margin-top: 1em;
+    grid-column: text;
+  }
+
+  .dt-tags .dt-tag {
+    text-decoration: none;
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0em 0.4em;
+    margin-right: 0.5em;
+    margin-bottom: 0.4em;
+    font-size: 70%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  d-article table.gt_table td,
+  d-article table.gt_table th {
+    border-bottom: none;
+  }
+
+  .html-widget {
+    margin-bottom: 2.0em;
+  }
+
+  .l-screen-inset {
+    padding-right: 16px;
+  }
+
+  .l-screen .caption {
+    margin-left: 10px;
+  }
+
+  .shaded {
+    background: rgb(247, 247, 247);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .html-widget {
+    margin-bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .shaded-content {
+    background: white;
+  }
+
+  .text-output {
+    margin-top: 0;
+    line-height: 1.5em;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  d-article {
+    padding-top: 2.5rem;
+    padding-bottom: 30px;
+  }
+
+  d-appendix {
+    padding-top: 30px;
+  }
+
+  d-article>p>img {
+    width: 100%;
+  }
+
+  d-article h2 {
+    margin: 1rem 0 1.5rem 0;
+  }
+
+  d-article h3 {
+    margin-top: 1.5rem;
+  }
+
+  d-article iframe {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.0em;
+    width: 100%;
+  }
+
+  /* Tweak code blocks */
+
+  d-article div.sourceCode code,
+  d-article pre code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  }
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: auto;
+  }
+
+  d-article div.sourceCode {
+    background-color: white;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 10px;
+    font-size: 12px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+  }
+
+  d-article pre {
+    font-size: 12px;
+    color: black;
+    background: none;
+    margin-top: 0;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  d-article pre a {
+    border-bottom: none;
+  }
+
+  d-article pre a:hover {
+    border-bottom: none;
+    text-decoration: underline;
+  }
+
+  d-article details {
+    grid-column: text;
+    margin-bottom: 0.8em;
+  }
+
+  @media(min-width: 768px) {
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: visible !important;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 18px;
+    font-size: 14px;
+  }
+
+  d-article pre {
+    font-size: 14px;
+  }
+
+  }
+
+  figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  /* CSS for d-contents */
+
+  .d-contents {
+    grid-column: text;
+    color: rgba(0,0,0,0.8);
+    font-size: 0.9em;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.25em;
+    justify-self: start;
+  }
+
+  @media(min-width: 1000px) {
+    .d-contents.d-contents-float {
+      height: 0;
+      grid-column-start: 1;
+      grid-column-end: 4;
+      justify-self: center;
+      padding-right: 3em;
+      padding-left: 2em;
+    }
+  }
+
+  .d-contents nav h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  .d-contents li {
+    list-style-type: none
+  }
+
+  .d-contents nav > ul {
+    padding-left: 0;
+  }
+
+  .d-contents ul {
+    padding-left: 1em
+  }
+
+  .d-contents nav ul li {
+    margin-top: 0.6em;
+    margin-bottom: 0.2em;
+  }
+
+  .d-contents nav a {
+    font-size: 13px;
+    border-bottom: none;
+    text-decoration: none
+    color: rgba(0, 0, 0, 0.8);
+  }
+
+  .d-contents nav a:hover {
+    text-decoration: underline solid rgba(0, 0, 0, 0.6)
+  }
+
+  .d-contents nav > ul > li > a {
+    font-weight: 600;
+  }
+
+  .d-contents nav > ul > li > ul {
+    font-weight: inherit;
+  }
+
+  .d-contents nav > ul > li > ul > li {
+    margin-top: 0.2em;
+  }
+
+
+  .d-contents nav ul {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+  }
+
+  .d-article-with-toc h2:nth-child(2) {
+    margin-top: 0;
+  }
+
+
+  /* Figure */
+
+  .figure {
+    position: relative;
+    margin-bottom: 2.5em;
+    margin-top: 1.5em;
+  }
+
+  .figure img {
+    width: 100%;
+  }
+
+  .figure .caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+    line-height: 1.5em;
+  }
+
+  .figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  .figure .caption a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .figure .caption b,
+  .figure .caption strong, {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 1.0);
+  }
+
+  /* Citations */
+
+  d-article .citation {
+    color: inherit;
+    cursor: inherit;
+  }
+
+  div.hanging-indent{
+    margin-left: 1em; text-indent: -1em;
+  }
+
+  /* Citation hover box */
+
+  .tippy-box[data-theme~=light-border] {
+    background-color: rgba(250, 250, 250, 0.95);
+  }
+
+  .tippy-content > p {
+    margin-bottom: 0;
+    padding: 2px;
+  }
+
+
+  /* Tweak 1000px media break to show more text */
+
+  @media(min-width: 1000px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 16px;
+    }
+
+    .grid {
+      grid-column-gap: 16px;
+    }
+
+    d-article {
+      font-size: 1.06rem;
+      line-height: 1.7em;
+    }
+    figure .caption, .figure .caption, figure figcaption {
+      font-size: 13px;
+    }
+  }
+
+  @media(min-width: 1180px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 32px;
+    }
+
+    .grid {
+      grid-column-gap: 32px;
+    }
+  }
+
+
+  /* Get the citation styles for the appendix (not auto-injected on render since
+     we do our own rendering of the citation appendix) */
+
+  d-appendix .citation-appendix,
+  .d-appendix .citation-appendix {
+    font-size: 11px;
+    line-height: 15px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 18px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 18px;
+    border-radius: 3px;
+    color: rgba(150, 150, 150, 1);
+    overflow: hidden;
+    margin-top: -12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* Include appendix styles here so they can be overridden */
+
+  d-appendix {
+    contain: layout style;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-top: 60px;
+    margin-bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(0,0,0,0.5);
+    padding-top: 60px;
+    padding-bottom: 48px;
+  }
+
+  d-appendix h3 {
+    grid-column: page-start / text-start;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 1em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.65);
+  }
+
+  d-appendix h3 + * {
+    margin-top: 1em;
+  }
+
+  d-appendix ol {
+    padding: 0 0 0 15px;
+  }
+
+  @media (min-width: 768px) {
+    d-appendix ol {
+      padding: 0 0 0 30px;
+      margin-left: -30px;
+    }
+  }
+
+  d-appendix li {
+    margin-bottom: 1em;
+  }
+
+  d-appendix a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  d-appendix > * {
+    grid-column: text;
+  }
+
+  d-appendix > d-footnote-list,
+  d-appendix > d-citation-list,
+  d-appendix > distill-appendix {
+    grid-column: screen;
+  }
+
+  /* Include footnote styles here so they can be overridden */
+
+  d-footnote-list {
+    contain: layout style;
+  }
+
+  d-footnote-list > * {
+    grid-column: text;
+  }
+
+  d-footnote-list a.footnote-backlink {
+    color: rgba(0,0,0,0.3);
+    padding-left: 0.5em;
+  }
+
+
+
+  /* Anchor.js */
+
+  .anchorjs-link {
+    /*transition: all .25s linear; */
+    text-decoration: none;
+    border-bottom: none;
+  }
+  *:hover > .anchorjs-link {
+    margin-left: -1.125em !important;
+    text-decoration: none;
+    border-bottom: none;
+  }
+
+  /* Social footer */
+
+  .social_footer {
+    margin-top: 30px;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.67);
+  }
+
+  .disqus-comments {
+    margin-right: 30px;
+  }
+
+  .disqus-comment-count {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  #disqus_thread {
+    margin-top: 30px;
+  }
+
+  .article-sharing a {
+    border-bottom: none;
+    margin-right: 8px;
+  }
+
+  .article-sharing a:hover {
+    border-bottom: none;
+  }
+
+  .sidebar-section.subscribe {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .subscribe p {
+    margin-bottom: 0.5em;
+  }
+
+
+  .article-footer .subscribe {
+    font-size: 15px;
+    margin-top: 45px;
+  }
+
+
+  .sidebar-section.custom {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .custom p {
+    margin-bottom: 0.5em;
+  }
+
+  /* Styles for listing layout (hide title) */
+  .layout-listing d-title, .layout-listing .d-title {
+    display: none;
+  }
+
+  /* Styles for posts lists (not auto-injected) */
+
+
+  .posts-with-sidebar {
+    padding-left: 45px;
+    padding-right: 45px;
+  }
+
+  .posts-list .description h2,
+  .posts-list .description p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .posts-list .description h2 {
+    font-weight: 700;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .posts-list h2.post-tag {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 12px;
+  }
+  .posts-list {
+    margin-top: 60px;
+    margin-bottom: 24px;
+  }
+
+  .posts-list .post-preview {
+    text-decoration: none;
+    overflow: hidden;
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 24px 0;
+  }
+
+  .post-preview-last {
+    border-bottom: none !important;
+  }
+
+  .posts-list .posts-list-caption {
+    grid-column: screen;
+    font-weight: 400;
+  }
+
+  .posts-list .post-preview h2 {
+    margin: 0 0 6px 0;
+    line-height: 1.2em;
+    font-style: normal;
+    font-size: 24px;
+  }
+
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.4em;
+    font-size: 16px;
+  }
+
+  .posts-list .post-preview .thumbnail {
+    box-sizing: border-box;
+    margin-bottom: 24px;
+    position: relative;
+    max-width: 500px;
+  }
+  .posts-list .post-preview img {
+    width: 100%;
+    display: block;
+  }
+
+  .posts-list .metadata {
+    font-size: 12px;
+    line-height: 1.4em;
+    margin-bottom: 18px;
+  }
+
+  .posts-list .metadata > * {
+    display: inline-block;
+  }
+
+  .posts-list .metadata .publishedDate {
+    margin-right: 2em;
+  }
+
+  .posts-list .metadata .dt-authors {
+    display: block;
+    margin-top: 0.3em;
+    margin-right: 2em;
+  }
+
+  .posts-list .dt-tags {
+    display: block;
+    line-height: 1em;
+  }
+
+  .posts-list .dt-tags .dt-tag {
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0.3em 0.4em;
+    margin-right: 0.2em;
+    margin-bottom: 0.4em;
+    font-size: 60%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .posts-list img {
+    opacity: 1;
+  }
+
+  .posts-list img[data-src] {
+    opacity: 0;
+  }
+
+  .posts-more {
+    clear: both;
+  }
+
+
+  .posts-sidebar {
+    font-size: 16px;
+  }
+
+  .posts-sidebar h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .sidebar-section {
+    margin-bottom: 30px;
+  }
+
+  .categories ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .categories li {
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 0;
+  }
+
+  .categories li>a {
+    border-bottom: none;
+  }
+
+  .categories li>a:hover {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  }
+
+  .categories .active {
+    font-weight: 600;
+  }
+
+  .categories .category-count {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+
+  @media(min-width: 768px) {
+    .posts-list .post-preview h2 {
+      font-size: 26px;
+    }
+    .posts-list .post-preview .thumbnail {
+      float: right;
+      width: 30%;
+      margin-bottom: 0;
+    }
+    .posts-list .post-preview .description {
+      float: left;
+      width: 45%;
+    }
+    .posts-list .post-preview .metadata {
+      float: left;
+      width: 20%;
+      margin-top: 8px;
+    }
+    .posts-list .post-preview p {
+      margin: 0 0 12px 0;
+      line-height: 1.5em;
+      font-size: 16px;
+    }
+    .posts-with-sidebar .posts-list {
+      float: left;
+      width: 75%;
+    }
+    .posts-with-sidebar .posts-sidebar {
+      float: right;
+      width: 20%;
+      margin-top: 60px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+  }
+
+
+  /* Improve display for browsers without grid (IE/Edge <= 15) */
+
+  .downlevel {
+    line-height: 1.6em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+  }
+
+  .downlevel .d-title {
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .downlevel .d-title h1 {
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 1.1em;
+    margin: 0 0 0.5rem;
+  }
+
+  .downlevel .d-title p {
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.55em;
+    margin-top: 0;
+  }
+
+  .downlevel .d-byline {
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    font-size: 0.8rem;
+    line-height: 1.8em;
+  }
+
+  .downlevel .section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .downlevel .d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+
+
+  .downlevel .d-appendix {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.5);
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .downlevel .footnotes ol {
+    padding-left: 13px;
+  }
+
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  @media(min-width: 768px) {
+    .downlevel .base-grid,
+    .downlevel .distill-header,
+    .downlevel .d-title,
+    .downlevel .d-abstract,
+    .downlevel .d-article,
+    .downlevel .d-appendix,
+    .downlevel .distill-appendix,
+    .downlevel .d-byline,
+    .downlevel .d-footnote-list,
+    .downlevel .d-citation-list,
+    .downlevel .distill-footer,
+    .downlevel .appendix-bottom,
+    .downlevel .posts-container {
+    padding-left: 150px;
+    padding-right: 150px;
+    max-width: 900px;
+  }
+  }
+
+  .downlevel pre code {
+    display: block;
+    border-left: 2px solid rgba(0, 0, 0, .1);
+    padding: 0 0 0 20px;
+    font-size: 14px;
+  }
+
+  .downlevel code, .downlevel pre {
+    color: black;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  .downlevel .posts-list .post-preview {
+    color: inherit;
+  }
+
+
+
+  </style>
+
+  <script type="application/javascript">
+
+  function is_downlevel_browser() {
+    if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                   window.navigator.userAgent)) {
+      return true;
+    } else {
+      return window.load_distill_framework === undefined;
+    }
+  }
+
+  // show body when load is complete
+  function on_load_complete() {
+
+    // add anchors
+    if (window.anchors) {
+      window.anchors.options.placement = 'left';
+      window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+    }
+
+
+    // set body to visible
+    document.body.style.visibility = 'visible';
+
+    // force redraw for leaflet widgets
+    if (window.HTMLWidgets) {
+      var maps = window.HTMLWidgets.findAll(".leaflet");
+      $.each(maps, function(i, el) {
+        var map = this.getMap();
+        map.invalidateSize();
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.TileLayer)
+            layer.redraw();
+        });
+      });
+    }
+
+    // trigger 'shown' so htmlwidgets resize
+    $('d-article').trigger('shown');
+  }
+
+  function init_distill() {
+
+    init_common();
+
+    // create front matter
+    var front_matter = $('<d-front-matter></d-front-matter>');
+    $('#distill-front-matter').wrap(front_matter);
+
+    // create d-title
+    $('.d-title').changeElementType('d-title');
+
+    // create d-byline
+    var byline = $('<d-byline></d-byline>');
+    $('.d-byline').replaceWith(byline);
+
+    // create d-article
+    var article = $('<d-article></d-article>');
+    $('.d-article').wrap(article).children().unwrap();
+
+    // move posts container into article
+    $('.posts-container').appendTo($('d-article'));
+
+    // create d-appendix
+    $('.d-appendix').changeElementType('d-appendix');
+
+    // flag indicating that we have appendix items
+    var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+    // replace footnotes with <d-footnote>
+    $('.footnote-ref').each(function(i, val) {
+      appendix = true;
+      var href = $(this).attr('href');
+      var id = href.replace('#', '');
+      var fn = $('#' + id);
+      var fn_p = $('#' + id + '>p');
+      fn_p.find('.footnote-back').remove();
+      var text = fn_p.html();
+      var dtfn = $('<d-footnote></d-footnote>');
+      dtfn.html(text);
+      $(this).replaceWith(dtfn);
+    });
+    // remove footnotes
+    $('.footnotes').remove();
+
+    // move refs into #references-listing
+    $('#references-listing').replaceWith($('#refs'));
+
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      var id = $(this).attr('id');
+      $('.d-contents a[href="#' + id + '"]').parent().remove();
+      appendix = true;
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+    });
+
+    // show d-appendix if we have appendix content
+    $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+    // localize layout chunks to just output
+    $('.layout-chunk').each(function(i, val) {
+
+      // capture layout
+      var layout = $(this).attr('data-layout');
+
+      // apply layout to markdown level block elements
+      var elements = $(this).children().not('details, div.sourceCode, pre, script');
+      elements.each(function(i, el) {
+        var layout_div = $('<div class="' + layout + '"></div>');
+        if (layout_div.hasClass('shaded')) {
+          var shaded_content = $('<div class="shaded-content"></div>');
+          $(this).wrap(shaded_content);
+          $(this).parent().wrap(layout_div);
+        } else {
+          $(this).wrap(layout_div);
+        }
+      });
+
+
+      // unwrap the layout-chunk div
+      $(this).children().unwrap();
+    });
+
+    // remove code block used to force  highlighting css
+    $('.distill-force-highlighting-css').parent().remove();
+
+    // remove empty line numbers inserted by pandoc when using a
+    // custom syntax highlighting theme
+    $('code.sourceCode a:empty').remove();
+
+    // load distill framework
+    load_distill_framework();
+
+    // wait for window.distillRunlevel == 4 to do post processing
+    function distill_post_process() {
+
+      if (!window.distillRunlevel || window.distillRunlevel < 4)
+        return;
+
+      // hide author/affiliations entirely if we have no authors
+      var front_matter = JSON.parse($("#distill-front-matter").html());
+      var have_authors = front_matter.authors && front_matter.authors.length > 0;
+      if (!have_authors)
+        $('d-byline').addClass('hidden');
+
+      // article with toc class
+      $('.d-contents').parent().addClass('d-article-with-toc');
+
+      // strip links that point to #
+      $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+      // add orcid ids
+      $('.authors-affiliations').find('.author').each(function(i, el) {
+        var orcid_id = front_matter.authors[i].orcidID;
+        if (orcid_id) {
+          var a = $('<a></a>');
+          a.attr('href', 'https://orcid.org/' + orcid_id);
+          var img = $('<img></img>');
+          img.addClass('orcid-id');
+          img.attr('alt', 'ORCID ID');
+          img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+          a.append(img);
+          $(this).append(a);
+        }
+      });
+
+      // hide elements of author/affiliations grid that have no value
+      function hide_byline_column(caption) {
+        $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+      }
+
+      // affiliations
+      var have_affiliations = false;
+      for (var i = 0; i<front_matter.authors.length; ++i) {
+        var author = front_matter.authors[i];
+        if (author.affiliation !== "&nbsp;") {
+          have_affiliations = true;
+          break;
+        }
+      }
+      if (!have_affiliations)
+        $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+      // published date
+      if (!front_matter.publishedDate)
+        hide_byline_column("Published");
+
+      // document object identifier
+      var doi = $('d-byline').find('h3:contains("DOI")');
+      var doi_p = doi.next().empty();
+      if (!front_matter.doi) {
+        // if we have a citation and valid citationText then link to that
+        if ($('#citation').length > 0 && front_matter.citationText) {
+          doi.html('Citation');
+          $('<a href="#citation"></a>')
+            .text(front_matter.citationText)
+            .appendTo(doi_p);
+        } else {
+          hide_byline_column("DOI");
+        }
+      } else {
+        $('<a></a>')
+           .attr('href', "https://doi.org/" + front_matter.doi)
+           .html(front_matter.doi)
+           .appendTo(doi_p);
+      }
+
+       // change plural form of authors/affiliations
+      if (front_matter.authors.length === 1) {
+        var grid = $('.authors-affiliations');
+        grid.children('h3:contains("Authors")').text('Author');
+        grid.children('h3:contains("Affiliations")').text('Affiliation');
+      }
+
+      // remove d-appendix and d-footnote-list local styles
+      $('d-appendix > style:first-child').remove();
+      $('d-footnote-list > style:first-child').remove();
+
+      // move appendix-bottom entries to the bottom
+      $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+      $('.appendix-bottom').remove();
+
+      // hoverable references
+      $('span.citation[data-cites]').each(function() {
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
+        window.tippy(this, {
+          allowHTML: true,
+          content: refHtml,
+          maxWidth: 500,
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        });
+      });
+
+      // clear polling timer
+      clearInterval(tid);
+
+      // show body now that everything is ready
+      on_load_complete();
+    }
+
+    var tid = setInterval(distill_post_process, 50);
+    distill_post_process();
+
+  }
+
+  function init_downlevel() {
+
+    init_common();
+
+     // insert hr after d-title
+    $('.d-title').after($('<hr class="section-separator"/>'));
+
+    // check if we have authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+    // manage byline/border
+    if (!have_authors)
+      $('.d-byline').remove();
+    $('.d-byline').after($('<hr class="section-separator"/>'));
+    $('.d-byline a').remove();
+
+    // remove toc
+    $('.d-contents').remove();
+
+    // move appendix elements
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+    });
+
+
+    // inject headers into references and footnotes
+    var refs_header = $('<h3></h3>');
+    refs_header.text('References');
+    $('#refs').prepend(refs_header);
+
+    var footnotes_header = $('<h3></h3');
+    footnotes_header.text('Footnotes');
+    $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // remove appendix if it's empty
+    if ($('.d-appendix').children().length === 0)
+      $('.d-appendix').remove();
+
+    // prepend separator above appendix
+    $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+    // trim code
+    $('pre>code').each(function(i, val) {
+      $(this).html($.trim($(this).html()));
+    });
+
+    // move posts-container right before article
+    $('.posts-container').insertBefore($('.d-article'));
+
+    $('body').addClass('downlevel');
+
+    on_load_complete();
+  }
+
+
+  function init_common() {
+
+    // jquery plugin to change element types
+    (function($) {
+      $.fn.changeElementType = function(newType) {
+        var attrs = {};
+
+        $.each(this[0].attributes, function(idx, attr) {
+          attrs[attr.nodeName] = attr.nodeValue;
+        });
+
+        this.replaceWith(function() {
+          return $("<" + newType + "/>", attrs).append($(this).contents());
+        });
+      };
+    })(jQuery);
+
+    // prevent underline for linked images
+    $('a > img').parent().css({'border-bottom' : 'none'});
+
+    // mark non-body figures created by knitr chunks as 100% width
+    $('.layout-chunk').each(function(i, val) {
+      var figures = $(this).find('img, .html-widget');
+      if ($(this).attr('data-layout') !== "l-body") {
+        figures.css('width', '100%');
+      } else {
+        figures.css('max-width', '100%');
+        figures.filter("[width]").each(function(i, val) {
+          var fig = $(this);
+          fig.css('width', fig.attr('width') + 'px');
+        });
+
+      }
+    });
+
+    // auto-append index.html to post-preview links in file: protocol
+    // and in rstudio ide preview
+    $('.post-preview').each(function(i, val) {
+      if (window.location.protocol === "file:")
+        $(this).attr('href', $(this).attr('href') + "index.html");
+    });
+
+    // get rid of index.html references in header
+    if (window.location.protocol !== "file:") {
+      $('.distill-site-header a[href]').each(function(i,val) {
+        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+      });
+    }
+
+    // add class to pandoc style tables
+    $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+    $('.kable-table').children('table').addClass('pandoc-table');
+
+    // add figcaption style to table captions
+    $('caption').parent('table').addClass("figcaption");
+
+    // initialize posts list
+    if (window.init_posts_list)
+      window.init_posts_list();
+
+    // implmement disqus comment link
+    $('.disqus-comment-count').click(function() {
+      window.headroom_prevent_pin = true;
+      $('#disqus_thread').toggleClass('hidden');
+      if (!$('#disqus_thread').hasClass('hidden')) {
+        var offset = $(this).offset();
+        $(window).resize();
+        $('html, body').animate({
+          scrollTop: offset.top - 35
+        });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (is_downlevel_browser())
+      init_downlevel();
+    else
+      window.addEventListener('WebComponentsReady', init_distill);
+  });
+
+  </script>
+
+  <!--/radix_placeholder_distill-->
+  <script src="histogram-data_files/header-attrs-2.13/header-attrs.js"></script>
+  <script src="histogram-data_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="histogram-data_files/popper-2.6.0/popper.min.js"></script>
+  <link href="histogram-data_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="histogram-data_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="histogram-data_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="histogram-data_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="histogram-data_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="histogram-data_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="histogram-data_files/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+  <!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Histogram data","description":"Modelling and binning Histogram data for fun and profit.","authors":[],"publishedDate":"2022-07-07T00:00:00.000-04:00"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Histogram data</h1>
+<!--radix_placeholder_categories-->
+<!--/radix_placeholder_categories-->
+<p><p>Modelling and binning Histogram data for fun and profit.</p></p>
+</div>
+
+
+<div class="d-article">
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>400</span><span class='op'>)</span>
+<span class='va'>rr_cut</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>rr</span>, breaks <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>7</span>, to <span class='op'>=</span> <span class='fl'>7</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span> |&gt; <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+</code></pre>
+</div>
+<img src="histogram-data_files/figure-html5/unnamed-chunk-1-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rr_cut</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span><span class='op'>)</span>, breaks <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>4</span>, to <span class='op'>=</span> <span class='fl'>4</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>cut_rr_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tibble.tidyverse.org/reference/as_tibble.html'>as_tibble</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>low <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>4</span>, to <span class='op'>=</span> <span class='fl'>3.5</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span>,
+         up <span class='op'>=</span> <span class='va'>low</span> <span class='op'>+</span> <span class='fl'>.5</span>,
+         mid <span class='op'>=</span> <span class='op'>(</span><span class='va'>low</span><span class='op'>+</span><span class='va'>up</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>2</span><span class='op'>)</span>
+
+<span class='va'>rr_mean</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span><span class='op'>(</span><span class='va'>cut_rr_tbl</span>, <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>mid</span><span class='op'>*</span><span class='va'>n</span><span class='op'>)</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>rr_mean</span>
+</code></pre>
+</div>
+<pre><code>[1] -0.019</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span><span class='op'>(</span><span class='va'>cut_rr_tbl</span>, <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>up</span><span class='op'>*</span><span class='va'>n</span><span class='op'>)</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] 0.231</code></pre>
+</div>
+<p>Can we do this same trick with the variance</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span><span class='op'>(</span><span class='va'>cut_rr_tbl</span>, <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>mid</span> <span class='op'>-</span> <span class='va'>rr_mean</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>*</span><span class='va'>n</span><span class='op'>)</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] 1.013389</code></pre>
+</div>
+<p>yes for sure.</p>
+<p>Now let’s try something in Stan</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>categorical_hist</span> <span class='op'>&lt;-</span> <span class='fu'>cmdstanr</span><span class='fu'>::</span><span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span>
+  <span class='st'>"_posts"</span>, <span class='st'>"2022-07-07-histogram-data"</span>, <span class='st'>"categorical_hist.stan"</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>400</span><span class='op'>)</span>
+<span class='va'>breaks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>7</span>, to <span class='op'>=</span> <span class='fl'>7</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span>
+
+<span class='va'>rr_cut</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>rr</span>, <span class='va'>breaks</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>  [1] 17 15 17 15 14 14 17 13 19 13 14 17 15 14 15 15 16 13 17 11 21
+ [22] 16 14 12 12 16 17 11 12 10 15 11 16 18 16 12 11 16 16 14 16 13
+ [43] 17 13 13 16 15 18 14 15 12 19 15 12 17 16 17 17 13 12 14 13 11
+ [64] 11 17  9 15 12 16 14 14 16 13 11 15 15 14 19 16 13 16 15 15 16
+ [85] 14 11 11 18 16 13 15 12 17 14 12 16 15 14 14 13 16 15 14 16 18
+[106] 11 15 13 15 16 13 15 15 14 17 15 15 17 11 15 11 14 10 14 13 16
+[127] 16 15 13 16 16 16 17 17 18 16 15 18 14 16 14 17 15 15 14 18 16
+[148] 16 13 13 15 17 17 17 12 16 15 18 14 12 14 15 15 16 19 17 17 12
+[169] 14 13 14 16 14 13 19 15 14 12 14 15 13 13  7 17 13 14 10 16 13
+[190] 13 12 18 14 12 11 13 17 13 14 13 15 13 15 15 13 15 14 14 14 12
+[211] 12 14 14 16 13 15 10 18 14 16 16 16 18 18 15 19 12 16 16 14 12
+[232] 15 15 12 15 13 16 13 15 14 14 13 16 18 16 15 15 14 13 15 16 13
+[253] 18 18 15 12 13 14 14 16 15 16 15 17 15 13 13 14 11 15 16 15 12
+[274] 20 14 20 16 17 13 15 13 13 14 12 12 17 11 15 15 17 11 18 11 17
+[295] 14 14 13 12 13 16 11 13 19 11 13 15 14 16 15 17 15 17 17 15 14
+[316] 13 15 13 15 13 14 19 17 12 10 15 15 12 14 15 17 13 10 13 16 13
+[337] 16 15 18  9 16 14 14 15 12 10 11 15 14 16 15 12 18 12 16 15 11
+[358] 17 15 15 14 14 14 12 14 15 16 14 15 16 15 16 13 16 13 16 12 15
+[379] 11 14 17 17 15 15 13 14 16 15 15 18 14 16 15 16 18 16 14 15 16
+[400] 15</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>breaks</span>
+</code></pre>
+</div>
+<pre><code> [1] -7.0 -6.5 -6.0 -5.5 -5.0 -4.5 -4.0 -3.5 -3.0 -2.5 -2.0 -1.5 -1.0
+[14] -0.5  0.0  0.5  1.0  1.5  2.0  2.5  3.0  3.5  4.0  4.5  5.0  5.5
+[27]  6.0  6.5  7.0</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/nlevels.html'>nlevels</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] 28</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span>,
+                K <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nlevels.html'>nlevels</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span>,
+                N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span>,
+                breaks <span class='op'>=</span> <span class='va'>breaks</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
+
+
+<span class='va'>cat_samp</span> <span class='op'>&lt;-</span> <span class='va'>categorical_hist</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Running MCMC with 4 sequential chains...</code></pre>
+</div>
+<p>This is bizarre because WHY does the sum of the probabilities
+parameter end up being so HIGH??</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>categorical_hist_norm</span> <span class='op'>&lt;-</span> <span class='fu'>cmdstanr</span><span class='fu'>::</span><span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span>
+  <span class='st'>"_posts"</span>, <span class='st'>"2022-07-07-histogram-data"</span>, <span class='st'>"categorical_hist_norm.stan"</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>400</span><span class='op'>)</span>
+<span class='va'>breaks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>7</span>, to <span class='op'>=</span> <span class='fl'>7</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span>
+<span class='va'>rr_cut</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>rr</span>, <span class='va'>breaks</span><span class='op'>)</span>
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span>,
+                K <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nlevels.html'>nlevels</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span>,
+                N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span>,
+                breaks <span class='op'>=</span> <span class='va'>breaks</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
+
+
+<span class='va'>cat_samp</span> <span class='op'>&lt;-</span> <span class='va'>categorical_hist_norm</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Running MCMC with 4 sequential chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 0.3 seconds.
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 0.3 seconds.
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 0.3 seconds.
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 0.3 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 0.3 seconds.
+Total execution time: 2.0 seconds.</code></pre>
+</div>
+<h2 id="via-multinomial">via multinomial</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>multinom_norm</span> <span class='op'>&lt;-</span> <span class='fu'>cmdstanr</span><span class='fu'>::</span><span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span>
+  <span class='st'>"_posts"</span>, <span class='st'>"2022-07-07-histogram-data"</span>, <span class='st'>"multinom_norm.stan"</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>400</span><span class='op'>)</span>
+<span class='va'>breaks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>7</span>, to <span class='op'>=</span> <span class='fl'>7</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span>
+<span class='va'>rr_cut</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>rr</span>, <span class='va'>breaks</span><span class='op'>)</span>
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span><span class='op'>)</span>,
+                K <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nlevels.html'>nlevels</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span>,
+                breaks <span class='op'>=</span> <span class='va'>breaks</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
+
+
+<span class='va'>multin_samp</span> <span class='op'>&lt;-</span> <span class='va'>multinom_norm</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Running MCMC with 4 sequential chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 0.3 seconds.
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 0.3 seconds.
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 0.3 seconds.
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 0.3 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 0.3 seconds.
+Total execution time: 1.9 seconds.</code></pre>
+</div>
+<h2 id="sampling-midpoints">sampling midpoints</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>midpoint_norm</span> <span class='op'>&lt;-</span> <span class='fu'>cmdstanr</span><span class='fu'>::</span><span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span>
+  <span class='st'>"_posts"</span>, <span class='st'>"2022-07-07-histogram-data"</span>, <span class='st'>"midpoint.stan"</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>400</span>, <span class='fl'>0</span>, <span class='fl'>.5</span><span class='op'>)</span>
+<span class='va'>breaks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>7</span>, to <span class='op'>=</span> <span class='fl'>7</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span>
+<span class='va'>rr_cut</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>rr</span>, <span class='va'>breaks</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+<img src="histogram-data_files/figure-html5/unnamed-chunk-6-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/levels.html'>levels</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code> [1] &quot;(-7,-6.5]&quot; &quot;(-6.5,-6]&quot; &quot;(-6,-5.5]&quot; &quot;(-5.5,-5]&quot; &quot;(-5,-4.5]&quot;
+ [6] &quot;(-4.5,-4]&quot; &quot;(-4,-3.5]&quot; &quot;(-3.5,-3]&quot; &quot;(-3,-2.5]&quot; &quot;(-2.5,-2]&quot;
+[11] &quot;(-2,-1.5]&quot; &quot;(-1.5,-1]&quot; &quot;(-1,-0.5]&quot; &quot;(-0.5,0]&quot;  &quot;(0,0.5]&quot;  
+[16] &quot;(0.5,1]&quot;   &quot;(1,1.5]&quot;   &quot;(1.5,2]&quot;   &quot;(2,2.5]&quot;   &quot;(2.5,3]&quot;  
+[21] &quot;(3,3.5]&quot;   &quot;(3.5,4]&quot;   &quot;(4,4.5]&quot;   &quot;(4.5,5]&quot;   &quot;(5,5.5]&quot;  
+[26] &quot;(5.5,6]&quot;   &quot;(6,6.5]&quot;   &quot;(6.5,7]&quot;  </code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>midpts</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>6.75</span>, to <span class='op'>=</span> <span class='fl'>6.75</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span><span class='op'>]</span>
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>midpts</span>,
+                N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span><span class='op'>)</span>
+
+
+<span class='va'>mid_samp</span> <span class='op'>&lt;-</span> <span class='va'>midpoint_norm</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span>, refresh <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Running MCMC with 4 sequential chains...
+
+Chain 1 finished in 0.0 seconds.
+Chain 2 finished in 0.0 seconds.
+Chain 3 finished in 0.0 seconds.
+Chain 4 finished in 0.0 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 0.0 seconds.
+Total execution time: 1.0 seconds.</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>mid_samp</span>
+</code></pre>
+</div>
+<pre><code> variable  mean median   sd  mad    q5   q95 rhat ess_bulk ess_tail
+    lp__  74.88  75.19 1.01 0.70 72.91 75.82 1.00     1993     2569
+    mu    -0.05  -0.05 0.03 0.02 -0.09 -0.01 1.00     2901     2645
+    sigma  0.50   0.50 0.02 0.02  0.47  0.53 1.00     3271     2724</code></pre>
+</div>
+<p>lcdf</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>dnorm</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>4</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>v <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>v <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
+</code></pre>
+</div>
+<img src="histogram-data_files/figure-html5/unnamed-chunk-7-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>pnorm</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>4</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>v <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>v <span class='op'>=</span>  <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>7</span>, to <span class='op'>=</span> <span class='fl'>7</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="histogram-data_files/figure-html5/unnamed-chunk-7-2.png" width="624" /></p>
+</div>
+<h3 id="binning-and-histogram-comparison">binning and histogram
+comparison</h3>
+<p>let’s make some <code>bayesplot</code> predictions for our
+dataset</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mjskay.github.io/tidybayes/'>tidybayes</a></span><span class='op'>)</span>
+
+
+<span class='co'># have response rr</span>
+<span class='co'># rr</span>
+
+<span class='co'># need to make some fake ones</span>
+
+
+<span class='va'>rr_df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/spread_draws.html'>spread_draws</a></span><span class='op'>(</span><span class='va'>mid_samp</span>, <span class='va'>mu</span>, <span class='va'>sigma</span>, ndraws <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rowwise.html'>rowwise</a></span><span class='op'>(</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>fake_rr <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>400</span>, mean <span class='op'>=</span> <span class='va'>mu</span>, sd <span class='op'>=</span> <span class='va'>sigma</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
+
+<span class='va'>rr_rep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>rbind</span>, <span class='va'>rr_df</span><span class='op'>$</span><span class='va'>fake_rr</span><span class='op'>)</span>
+
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mc-stan.org/bayesplot/'>bayesplot</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://mc-stan.org/bayesplot/reference/PPC-distributions.html'>ppc_dens_overlay</a></span><span class='op'>(</span><span class='va'>rr</span>, <span class='va'>rr_rep</span><span class='op'>)</span>
+</code></pre>
+</div>
+<img src="histogram-data_files/figure-html5/unnamed-chunk-8-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># ppc_ecdf_overlay(rr, rr_rep)</span>
+</code></pre>
+</div>
+</div>
+<p>OKAY so not exactly inspiring! it looks as if our model has failed to
+get the variance right</p>
+<p>In real life we don’t have the <code>rr</code> variable, we ahve
+<code>rr_cut</code></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://mc-stan.org/bayesplot/reference/PPC-distributions.html'>ppc_dens_overlay</a></span><span class='op'>(</span><span class='va'>midpts</span>, <span class='va'>rr_rep</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="histogram-data_files/figure-html5/unnamed-chunk-9-1.png" width="624" /></p>
+</div>
+<p>let’s try binning the response</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># same as above</span>
+<span class='va'>make_midpoints</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>vec</span>,
+                           <span class='va'>breaks</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>7</span>, to <span class='op'>=</span> <span class='fl'>7</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span>,
+                           <span class='va'>midpts</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>6.75</span>, to <span class='op'>=</span> <span class='fl'>6.75</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='va'>vec_cut</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>vec</span>, <span class='va'>breaks</span><span class='op'>)</span>
+  <span class='va'>midpts</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>vec_cut</span><span class='op'>)</span><span class='op'>]</span>
+<span class='op'>}</span>
+
+<span class='va'>rr_df_cut</span> <span class='op'>&lt;-</span> <span class='va'>rr_df</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>fake_cut <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'>make_midpoints</span><span class='op'>(</span><span class='va'>fake_rr</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='va'>rr_rep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>rbind</span>, <span class='va'>rr_df_cut</span><span class='op'>$</span><span class='va'>fake_cut</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://mc-stan.org/bayesplot/reference/PPC-distributions.html'>ppc_dens_overlay</a></span><span class='op'>(</span><span class='va'>midpts</span>, <span class='va'>rr_rep</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="histogram-data_files/figure-html5/unnamed-chunk-10-1.png" width="624" /></p>
+</div>
+<h2 id="binning-a-gamma">binning a Gamma</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/GammaDist.html'>dgamma</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fl'>20</span>, <span class='fl'>20</span><span class='op'>/</span><span class='fl'>14</span><span class='op'>)</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="histogram-data_files/figure-html5/unnamed-chunk-11-1.png" width="624" /></p>
+</div>
+<p>create a vector <code>rg</code>, which imitates posterior predictions
+from a gamma model.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/GammaDist.html'>rgamma</a></span><span class='op'>(</span><span class='fl'>200</span>, <span class='fl'>20</span>, <span class='fl'>20</span><span class='op'>/</span><span class='fl'>14</span><span class='op'>)</span>
+<span class='va'>rg</span>
+</code></pre>
+</div>
+<pre><code>  [1]  9.289292 12.005772 15.541549 14.980485 11.488991 11.948976
+  [7]  9.487503  7.662266 18.546547 11.489544 14.869158 18.736340
+ [13] 15.707466 13.809892 20.783606 14.438024 13.958879 13.410187
+ [19] 22.043260 13.798665 10.202253 14.089952 17.929055 13.230669
+ [25] 11.284036 13.396635 10.799423 18.174829 14.923843  8.848020
+ [31] 10.383358 12.992467 11.395996 11.558869 13.541719 11.765742
+ [37] 12.436771 12.565700 12.066943 11.785912 19.395157  9.069380
+ [43] 14.240775 11.556181  9.796395  9.173772 12.682824 14.053368
+ [49] 13.385641 10.604164 14.384053 11.994542 16.057552 12.556576
+ [55] 14.882514 10.996791 15.321617 10.368076  9.013996 18.477871
+ [61] 14.678023 16.707531 17.489532 10.750675 15.325352 12.291395
+ [67] 15.459565 13.802409 11.659279 13.836612 22.812591  9.228545
+ [73] 13.937347 15.593809 11.479727 11.200488 13.554615 14.849177
+ [79] 17.070892  8.600793 16.594254 14.951677 15.086493 15.871966
+ [85] 13.633733 14.737208  7.846880  9.885185 18.636334 10.495094
+ [91] 12.485707 14.801332  8.006695 11.482000 12.195254 11.679477
+ [97] 14.715254 11.532013 17.193781 12.417665 12.189632 14.358531
+[103] 11.453968 17.587934 14.867578 16.956199 16.923981  9.869954
+[109]  8.577644 13.398736 11.836296 15.221882 19.210164 11.455254
+[115] 13.990316 17.934294  9.388319 17.738331 12.076512 18.437756
+[121] 10.266981 15.553978 12.962641 12.760626 14.602645 11.515444
+[127] 21.516318 12.051242 15.435814 16.865909  8.998165 11.689229
+[133] 10.839428 10.192649 12.205751  9.851865 14.375486 21.696634
+[139] 15.401531 14.375573 15.478977 14.445968  8.903392 11.117990
+[145] 13.575826 11.332529 22.840403 21.264014 16.355886 14.270868
+[151] 16.800814 11.982217 12.808654 10.477125 14.503280 12.510864
+[157] 16.950217 17.215710 14.206901 12.101521  9.089875 18.375612
+[163] 10.159642 12.931993  9.461659  9.811084 11.266697 16.730067
+[169]  9.836313 16.163374 13.903650 20.468218 16.273985 14.534679
+[175] 17.165503 14.502727 20.263376 16.316309 12.384848 14.704404
+[181] 14.742249 19.045397 15.404344 18.465592 10.330374 12.494951
+[187] 15.831452 15.656513 14.408881 19.616974 14.326729 11.372435
+[193] 16.931427 13.043372 16.255045 15.020328 12.956769 15.679852
+[199] 15.745649 16.054832</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># checking growth every even-numbered day</span>
+
+<span class='va'>evenbreaks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>30</span>, by <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>evenbreaks</span>
+</code></pre>
+</div>
+<pre><code> [1]  0  2  4  6  8 10 12 14 16 18 20 22 24 26 28 30</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rg_evencut</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>rg</span>, breaks <span class='op'>=</span> <span class='va'>evenbreaks</span><span class='op'>)</span>
+
+<span class='co'># note that for 16 cuts we have 15 levels</span>
+<span class='fu'><a href='https://rdrr.io/r/base/nlevels.html'>nlevels</a></span><span class='op'>(</span><span class='va'>rg_evencut</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] 15</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>evenbreaks</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] 16</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># midpoints via logic</span>
+<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>29</span>, by <span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code> [1]  1  3  5  7  9 11 13 15 17 19 21 23 25 27 29</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># midpoints from math</span>
+<span class='va'>mids</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>evenbreaks</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>+</span> <span class='va'>evenbreaks</span><span class='op'>[</span><span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>evenbreaks</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>2</span>
+<span class='va'>mids</span>
+</code></pre>
+</div>
+<pre><code> [1]  1  3  5  7  9 11 13 15 17 19 21 23 25 27 29</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>mids</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>rg_evencut</span><span class='op'>)</span><span class='op'>]</span>
+</code></pre>
+</div>
+<pre><code>  [1]  9 13 15 15 11 11  9  7 19 11 15 19 15 13 21 15 13 13 23 13 11
+ [22] 15 17 13 11 13 11 19 15  9 11 13 11 11 13 11 13 13 13 11 19  9
+ [43] 15 11  9  9 13 15 13 11 15 11 17 13 15 11 15 11  9 19 15 17 17
+ [64] 11 15 13 15 13 11 13 23  9 13 15 11 11 13 15 17  9 17 15 15 15
+ [85] 13 15  7  9 19 11 13 15  9 11 13 11 15 11 17 13 13 15 11 17 15
+[106] 17 17  9  9 13 11 15 19 11 13 17  9 17 13 19 11 15 13 13 15 11
+[127] 21 13 15 17  9 11 11 11 13  9 15 21 15 15 15 15  9 11 13 11 23
+[148] 21 17 15 17 11 13 11 15 13 17 17 15 13  9 19 11 13  9  9 11 17
+[169]  9 17 13 21 17 15 17 15 21 17 13 15 15 19 15 19 11 13 15 15 15
+[190] 19 15 11 17 13 17 15 13 15 15 17</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom"></div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>

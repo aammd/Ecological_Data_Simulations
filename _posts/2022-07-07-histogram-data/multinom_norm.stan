@@ -1,6 +1,5 @@
 data {
   int<lower=2> K;
-  int<lower=0> N;
   array[K] real breaks;
   array[K] int<lower=0> y;
 }
