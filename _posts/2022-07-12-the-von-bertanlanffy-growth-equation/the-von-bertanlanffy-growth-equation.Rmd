@@ -1,0 +1,799 @@
+---
+title: "The von Bertanlanffy growth equation"
+description: |
+  a famously curved line
+author:
+  - name: Andrew and Will
+    url: {}
+date: 07-12-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+A classic equation for how things grow is the Von Bertanlanfyy growth equation:
+
+$$
+L_t = L_\infty(1 - e^{-k \Delta t})
+$$
+
+Here's a simple plot:
+
+```{r vb_plot, fig.cap="Simple plot of a fake tree's growth. It grows to a DBH of 300mm"}
+m <- 300
+k = 1/20
+curve(m * (1 - exp(-k*x)), xlim = c(0, 100))
+
+```
+
+we could imagine lognormal variation in the measurement around this average.
+
+## random variation
+
+how do we expect to make observations around this line? where does variation come from? consider just one individual tree. 
+this tree has a max size and a growth rate, and that is fixed by the environment and genetics
+
+```{r}
+ln_a <- function(log_mu, log_sigma){
+ common_term <- log1p(exp(2 * (log_sigma - log_mu)))
+ log_mu - common_term
+}
+
+ln_b <- function(log_mu, log_sigma){
+  common_term <- log1p(exp(2 * (log_sigma - log_mu)))
+  sqrt(common_term)
+}
+
+hist(rlnorm(100,
+       ln_a(log(40), log(5)),
+       ln_b(log(40), log(5))))
+
+
+library(tidyverse)
+
+true_Lm <- 200
+true_k <- 1/20
+tibble(t = 1:100,
+       L = true_Lm*(1 - exp(-true_k*t)),
+       log_L = log(L),
+       y = rlnorm(length(t), 
+                  ln_a(log_L, log(10)),
+                  ln_b(log_L, log(10)))) |> 
+  ggplot(aes(x = t, y = y)) + 
+  geom_point() + 
+  geom_point(aes(y = L), col = "red")  + 
+  geom_segment(aes(xend = t, yend = L))
+```
+
+but then what happens as the growth rate varies between years? does it look the same or different?
+
+```{r}
+n <- 100
+# ks <- rexp(n = n, rate = 20)
+ks <- rlnorm(n, ln_a(log(1/20), log(1/60)), ln_b(log(1/20), log(1/60)))
+true_Lm <- 200
+true_k <- 1/20
+tibble(t = 1:n,
+       L = true_Lm*(1 - exp(-ks*t)),
+       log_L = log(L),
+       y = rlnorm(length(t), 
+                  ln_a(log_L, log(10)),
+                  ln_b(log_L, log(10)))) |> 
+  ggplot(aes(x = t, y = y)) + 
+  geom_point() + 
+  geom_point(aes(y = L), col = "red")  + 
+  geom_segment(aes(xend = t, yend = L)) + 
+  stat_function(fun = function(x) true_Lm*(1 - exp(-true_k*x)))
+```
+
+These two things look like they could be identifiable.
+The variation in k causes variation, but mostly for intermediate values
+while because of the variance-mean relationship, the highest observation variance is in the highest values
+
+so I feel like some teeter-totter exists between the two quantities
+certainly the use of hierarchical effects with different species will help. pulling some of the species towards the mean.
+
+```{r}
+n <- 100
+# ks <- rexp(n = n, rate = 20)
+ks <- rlnorm(70, ln_a(log(1/20), log(1/60)), ln_b(log(1/20), log(1/60)))
+expand_grid(t = 1:100,
+            k = ks) |> 
+  mutate(
+    L = true_Lm*(1 - exp(-k*t)),
+    log_L = log(L)) |> 
+  ggplot(aes(x = t, y = L, group = k)) + 
+  geom_line()
+```
+
+
+
+## modelling a growth increment
+
+
+## k as a function
+
+as a function between its lower and upper bounds
+
+```{r}
+logistic_LU <- function(L, U, x) {
+  L + (U-L)*plogis(x)
+}
+
+curve(logistic_LU(2, 7, x), xlim = c(-3, 4))
+```
+
+now add this to the model 
+
+```{r}
+n <- 100
+expand_grid(t = 1:100,
+            k = logistic_LU(.01, .1, t - 15)) |> 
+  mutate(
+    L = true_Lm*(1 - exp(-k*t)),
+    log_L = log(L)) |> 
+  ggplot(aes(x = t, y = L, group = k)) + 
+  geom_line()
+```
+
+or instead
+
+```{r}
+n <- 100
+tibble(t = seq(0, 100, by = .5),
+            k = logistic_LU(.01, .1, .1*(t - 50))) |> 
+  mutate(
+    L = true_Lm*(1 - exp(-k*t))) |> 
+  ggplot(aes(x = t, y = L)) + 
+  geom_line()
+```
+
+So we have a rate that accelerates before a certain point in time, then declines again. 
+
+Its flexible enough to make a large family of curves. 
+
+Also need to think about how to model an increment, not an absolute difference like this 
+
+so if things grow according to this curve, then the relative increment (L2 - L1, divided by L1) works out to-- the proportion you still have to grow? is that true?
+
+```{r}
+n <- 100
+
+
+one_curve <- tibble(t = 1:100,
+       k = 1/22) |> 
+  mutate(
+    L = true_Lm*(1 - exp(-k*t)),
+    log_L = log(L))
+
+one_curve |> 
+  ggplot(aes(x = t, y = L, group = k)) + 
+  geom_line()
+
+one_curve |> 
+  mutate(inc = L - lag(L),
+         rl = inc/lag(L)) |> 
+  ggplot(aes(x = t, y = rl)) + geom_point()
+```
+
+I also think it is possible to, assuming that this relationship holds also for very small trees, to estimate the probability that they grow out of the small category and into the large one (ie to also use ingrow probability to measure growth rates)
+
+```{r}
+one_curve |> ggplot(aes(x = t, y = L)) + geom_line()
+
+one_curve |> 
+  mutate(inc = L - lag(L),
+         rl = inc/lag(L)) |> 
+  ggplot(aes(x = t, y = inc)) + geom_point() + 
+  coord_trans(y = "log")
+```
+
+this is ABSOLUTE time, which normally we will not have! 
+
+```{r}
+one_curve |> 
+  mutate(inc = L - lag(L),
+         rl = inc/lag(L)) |> 
+  ggplot(aes(x = 1, y = inc)) + geom_point() + 
+  coord_trans(y = "log")
+```
+
+not terribly useful! it coverse the whole range
+
+could use that to infer a tree's age from its growth rate, that is kind of neat.
+
+
+```{r}
+one_curve |> 
+  mutate(inc = L - lag(L),) |> 
+  ggplot(aes(x = lag(L), y = inc)) + geom_point()
+```
+
+Why does this work?
+
+$$
+\begin{align}
+L(t) =& L_\infty(1 - e^{-kt}) \\
+L(t_2) - L(t_1) =& L_\infty(1 - e^{-kt_2}) - L_\infty(1 - e^{-kt_1}) \\
+L(t_1 + \Delta t) - L(t_1) =& L_\infty - L_\infty e^{-kt_1}e^{-k\Delta t} - L(t_1) \\
+ =& L_\infty - (L_\infty - L(t_1))e^{-k\Delta t} - L(t_1) \\
+  =& (L_\infty - L(t_1)) \times (1 - e^{-k\Delta t})
+\end{align}
+$$
+
+This means we get a straight line when we plot the growth increment as a function of size at the start of the interval.  
+
+$$
+\begin{align}
+\text{increment} =& (L_\infty - L_t)(1 - e^{-k\Delta t}) \\
+=& L_\infty (1 - e^{-k\Delta t}) - (1 - e^{-k\Delta t}) \times L_t
+\end{align}
+$$
+
+Which is a straight line as long as $k$ and $\Delta t$ are fixed.
+
+
+
+
+```{r}
+curve(log(true_Lm - 60) + log(1 - exp(-true_k * x)), xlim = c(0, 200))
+```
+
+
+
+Work with log increment though, it seems like that would be easier to think about and model.
+
+<!-- ### Relationship to the canopy -->
+
+<!-- If the growth rate depends on height relative to canopy, and height is a power law of the L, then surely all of this can be combined into one equation, skipping intermediate steps. -->
+
+
+<!-- ```{r} -->
+<!-- curve(log(1 - exp(-.3*x)), xlim = c(0,100)) -->
+<!-- ``` -->
+
+### recovering parameters from data
+
+redo this simulation:
+
+```{r}
+ln_a <- function(log_mu, log_sigma){
+ common_term <- log1p(exp(2 * (log_sigma - log_mu)))
+ log_mu - common_term
+}
+
+ln_b <- function(log_mu, log_sigma){
+  common_term <- log1p(exp(2 * (log_sigma - log_mu)))
+  sqrt(common_term)
+}
+
+hist(rlnorm(100,
+       ln_a(log(40), log(5)),
+       ln_b(log(40), log(5))))
+
+
+library(tidyverse)
+
+true_Lm <- 200
+true_k <- 1/20
+sim_one_vb <- tibble(t = 1:100,
+       L = true_Lm*(1 - exp(-true_k*t)),
+       log_L = log(L),
+       y = rlnorm(length(t), 
+                  ln_a(log_L, log(10)),
+                  ln_b(log_L, log(10)))) 
+
+sim_one_vb |> 
+  ggplot(aes(x = t, y = y)) + 
+  geom_point() + 
+  geom_point(aes(y = L), col = "red")  + 
+  geom_segment(aes(xend = t, yend = L))
+```
+
+
+
+```{r}
+library(cmdstanr)
+
+vb_single <- cmdstan_model(stan_file = here::here("_posts/2022-07-12-the-von-bertanlanffy-growth-equation/vb_single.stan"))
+
+datlist <- with(sim_one_vb, list(n = nrow(sim_one_vb),
+                                 L = y, 
+                                 t = t))
+
+vb_samp <- vb_single$sample(data = datlist, parallel_chains =  4)
+
+
+```
+
+two line
+```{r}
+vg_expected <- vb_samp$draws() |> 
+  tidybayes::spread_rvars(Lmax, k, log_sigma) |> 
+  bind_cols(t = seq(1, 110, by = 5)) |> 
+  mutate(L = Lmax*(1 - exp(-k*t)),
+         Lup = posterior::rfun(qlnorm)(
+           .015, 
+           ln_a(log(L), log_sigma),
+           ln_b(log(L), log_sigma)),
+         Ldown = posterior::rfun(qlnorm)(
+           .985, 
+           ln_a(log(L), log_sigma),
+           ln_b(log(L), log_sigma)))
+
+library(tidybayes)
+
+
+vg_data <- vg_expected |> 
+  mutate(med_hi = median(Lup),
+         med_lo = median(Ldown))
+
+sim_one_vb |>
+  ggplot(aes(x = t, y = y)) + 
+  geom_ribbon(aes( x = t,  ymin = med_lo, ymax = med_hi),
+              data = vg_data, inherit.aes = FALSE, fill = "lightgreen") +
+  stat_dist_lineribbon(aes(x = t, dist = L), data = vg_data, inherit.aes = FALSE) + 
+  geom_point() + 
+  NULL
+  
+
+
+
+```
+
+
+## fit the growth after the interval
+
+Two functions here, with differences only in how they are expressed in Stan
+
+```{r}
+vb_single_dt <- cmdstan_model(stan_file = here::here("_posts/2022-07-12-the-von-bertanlanffy-growth-equation/vb_single_deltat.stan"))
+
+datlist <- with(sim_one_vb, list(n = nrow(sim_one_vb) - 1,
+                                 L1 = y[-nrow(sim_one_vb)], 
+                                 L2 = y[-1],
+                                 dt = 1.0))
+
+vb_single_dt <- vb_single_dt$sample(data = datlist, parallel_chains =  4)
+
+vb_single_dt
+```
+
+```{r}
+vb_single_dt_log1m <- cmdstan_model(stan_file = here::here(
+  "_posts/2022-07-12-the-von-bertanlanffy-growth-equation/vb_single_deltat_log1m.stan"))
+
+datlist <- with(sim_one_vb, list(n = nrow(sim_one_vb) - 1,
+                                 L1 = y[-nrow(sim_one_vb)], 
+                                 L2 = y[-1],
+                                 dt = 1.0))
+datlist$L1[60]
+datlist$L2[60]
+
+head(datlist$L1)
+
+head(datlist$L2)
+
+datlist$n
+
+with(datlist, plot(L2 ~ L1))
+
+vb_single_dt_log1m_samp <- vb_single_dt_log1m$sample(data = datlist,
+                                                     parallel_chains =  4)
+
+vb_single_dt_log1m_samp
+```
+
+
+```{r}
+# log_Lmax + log1m_exp(log(exp(log_Lmax) - L1) - log_Lmax - k * dt)
+log_Lmax <- 5
+log1m_exp <- function(x) log(1 - exp(x))
+k <- .5
+
+curve(log_Lmax + log1m_exp(log(exp(log_Lmax) - x) - log_Lmax - k), 
+      col = "red", lwd = 2,
+      ylim = c(0, exp(log_Lmax)),
+      xlim = c(0, exp(log_Lmax))
+      )
+abline(a = 0, b = 1)
+abline(h = exp(log_Lmax), v = exp(log_Lmax))
+```
+
+okay but does this work:
+
+```{r}
+curve(exp(log_Lmax) - (exp(log_Lmax) - x)*exp(-k), xlim = c(0, exp(log_Lmax)),
+      col = "red", lwd= 2)
+abline(a = 0, b = 1)
+abline(h = exp(log_Lmax), v = exp(log_Lmax))
+```
+ works! 
+ 
+```{r}
+curve(exp(log_Lmax) *(1 - (1 - x/exp(log_Lmax))*exp(-k)), xlim = c(0, exp(log_Lmax)),
+      col = "red", lwd= 2)
+abline(a = 0, b = 1)
+abline(h = exp(log_Lmax), v = exp(log_Lmax))
+```
+
+That works too! 
+
+```{r}
+curve(exp(log_Lmax) *(1 - exp(log(1 - x/exp(log_Lmax)))*exp(-k)), xlim = c(0, exp(log_Lmax)),
+      col = "red", lwd= 2)
+abline(a = 0, b = 1)
+abline(h = exp(log_Lmax), v = exp(log_Lmax))
+```
+
+Also works! 
+
+
+```{r}
+curve(exp(log_Lmax) * (1 - exp(log(exp(log_Lmax) - x) - log_Lmax - k)), xlim = c(0, exp(log_Lmax)),
+      col = "red", lwd= 2)
+abline(a = 0, b = 1)
+abline(h = exp(log_Lmax), v = exp(log_Lmax))
+```
+
+
+```{r}
+curve(exp(log_Lmax + log1m_exp(log(exp(log_Lmax) - x) - log_Lmax - k)), xlim = c(0, exp(log_Lmax)),
+      col = "red", lwd= 2)
+abline(a = 0, b = 1)
+abline(h = exp(log_Lmax), v = exp(log_Lmax))
+```
+
+
+```{r}
+
+curve(exp(log_Lmax + log1m_exp(log(exp(log_Lmax) - x) - log_Lmax - k)), 
+      col = "red", lwd = 2,
+      ylim = c(0, exp(log_Lmax)),
+      xlim = c(0, exp(log_Lmax))
+      )
+abline(a = 0, b = 1)
+abline(h = exp(log_Lmax), v = exp(log_Lmax))
+```
+
+
+okay I don't get it!
+is this even the correct plot??
+
+```{r}
+curve(200 - (200 - x)*exp(-0.05), xlim = c(0, 200), ylim = c(0,200))
+```
+
+Hmmm. Maybe the trouble is that the initial size is wrong? this suggests that if you start at 0 then you will grow a lot in the next size interval. 
+
+```{r}
+
+with(datlist, plot(L2 ~ L1, ylim = c(0, 240), xlim = c(0, 240)))
+abline(a = 0, b = 1)
+abline(a = true_Lm*(1 - exp(-true_k)), b = exp(-true_k), lwd = 2, col = "red")
+abline(h = true_Lm, v = true_Lm)
+```
+
+
+```{r}
+
+with(datlist, plot(log(L2) ~ log(L1)))
+abline(a = 0, b = 1)
+abline(h = true_Lm, v = true_Lm)
+```
+
+
+This looks a lot like a simple straight line:
+
+$$
+\begin{align}
+\beta_0 =& L_\infty(1 - e^{-k \Delta t}) \\
+\beta_1 =& e^{-k \Delta t}
+\end{align}
+$$
+
+
+$$
+\begin{align}
+L_\infty =& \frac{\beta_0}{1 - \beta_1} \\
+k =& \ln(\beta_1^{-1/\Delta t})
+\end{align}
+$$
+
+could that be an easy way to do it??
+
+AAAHHH THAT EXPLAINS IT
+
+when you model size at time L2, you can do it, but sometimes you can end up IMPLYING that the tree has shrunk (in this example with lognormal errors around measurements)
+
+one solution would be to change the data generation process -- add lognormal errors but, for example, around a _factor_ that increases the size of the tree
+
+Another solution would be to change the way we are modelling the change - realize that we are modelling the average, around which is measurement error.
+
+I am wondering if it is advisable to re-do the equations but work with the pdf of the lognormal directly, to find out what happens when you model the increment.
+
+one might also assume that the trees are measured _without error_ when they are measured, and that any departures from the expectation is variation in parameters. 
+
+Alternatively, consider that the errors are NORMAL around that line and just see -- howvever i'm not 100sure what that would mean -- i guess that measurement error can be hi or low
+
+```{r}
+curve(binomial(link = "cloglog")$linkinv(x), xlim = c(-3,4))
+
+
+curve(binomial(link = "cloglog")$linkinv(x-2), xlim = c(2,4))
+
+
+
+curve(binomial(link = "cloglog")$linkinv(-3 + log(x-20)),
+      xlim = c(2,110), ylim = c(0,1))
+abline(h = 1)
+
+curve(1 * (1 - exp(-exp(-3)*(x - 20))), lty = 2, lwd = 2, col = "red", add = TRUE)
+```
+
+I realized that the VB growth equation is the same as the cloglog link but only the part of it to the right of the inflection point. 
+
+I feel like it would be convenient to work with k and t0 on the log scale, and so I wanted to write it with a log link, which is what turned into the cloglog equation. 
+
+I think this should help for Stan - more compact and clear code, more numerically stable. 
+
+however it is a bit too bad that there is no "log_inv_cloglog" function.
+
+which would be easier?
+
+```
+log(inv_cloglog(klog + log(x - t0)))
+```
+
+or 
+
+```
+log1m_exp(-exp(klog + log(x - t0)))
+```
+
+
+There is a second way to write the same equation:
+
+```{r}
+k <- 1/20
+Lmax <- 30
+L0 <- 25
+curve(L0*exp(-k*x) + Lmax*(1 - exp(-k*x)), xlim = c(-25, 100), ylim = c(0, Lmax))
+abline(h = 0, v = -L0, lty = 2)
+abline(v = 0, h = L0, lty = 3)
+```
+
+If initial size is $L_0$ then the time at which size was 0 is:
+
+$$
+t = \frac{log(1 - L_0/L_\infty)}{k}
+$$
+
+```{r}
+k <- 1/20
+Lmax <- 30
+L0 <- 25
+t0 <- log(1 - L0/Lmax)/k
+curve(L0*exp(-k*x) + Lmax*(1 - exp(-k*x)), xlim = c(t0-5, 100), ylim = c(0, Lmax))
+abline(h = 0, v = t0, lty = 2)
+abline(v = 0, h = L0, lty = 3)
+```
+
+This sent me down an (ultimately fruitless) rabbit hole.
+I felt that somehow I could fit L0 into the equation as 12.5, the size when trees enter the life stage we are studying here.
+Now however I see that there is no way to "save" parameters at all: the line has to have 3 in total. You can think of it as a slope, an intercept, and an asymptote. 
+
+Let simulate some growing trees! 
+
+* a random number of trees start each year
+* they all grow at the precise same rate and to the same max size
+* each has measurement error 
+
+```{r}
+# a poisson number of trees start each year from the beginning of time:
+
+new_each_year <- rpois(500, 5)
+
+# those are the t0s for that number of trees
+
+t0 <- rep(0:499, times = new_each_year)
+
+# all have the same k and Lmax
+Lmax <- 155
+k <-  1/80
+
+# time -- for each time, run the individual between the start time and 500
+library(tidyverse)
+
+growth <- tibble(t0) |> 
+  rowwise() |> 
+  mutate(grow = list(Lmax * (1 - exp(-k*(t0:499 - t0)))),
+         t = list(t0:499))
+
+full <- growth |> 
+  ungroup() |> 
+  mutate(id = paste0("t", seq_along(t0))) |> 
+  unnest(c(grow, t))
+
+# plot SOME trees
+full |>
+  nest_by(id) |> 
+  ungroup() |> 
+  sample_n(20) |> 
+  unnest(cols="data") |> 
+  ggplot(aes(x = t, y = grow, group = id)) + geom_line()
+
+```
+
+OK so now we have something like a series of growth measurements. Lets choose a range to work on, remove too-small individuals, and add noise:
+
+```{r}
+trimmed <- full |> 
+  filter(t > 100 & t < 200) |> 
+  # every 5 years
+  filter(t %% 5 == 0) |> 
+  # not small plants
+  filter(grow > 13)
+
+
+```
+
+No matter how big you are, or when you were born, or what your ID is -- people might still measure you wrong.
+
+```{r}
+ln_a <- function(log_mu, log_sigma){
+ common_term <- log1p(exp(2 * (log_sigma - log_mu)))
+ log_mu - common_term
+}
+
+ln_b <- function(log_mu, log_sigma){
+  common_term <- log1p(exp(2 * (log_sigma - log_mu)))
+  sqrt(common_term)
+}
+
+obs <- trimmed |> 
+  mutate(dbh = rlnorm(n = length(grow), 
+                      meanlog = ln_a(log_mu = log(grow), log_sigma = log(2)),
+                      sdlog = ln_b(log_mu = log(grow), log_sigma = log(2))))
+  
+obs |> 
+  ggplot(aes(x = t, y = dbh)) + 
+  geom_hex()
+
+obs |> 
+  filter(t == 120) |> 
+  ggplot(aes(x = dbh)) + geom_histogram()
+```
+
+Now write and fit the model in Stan
+
+```{r}
+library(cmdstanr)
+
+vb_single_cloglog <- cmdstan_model(stan_file = here::here("_posts/2022-07-12-the-von-bertanlanffy-growth-equation/vb_single_cloglog.stan"))
+
+datlist <- with(obs |> 
+                  filter(id == "t1"),
+                list(n = length(dbh),
+                          L = dbh, 
+                          t = t))
+
+vb_cloglog_samp <- vb_single_cloglog$sample(data = datlist, parallel_chains =  4)
+
+```
+
+
+in order to model the GROW TIME you need to know the age
+
+```{r}
+Lm <- 150
+k <- 1/25
+to <- 15
+curve(Lm*(1 - exp(-k *(x - to))), xlim = c(0, 200))
+abline(v = 15, h = 0)
+```
+
+setting `t0` to 15 means the curve passes through 0 at t = 15
+
+What's the least confusing  way to include t0, the starting time for each tree (ie the AGE of the tree?!)
+
+#### Interlude: creative use of log_mix   
+
+I think there is a convenient way to write this function and I ust wante to check it out: 
+
+```{r}
+vb_single_logmix <- cmdstan_model(stan_file = here::here("_posts/2022-07-12-the-von-bertanlanffy-growth-equation/vb_single_logmix.stan"))
+
+datlist <- with(sim_one_vb, list(n = nrow(sim_one_vb),
+                                 L = y, 
+                                 t = t))
+
+
+vb_single_logmix_samp <- vb_single_logmix$sample(data = datlist, parallel_chains =  4)
+
+# plot it
+
+draws_rvars <- vb_single_logmix_samp$draws() |> 
+  posterior::as_draws_rvars()
+
+sim_one_vb |> 
+  mutate(Lexpected = with(draws_rvars, exp(log_Lmax)*exp(-exp(log_k)*t) + exp(log_L0)*(1 - exp(-exp(log_k)*t)))) |> 
+  ggplot(aes(x = t, dist = Lexpected)) + 
+  stat_dist_lineribbon() + 
+  geom_point(aes(x = t, y = y), inherit.aes = FALSE)
+
+```
+
+
+
+
+nah I can't make the types work in Stan. I guess this is not the way to vectorize using log_mix. but if it DOES vectorize then it must do so somehow? because it is noted in the manual that this is a thing to NOT do, but I think it is just missing the point of the model. anyway idk why this is so hard -- I guess because it is not vectorized over the FIRST argument, but it is over the second. 
+
+This could be done with a matrix math approach -- perhaps inside a function. such as
+
+column vector p, with each pi being calculated for each row. 
+another column vector 1-p which gives you the inverse (this would actually be the cloglog)
+
+then a matrix, with the diagonal Lo, Lmax
+
+but how does that fix addition -- thats multiplication. 
+
+
+log_mix is for working with mixing together lots of probabilities. the vectorized version is for when you have J number probabilites for J number things to mix -- not for when you have a vector of probabilities. 
+
+you still have to use a loop over values in this case. 
+
+There should be a separate post on "weird ways to rewrite the equations" 
+
+#### accounting for weird start times
+
+This is still a concern! What is the least confusing way to think about WHEN a tree got started growing? 
+
+There are two ways of shifting the VB curve to the left and right:
+
+$$
+L_t = L_\infty(1-e^{-k(t - t_0)})
+$$
+
+or 
+
+$$
+L_t = L_0e^{-kt} + L_\infty(1 - e^{-kt})
+$$
+
+Let's play with them:
+
+
+```{r}
+Lm <- 150
+k <- 1/25
+to <- 15
+curve(Lm*(1 - exp(-k *(x - to))), xlim = c(-100, 200), ylim = c(0, Lm))
+abline(v = 15, h = 0)
+
+
+curve(Lm*(1 - exp(-k *(x - (-50)))), add = TRUE)
+```
+
+One way to work with that: subtract $t_1$, the year of first observation, from every tree. 
+Then model the difference, $d$, between when the tree started growing and when you started observing it:
+
+```{r}
+
+Lm <- 150
+k <- 1/25
+t0 <- -10
+t1 <- 5
+d <- t1 - t0
+curve(Lm*(1 - exp(-k * (x - t0))), xlim = c(-100, 200), ylim = c(0, Lm))
+abline(v = t0, col = "red")
+
+points(x = t1, y = -Lm*(1 - exp(-k * (0 - d))))
+
+
+
