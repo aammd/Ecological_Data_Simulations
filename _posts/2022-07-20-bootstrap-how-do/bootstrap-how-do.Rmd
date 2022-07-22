@@ -1,0 +1,194 @@
+---
+title: "Bootstrap how do"
+description: |
+  A short description of the post.
+author:
+  - name: Andrew and Salix
+    url: {}
+date: 2022-07-20
+output:
+  distill::distill_article:
+    self_contained: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+sampling distribution of the median
+
+```{r}
+ll <- rpois(15, 4) # lnorm(7, log(6), 1)
+
+hist(ll)
+```
+
+whats the uncertainty around the median
+
+```{r}
+
+median(ll)
+
+plot(density(replicate(5000, median(sample(ll, 7, replace = TRUE)))))
+
+abline(v = median(ll), col = "pink")
+
+```
+
+
+What about a variance.
+
+```{r}
+boot_my_fun <- function(fn, ll){
+  
+  plot(density(replicate(5000, fn(sample(ll, 7, replace = TRUE)))))
+  
+  abline(v = fn(ll), col = "pink")
+}
+
+
+boot_my_fun(var, ll)
+
+```
+
+
+how about around an R2
+
+
+```{r}
+means <- c(7,11)
+
+df <- data.frame(fac = gl(2, 4))
+
+df$y <- rnorm(nrow(df), mean = means[df$fac], sd = 2)
+
+with(df, plot(fac, y))
+
+
+
+```
+
+get that R2
+
+```{r}
+lil_sum <- lm(y ~ fac, data = df)
+summary(lil_sum) |> str()
+
+summary(lil_sum)$r.squared
+
+r2_fr_data <- function(df){
+  
+  lil_sum <- lm(y ~ fac, data = df)
+  summary(lil_sum)$r.squared
+
+}
+
+df[c(sample(1:4, replace = TRUE), 
+     sample(5:8, replace = TRUE)),]
+
+
+```
+
+replcate it
+
+```{r}
+
+many_repped_models <- replicate(500, {
+  df[c(sample(1:4, replace = TRUE), 
+       sample(5:8, replace = TRUE)),] |> 
+    r2_fr_data()
+})  
+
+hist(many_repped_models)
+
+abline(v = summary(lil_sum)$r.squared, lty = 2, col = "darkblue")
+
+mean(many_repped_models)
+median(many_repped_models)
+summary(lil_sum)$r.squared
+```
+
+```{r}
+library(vegan)
+# ?adonis
+data(dune)
+data(dune.env)
+## default test by terms
+adon_demo <- adonis2(dune ~ Management, data = dune.env)
+
+sample_r2 <- adon_demo$R2[1]
+```
+
+
+bootstrap the factor levels
+
+```{r}
+ids <- with(dune.env, split(seq_along(Management), Management)) |> 
+  sapply(sample, replace = TRUE) |> 
+  c(recursive = TRUE, use.names = FALSE)
+ids
+
+
+```
+
+
+
+```{r}
+adon_demo <- adonis2(dune[ids,] ~ Management, data = dune.env[ids,])
+adon_demo$R2[1]
+```
+
+
+put these together into a loop
+
+```{r}
+boot_adonis <- replicate(500, {
+  ids <- with(dune.env, split(seq_along(Management), Management)) |> 
+    sapply(sample, replace = TRUE) |> 
+    c(recursive = TRUE, use.names = FALSE)
+  
+  adon_demo <- adonis2(dune[ids,] ~ Management, data = dune.env[ids,])
+  adon_demo$R2[1]
+})
+
+hist(boot_adonis)
+
+abline(v = sample_r2)
+
+
+```
+
+hmmm! they are mostly higher! how many are not
+
+```{r}
+sum(boot_adonis < sample_r2)
+```
+
+
+how about a "rarefied" sample, where only 1 row per group is found
+
+```{r}
+boot_adonis <- replicate(500, {
+  ids <- with(dune.env, split(seq_along(Management), Management)) |> 
+    sapply(sample, size  = 1, replace = TRUE) |> 
+    c(recursive = TRUE, use.names = FALSE)
+  
+  adon_demo <- adonis2(dune[ids,] ~ Management, data = dune.env[ids,])
+  adon_demo$R2[1]
+})
+
+hist(boot_adonis)
+
+abline(v = sample_r2)
+
+
+```
+
+
+
+
+
+
