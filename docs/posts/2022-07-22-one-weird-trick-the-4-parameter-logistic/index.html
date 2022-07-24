@@ -56,7 +56,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
 code span.cf { color: #007ba5; } /* ControlFlow */
@@ -77,7 +77,7 @@ code span.kw { color: #007ba5; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
 code span.ot { color: #007ba5; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
@@ -85,39 +85,40 @@ code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
-  <!--radix_placeholder_meta_tags-->
-<title>Simulation of Ecological Data: Welcome to Simulation of Ecological Data</title>
 
-<meta property="description" itemprop="description" content="Welcome to our new blog, Simulation of Ecological Data. We hope you enjoy &#10;reading what we have to say!"/>
+  <!--radix_placeholder_meta_tags-->
+<title>Simulation of Ecological Data: One Weird Trick: The 4 parameter logistic</title>
+
+<meta property="description" itemprop="description" content="A short description of the post."/>
 
 
 <!--  https://schema.org/Article -->
-<meta property="article:published" itemprop="datePublished" content="2022-05-26"/>
-<meta property="article:created" itemprop="dateCreated" content="2022-05-26"/>
-<meta name="article:author" content="Nora Jones"/>
+<meta property="article:published" itemprop="datePublished" content="2022-07-22"/>
+<meta property="article:created" itemprop="dateCreated" content="2022-07-22"/>
+<meta name="article:author" content="Andrew"/>
 
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-<meta property="og:title" content="Simulation of Ecological Data: Welcome to Simulation of Ecological Data"/>
+<meta property="og:title" content="Simulation of Ecological Data: One Weird Trick: The 4 parameter logistic"/>
 <meta property="og:type" content="article"/>
-<meta property="og:description" content="Welcome to our new blog, Simulation of Ecological Data. We hope you enjoy &#10;reading what we have to say!"/>
+<meta property="og:description" content="A short description of the post."/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="Simulation of Ecological Data"/>
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary"/>
-<meta property="twitter:title" content="Simulation of Ecological Data: Welcome to Simulation of Ecological Data"/>
-<meta property="twitter:description" content="Welcome to our new blog, Simulation of Ecological Data. We hope you enjoy &#10;reading what we have to say!"/>
+<meta property="twitter:title" content="Simulation of Ecological Data: One Weird Trick: The 4 parameter logistic"/>
+<meta property="twitter:description" content="A short description of the post."/>
 
 <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Welcome to Simulation of Ecological Data"]},{"type":"character","attributes":{},"value":["Welcome to our new blog, Simulation of Ecological Data. We hope you enjoy \nreading what we have to say!"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation","affiliation_url"]}},"value":[{"type":"character","attributes":{},"value":["Nora Jones"]},{"type":"character","attributes":{},"value":["https://example.com/norajones"]},{"type":"character","attributes":{},"value":["Spacely Sprockets"]},{"type":"character","attributes":{},"value":["https://example.com/spacelysprokets"]}]}]},{"type":"character","attributes":{},"value":["05-26-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","editor_options"]}},"value":[{"type":"character","attributes":{},"value":["One Weird Trick: The 4 parameter logistic"]},{"type":"character","attributes":{},"value":["A short description of the post."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Andrew"]}]}]},{"type":"character","attributes":{},"value":["2022-07-22"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["chunk_output_type"]}},"value":[{"type":"character","attributes":{},"value":["console"]}]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"NULL"}
+  {"type":"character","attributes":{},"value":["one-weird-trick-the-4-parameter-logistic_files/anchor-4.2.2/anchor.min.js","one-weird-trick-the-4-parameter-logistic_files/bowser-1.9.3/bowser.min.js","one-weird-trick-the-4-parameter-logistic_files/distill-2.2.21/template.v2.js","one-weird-trick-the-4-parameter-logistic_files/figure-html5/curve-4p-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-1-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-2-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-3-1.png","one-weird-trick-the-4-parameter-logistic_files/header-attrs-2.13/header-attrs.js","one-weird-trick-the-4-parameter-logistic_files/jquery-3.6.0/jquery-3.6.0.js","one-weird-trick-the-4-parameter-logistic_files/jquery-3.6.0/jquery-3.6.0.min.js","one-weird-trick-the-4-parameter-logistic_files/jquery-3.6.0/jquery-3.6.0.min.map","one-weird-trick-the-4-parameter-logistic_files/popper-2.6.0/popper.min.js","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy-bundle.umd.min.js","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy-light-border.css","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy.css","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy.umd.min.js","one-weird-trick-the-4-parameter-logistic_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2044,7 +2045,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/header-attrs-2.11.3/header-attrs.js"></script>
+  <script src="../../site_libs/header-attrs-2.13/header-attrs.js"></script>
   <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
@@ -2065,7 +2066,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Welcome to Simulation of Ecological Data","description":"Welcome to our new blog, Simulation of Ecological Data. We hope you enjoy \nreading what we have to say!","authors":[{"author":"Nora Jones","authorURL":"https://example.com/norajones","affiliation":"Spacely Sprockets","affiliationURL":"https://example.com/spacelysprokets","orcidID":""}],"publishedDate":"2022-05-26T00:00:00.000-04:00","citationText":"Jones, 2022"}
+{"title":"One Weird Trick: The 4 parameter logistic","description":"A short description of the post.","authors":[{"author":"Andrew","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-22T00:00:00.000-04:00","citationText":"Andrew, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2088,20 +2089,243 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Welcome to Simulation of Ecological Data</h1>
+<h1>One Weird Trick: The 4 parameter logistic</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Welcome to our new blog, Simulation of Ecological Data. We hope you enjoy reading what we have to say!</p></p>
+<p><p>A short description of the post.</p></p>
 </div>
 
 <div class="d-byline">
-  Nora Jones <a href="https://example.com/norajones" class="uri">https://example.com/norajones</a> (Spacely Sprockets)<a href="https://example.com/spacelysprokets" class="uri">https://example.com/spacelysprokets</a>
   
-<br/>05-26-2022
+  Andrew
+  
+<br/>2022-07-22
 </div>
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>I want to fit a four parameter equation like this:</p>
+<p><span class="math display">\[
+Y = \left( L + \frac{U - L}{1 + e^{-\alpha(x - \beta)}} \right)
+\]</span> Let’s plot this curve to see what it means</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>L</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>
+<span class='va'>U</span> <span class='op'>&lt;-</span> <span class='fl'>7</span>
+<span class='va'>alpha</span> <span class='op'>&lt;-</span> <span class='fl'>1.2</span>
+<span class='va'>beta</span> <span class='op'>&lt;-</span> <span class='op'>-</span><span class='fl'>1</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='va'>L</span> <span class='op'>+</span> <span class='op'>(</span><span class='va'>U</span><span class='op'>-</span><span class='va'>L</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>alpha</span><span class='op'>*</span><span class='op'>(</span><span class='va'>x</span> <span class='op'>-</span> <span class='va'>beta</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>4</span>, <span class='fl'>4</span><span class='op'>)</span>, ylim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>L</span><span class='op'>-</span><span class='fl'>2</span>, <span class='va'>U</span><span class='op'>+</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>h <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>L</span>, <span class='va'>U</span><span class='op'>)</span>, lty <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>v <span class='op'>=</span> <span class='va'>beta</span>, lty <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>*</span><span class='op'>(</span><span class='va'>x</span> <span class='op'>-</span> <span class='va'>beta</span><span class='op'>)</span> <span class='op'>+</span> <span class='op'>(</span><span class='va'>U</span><span class='op'>-</span><span class='va'>L</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>2</span> <span class='op'>+</span> <span class='va'>L</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span>, lty <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
+</code></pre>
+</div>
+<div class="figure"><span style="display:block;" id="fig:curve-4p"></span>
+<img src="one-weird-trick-the-4-parameter-logistic_files/figure-html5/curve-4p-1.png" alt="Four parameter logistic equation. dotted lines show the " width="624" />
+<p class="caption">
+Figure 1: Four parameter logistic equation. dotted lines show the
+</p>
+</div>
+</div>
+<p>So we can kind of see what the parameters do based on this:</p>
+<ul>
+<li>L is the lower asymptote</li>
+<li>U is the upper asymptote</li>
+<li>beta is the position of the inflection point</li>
+<li>alpha is the slope at the inflection point.</li>
+</ul>
+<p>If we want to estimate these parameters, it is very helpful to work
+on a either the logit or exponential scale.</p>
+<p>i also want to manipulate the expression in order to maximize
+numerical stability by using Stan’s built-in functions.</p>
+<p>This is a veriation of the log-sum-exp trick, which <links></p>
+<p>We can assume that <span class="math inline">\(U &gt; L\)</span>,
+which means there’s a number greater than 1 which multiplies <span
+class="math inline">\(L\)</span> to give you <span
+class="math inline">\(U\)</span></p>
+<p><span class="math display">\[
+\begin{align}
+U &amp;&gt; L \\
+U &amp;= Lc \\
+Lc &amp;&gt; L \\
+c &amp;&gt; 1 \\
+c - 1 &amp;&gt; 0
+\end{align}
+\]</span> If <span class="math inline">\(c - 1\)</span> is a number
+greater than 0, then it is just as easy to say something like <span
+class="math inline">\(e^f\)</span>, because that is always a positive
+number:</p>
+<p><span class="math display">\[
+\begin{align}
+e^f &amp;= c - 1 \\
+1 + e^f &amp;= c
+\end{align}
+\]</span> So the thing above becomes</p>
+<p><span class="math display">\[
+U = L(1 + e^f)
+\]</span> Let’s go back to the main expression and substitute this
+in:</p>
+<p>$$ <span class="math display">\[\begin{align}
+
+Y &amp;= \left( L + \frac{U - L}{1 + e^{-\alpha(x - \beta)}} \right) \\
+&amp;= \left( L + \frac{L(1 + e^f) - L}{1 + e^{-\alpha(x - \beta)}}
+\right) \\
+&amp;= L\left( 1 + \frac{1 + e^f - 1}{1 + e^{-\alpha(x - \beta)}}
+\right) \\
+&amp;= L\left(1 + \frac{e^f}{1 +e^{-\alpha(x - \beta)}}\right)
+\end{align}\]</span> $$</p>
+<p>Now for a host of reasons we might want to work on a log scale, so we
+log both sides of this equation:</p>
+<p><span class="math display">\[
+\begin{align}
+\ln(Y) &amp;= \ln\left(L\left(1 + \frac{e^f}{1 +e^{-\alpha(x -
+\beta)}}\right)\right) \\
+&amp;=\ln(L) + \ln\left(1 + \frac{e^f}{1 +e^{-\alpha(x - \beta)}}\right)
+\\
+\end{align}
+\]</span></p>
+<p>Now let’s look at the fraction in the brackets, and try taking the
+log of this! why will become clear in just a moment:</p>
+<p><span class="math display">\[
+\begin{align}
+&amp;\frac{e^f}{1 +e^{-\alpha(x - \beta)}} \\
+&amp;\ln\left(\frac{e^f}{1 +e^{-\alpha(x - \beta)}}\right) \\
+&amp;\ln(e^f) + \ln\left(\frac{1}{1 +e^{-\alpha(x - \beta)}}\right)\\
+&amp;f + \ln\left(\frac{1}{1 +e^{-\alpha(x - \beta)}}\right)
+\end{align}
+\]</span> Now let’s talk about Stan’s <strong>composed
+functions</strong>. There’s two we can use here:</p>
+<p><span class="math display">\[
+\text{log1p_exp}(x) = \ln(1 + e^x)
+\]</span> and</p>
+<p><span class="math display">\[
+\text{log_inv_logit}(x) = \ln\left(\frac{1}{1 + e^{-x}}\right)
+\]</span></p>
+<p>We can rewrite the expression above using the
+<code>log_inv_logit</code> function:</p>
+<p><span class="math display">\[
+f + \text{log_inv_logit}(\alpha(x - \beta))
+\]</span></p>
+<p>Notice that I ditched the negative sign, since that is part of the
+inverse logit function</p>
+<p>We can put that back into the whole function:</p>
+<p><span class="math display">\[
+\begin{align}
+\ln(Y) &amp;= \ln\left(L\left(1 + \frac{e^f}{1 +e^{-\alpha(x -
+\beta)}}\right)\right) \\
+&amp;=\ln(L) + \ln(1 + \frac{e^f}{1 +e^{-\alpha(x - \beta)}}) \\
+&amp;=\ln(L) + \ln(1 + e^{f + \text{log_inv_logit}(\alpha(x - \beta))})
+\\
+&amp;=\ln(L) + \text{log1p_exp}(f + \text{log_inv_logit}(\alpha(x -
+\beta)))
+\end{align}
+\]</span></p>
+<p>In the last line, all I did way replace the expression <span
+class="math inline">\(\ln(1 + e^x)\)</span> with the name of the Stan
+function that performs that operation.</p>
+<p>As a last tweak, let’s write <span class="math inline">\(m =
+\ln(L)\)</span></p>
+<p><span class="math display">\[
+\ln(Y) = m + \text{log1p_exp}(f + \text{log_inv_logit}(\alpha(x -
+\beta)))
+\]</span></p>
+<p>After all this mathematical manipulation, we have rewritten the 4
+parameter logistic with new parameters:</p>
+<ul>
+<li><span class="math inline">\(m\)</span> the log of the minimum, or
+lower asymptote. can be any real number.</li>
+<li><span class="math inline">\(f\)</span> part of the factor that
+converts from <span class="math inline">\(L\)</span> to <span
+class="math inline">\(U\)</span>. can be any real number. if <span
+class="math inline">\(f = 0\)</span>, then <span class="math inline">\(U
+= 2L\)</span>. If <span class="math inline">\(f&lt;0\)</span> then <span
+class="math inline">\(L&gt;U/2\)</span></li>
+<li><span class="math inline">\(\alpha\)</span> is still the slope at
+the inflection point, on the logit scale</li>
+<li><span class="math inline">\(\beta\)</span> is the position of the
+inflection point, in units of <span
+class="math inline">\(x\)</span></li>
+</ul>
+<p>Note that all this only makes sense if L&gt;0 – but if that were not
+true, you would not be able to (or want to) calculate <span
+class="math inline">\(\ln(Y)\)</span> anyways</p>
+<p>We can recalculate <span class="math inline">\(U\)</span> in the
+generated quantities block by doing:</p>
+<p><span class="math display">\[
+U = e^m(1 + e^f)
+\]</span> let’s try to rewrite this in R to confirm the algebra</p>
+<p>First of all, recall that <code>inv_logit</code> exists in R as
+<code>plogis</code>, and you can ask for the calculation on the log
+scale:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span><span class='op'>(</span><span class='va'>x</span>,<span class='op'>)</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>4</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span><span class='op'>(</span><span class='va'>x</span>, log.p <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>4</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+<img src="one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-1-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>and also that there is a builtin R function called
+<code>log1p</code></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log1p</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>v <span class='op'>=</span> <span class='fl'>0</span>, lty <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>L</span> <span class='op'>&lt;-</span> <span class='fl'>1</span>
+<span class='va'>U</span> <span class='op'>&lt;-</span> <span class='fl'>7</span>
+<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>U</span><span class='op'>/</span><span class='va'>L</span> <span class='op'>-</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>alpha</span> <span class='op'>&lt;-</span> <span class='fl'>1.2</span>
+<span class='va'>beta</span> <span class='op'>&lt;-</span> <span class='op'>-</span><span class='fl'>1</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>L</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log1p</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>f</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>*</span><span class='op'>(</span><span class='va'>x</span> <span class='op'>-</span> <span class='va'>beta</span><span class='op'>)</span>, log.p <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>4</span>, <span class='fl'>4</span><span class='op'>)</span>, ylim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>L</span><span class='op'>-</span><span class='fl'>2</span>, <span class='va'>U</span><span class='op'>+</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>h <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>L</span>, <span class='va'>U</span><span class='op'>)</span>, lty <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>v <span class='op'>=</span> <span class='va'>beta</span>, lty <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>alpha</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>U</span><span class='op'>-</span><span class='va'>L</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='va'>x</span> <span class='op'>-</span> <span class='va'>beta</span><span class='op'>)</span> <span class='op'>+</span> <span class='op'>(</span><span class='va'>U</span><span class='op'>-</span><span class='va'>L</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>2</span> <span class='op'>+</span> <span class='va'>L</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span>, lty <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-3-1.png" width="624" /></p>
+</div>
+<p>the function works out the same!</p>
+<h3 id="andrew..-just-why">Andrew.. just why</h3>
+<p>I feel like this parameterization acheives some useful goals.</p>
+<p>First, by positioning two parameters on the real line, now it should
+be much easier to add random effects</p>
+<p>It is now impossible to generate “wrong” curves – e.g. curves where
+the maximum is below the minimum, ie where <span
+class="math inline">\(U&lt;L\)</span></p>
+<p>priors should be straightforward to set, though of course their
+meaning has changed.</p>
+<p>by rearranging the equation to use composed functions, we have (I
+hope!) set ourselves up for success regarding the speed and stability of
+sampling</p>
+<p>Because the function is on the log scale, it will be useful when
+working with distributions parameterized on the log scale– for example
+<code>poisson_log</code> or a hommade lognormal likelihood.</p>
+<h3 id="another-way-to-write-it">another way to write it</h3>
+<p>Note it would also be nice to parameterize this expression by <span
+class="math inline">\(h\)</span>, the growth rate at the inflection
+point:</p>
+<p><span class="math display">\[
+\begin{align}
+L + \frac{U - L}{2} &amp;= h \\
+L\left(1 + \frac{c - 1}{2}\right) &amp;= h \\
+L\left(1 + \frac{e^f}{2}\right) &amp;= h \\
+L\left(1 + e^{\ln(.5) + f}\right) &amp;= h \\
+\ln(L) = \ln(h) - \text{log1p_exp}(f + \ln(.5))
+\end{align}
+\]</span></p>
+<p>So depending on what you want to model you could just do that!</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -2109,6 +2333,15 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

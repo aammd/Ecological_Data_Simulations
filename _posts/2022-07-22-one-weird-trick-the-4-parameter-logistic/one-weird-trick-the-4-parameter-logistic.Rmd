@@ -1,0 +1,224 @@
+---
+title: "One Weird Trick: The 4 parameter logistic"
+description: |
+  A short description of the post.
+author: Andrew
+date: 2022-07-22
+output:
+  distill::distill_article:
+    self_contained: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to fit a four parameter equation like this:
+
+
+$$
+Y = \left( L + \frac{U - L}{1 + e^{-\alpha(x - \beta)}} \right)
+$$
+Let's plot this curve to see what it means
+
+```{r curve-4p, fig.cap="Four parameter logistic equation. dotted lines show the "}
+L <- 3
+U <- 7
+alpha <- 1.2
+beta <- -1
+curve(L + (U-L)/(1 + exp(-alpha*(x - beta))), xlim = c(-4, 4), ylim = c(L-2, U+2))
+abline(h = c(L, U), lty = 2)
+abline(v = beta, lty = 3)
+curve(alpha*(x - beta) + (U-L)/2 + L, add = TRUE, lty = 4)
+```
+
+So we can kind of see what the parameters do based on this: 
+
+* L is the lower asymptote
+* U is the upper asymptote
+* beta is the position of the inflection point
+* alpha is the slope at the inflection point.
+
+
+If we want to estimate these parameters, it is very helpful to work on a either the logit or exponential scale. 
+
+i also want to manipulate the expression in order to maximize numerical stability by using Stan's built-in functions.
+
+This is a veriation of the log-sum-exp trick, which <links>
+
+We can assume that $U > L$, which means there's a number greater than 1 which multiplies $L$ to give you $U$
+
+$$
+\begin{align}
+U &> L \\
+U &= Lc \\
+Lc &> L \\
+c &> 1 \\
+c - 1 &> 0
+\end{align}
+$$
+If $c - 1$ is a number greater than 0, then it is just as easy to say something like $e^f$, because that is always a positive number:
+
+$$
+\begin{align}
+e^f &= c - 1 \\
+1 + e^f &= c
+\end{align}
+$$
+So the thing above becomes 
+
+$$
+U = L(1 + e^f)
+$$
+Let's go back to the main expression and substitute this in:
+
+$$
+\begin{align}
+
+Y &= \left( L + \frac{U - L}{1 + e^{-\alpha(x - \beta)}} \right) \\
+&= \left( L + \frac{L(1 + e^f) - L}{1 + e^{-\alpha(x - \beta)}} \right) \\
+&= L\left( 1 + \frac{1 + e^f - 1}{1 + e^{-\alpha(x - \beta)}} \right) \\
+&= L\left(1 + \frac{e^f}{1 +e^{-\alpha(x - \beta)}}\right)
+\end{align}
+$$
+
+Now for a host of reasons we might want to work on a log scale, so we log both sides of this equation:
+
+$$
+\begin{align}
+\ln(Y) &= \ln\left(L\left(1 + \frac{e^f}{1 +e^{-\alpha(x - \beta)}}\right)\right) \\
+&=\ln(L) + \ln\left(1 + \frac{e^f}{1 +e^{-\alpha(x - \beta)}}\right) \\
+\end{align}
+$$
+
+Now let's look at the fraction in the brackets, and try taking the log of this! why will become clear in just a moment:
+
+$$
+\begin{align}
+&\frac{e^f}{1 +e^{-\alpha(x - \beta)}} \\
+&\ln\left(\frac{e^f}{1 +e^{-\alpha(x - \beta)}}\right) \\
+&\ln(e^f) + \ln\left(\frac{1}{1 +e^{-\alpha(x - \beta)}}\right)\\
+&f + \ln\left(\frac{1}{1 +e^{-\alpha(x - \beta)}}\right)
+\end{align}
+$$
+Now let's talk about Stan's **composed functions**. There's two we can use here:
+
+$$
+\text{log1p_exp}(x) = \ln(1 + e^x)
+$$
+and
+
+$$
+\text{log_inv_logit}(x) = \ln\left(\frac{1}{1 + e^{-x}}\right)
+$$
+
+We can rewrite the expression above using the `log_inv_logit` function:
+
+$$
+f + \text{log_inv_logit}(\alpha(x - \beta))
+$$
+
+Notice that I ditched the negative sign, since that is part of the inverse logit function
+
+We can put that back into the whole function:
+
+$$
+\begin{align}
+\ln(Y) &= \ln\left(L\left(1 + \frac{e^f}{1 +e^{-\alpha(x - \beta)}}\right)\right) \\
+&=\ln(L) + \ln(1 + \frac{e^f}{1 +e^{-\alpha(x - \beta)}}) \\
+&=\ln(L) + \ln(1 + e^{f + \text{log_inv_logit}(\alpha(x - \beta))}) \\
+&=\ln(L) + \text{log1p_exp}(f + \text{log_inv_logit}(\alpha(x - \beta)))
+\end{align}
+$$
+
+In the last line, all I did way replace the expression $\ln(1 + e^x)$ with the name of the Stan function that performs that operation.
+
+As a last tweak, let's write $m = \ln(L)$
+
+$$
+\ln(Y) = m + \text{log1p_exp}(f + \text{log_inv_logit}(\alpha(x - \beta)))
+$$
+
+After all this mathematical manipulation, we have rewritten the 4 parameter logistic with new parameters:
+
+* $m$ the log of the minimum, or lower asymptote. can be any real number.
+* $f$ part of the factor that converts from $L$ to $U$. can be any real number. if $f = 0$, then $U = 2L$. If $f<0$ then $L>U/2$
+* $\alpha$ is still the slope at the inflection point, on the logit scale
+* $\beta$ is the position of the inflection point, in units of $x$
+
+Note that all this only makes sense if L>0 -- but if that were not true, you would not be able to (or want to) calculate $\ln(Y)$ anyways
+
+We can recalculate $U$ in the generated quantities block by doing:
+
+$$
+U = e^m(1 + e^f)
+$$
+let's try to rewrite this in R to confirm the algebra
+
+First of all, recall that `inv_logit` exists in R as `plogis`, and you can ask for the calculation on the log scale:
+
+```{r}
+par(mfrow = c(1, 2))
+curve(plogis(x,), xlim = c(-4, 4))
+curve(plogis(x, log.p = TRUE), xlim = c(-4, 4))
+par(mfrow = c(1,1))
+```
+
+and also that there is a builtin R function called `log1p`
+
+```{r}
+curve(log1p(x), xlim = c(0, 4))
+abline(v = 0, lty = 2)
+```
+
+
+
+```{r}
+L <- 1
+U <- 7
+f <- log(U/L - 1)
+alpha <- 1.2
+beta <- -1
+curve(exp(log(L) + log1p(exp(f + plogis(alpha*(x - beta), log.p = TRUE)))), xlim = c(-4, 4), ylim = c(L-2, U+2))
+abline(h = c(L, U), lty = 2)
+abline(v = beta, lty = 3)
+curve((alpha * (U-L)/4)*(x - beta) + (U-L)/2 + L, add = TRUE, lty = 4)
+```
+
+
+the function works out the same! 
+
+### Andrew.. just why
+
+I feel like this parameterization acheives some useful goals. 
+
+First, by positioning two parameters on the real line, now it should be much easier to add random effects
+
+It is now impossible to generate "wrong" curves -- e.g. curves where the maximum is below the minimum, ie where $U<L$
+
+priors should be straightforward to set, though of course their meaning has changed.
+
+by rearranging the equation to use composed functions, we have (I hope!) set ourselves up for success regarding the speed and stability of sampling
+
+Because the function is on the log scale, it will be useful when working with distributions parameterized on the log scale-- for example `poisson_log` or a hommade lognormal likelihood.
+
+### another way to write it
+
+Note it would also be nice to parameterize this expression by $h$, the growth rate at the inflection point:
+
+$$
+\begin{align}
+L + \frac{U - L}{2} &= h \\
+L\left(1 + \frac{c - 1}{2}\right) &= h \\
+L\left(1 + \frac{e^f}{2}\right) &= h \\
+L\left(1 + e^{\ln(.5) + f}\right) &= h \\ 
+\ln(L) = \ln(h) - \text{log1p_exp}(f + \ln(.5))
+\end{align}
+$$
+
+So depending on what you want to model you could just do that! 
+
+
