@@ -1038,10 +1038,6 @@ figure img.external {
   margin-top: 1.5em;
 }
 
-.figure img {
-  width: 100%;
-}
-
 .figure .caption {
   color: rgba(0, 0, 0, 0.6);
   font-size: 12px;
@@ -1871,7 +1867,16 @@ function init_distill() {
 
     // hoverable references
     $('span.citation[data-cites]').each(function() {
-      var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+      if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+        var fn = $(this).children()[0]
+        $(this).html(fn.shadowRoot.querySelector("sup"))
+        $(this).id = fn.id
+        fn.remove()
+      }
+      var refs = $(this).attr('data-cites').split(" ");
+      var refHtml = refs.map(function(ref) {
+        return "<p>" + $('#ref-' + ref).html() + "</p>";
+      }).join("\n");
       window.tippy(this, {
         allowHTML: true,
         content: refHtml,
@@ -1882,6 +1887,31 @@ function init_distill() {
         placement: 'bottom-start'
       });
     });
+
+    // fix footnotes in tables (#411)
+    // replacing broken distill.pub feature
+    $('table d-footnote').each(function() {
+      // we replace internal showAtNode methode which is triggered when hovering a footnote
+      this.hoverBox.showAtNode = function(node) {
+        // ported from https://github.com/distillpub/template/pull/105/files
+        calcOffset = function(elem) {
+            let x = elem.offsetLeft;
+            let y = elem.offsetTop;
+            // Traverse upwards until an `absolute` element is found or `elem`
+            // becomes null.
+            while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                x += elem.offsetLeft;
+                y += elem.offsetTop;
+            }
+
+            return { left: x, top: y };
+        }
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+        const bbox = node.getBoundingClientRect();
+        const offset = calcOffset(node);
+        this.show([offset.left + bbox.width, offset.top + bbox.height]);
+      }
+    })
 
     // clear polling timer
     clearInterval(tid);
@@ -1981,6 +2011,8 @@ function init_common() {
   // mark non-body figures created by knitr chunks as 100% width
   $('.layout-chunk').each(function(i, val) {
     var figures = $(this).find('img, .html-widget');
+    // ignore leaflet img layers (#106)
+    figures = figures.filter(':not(img[class*="leaflet"])')
     if ($(this).attr('data-layout') !== "l-body") {
       figures.css('width', '100%');
     } else {
@@ -2003,7 +2035,7 @@ function init_common() {
   // get rid of index.html references in header
   if (window.location.protocol !== "file:") {
     $('.distill-site-header a[href]').each(function(i,val) {
-      $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+      $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
     });
   }
 
@@ -2063,7 +2095,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"One Weird Trick: The 4 parameter logistic","description":"A short description of the post.","authors":[{"author":"Andrew","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-22T00:00:00.000+00:00","citationText":"Andrew, 2022"}
+{"title":"One Weird Trick: The 4 parameter logistic","description":"A short description of the post.","authors":[{"author":"Andrew","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-22T00:00:00.000-04:00","citationText":"Andrew, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->

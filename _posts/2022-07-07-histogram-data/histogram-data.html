@@ -56,7 +56,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { } /* Attribute */
+code span.at { color: #20794d; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
 code span.cf { color: #007ba5; } /* ControlFlow */
@@ -77,14 +77,13 @@ code span.kw { color: #007ba5; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
 code span.ot { color: #007ba5; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #5e5e5e; } /* SpecialChar */
+code span.sc { color: #20794d; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
-
 
   <!--radix_placeholder_meta_tags-->
   <title>Histogram data</title>
@@ -116,7 +115,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["categorical_hist","categorical_hist.exe","categorical_hist.stan","categorical_hist_norm","categorical_hist_norm.exe","categorical_hist_norm.stan","histogram-data_files/anchor-4.2.2/anchor.min.js","histogram-data_files/bowser-1.9.3/bowser.min.js","histogram-data_files/distill-2.2.21/template.v2.js","histogram-data_files/figure-html5/unnamed-chunk-1-1.png","histogram-data_files/figure-html5/unnamed-chunk-10-1.png","histogram-data_files/figure-html5/unnamed-chunk-11-1.png","histogram-data_files/figure-html5/unnamed-chunk-6-1.png","histogram-data_files/figure-html5/unnamed-chunk-7-1.png","histogram-data_files/figure-html5/unnamed-chunk-7-2.png","histogram-data_files/figure-html5/unnamed-chunk-8-1.png","histogram-data_files/figure-html5/unnamed-chunk-9-1.png","histogram-data_files/header-attrs-2.13/header-attrs.js","histogram-data_files/jquery-3.6.0/jquery-3.6.0.js","histogram-data_files/jquery-3.6.0/jquery-3.6.0.min.js","histogram-data_files/jquery-3.6.0/jquery-3.6.0.min.map","histogram-data_files/popper-2.6.0/popper.min.js","histogram-data_files/tippy-6.2.7/tippy-bundle.umd.min.js","histogram-data_files/tippy-6.2.7/tippy-light-border.css","histogram-data_files/tippy-6.2.7/tippy.css","histogram-data_files/tippy-6.2.7/tippy.umd.min.js","histogram-data_files/webcomponents-2.0.0/webcomponents.js","manual_probit_categorical.stan","midpoint","midpoint.exe","midpoint.stan","multinom_norm","multinom_norm.exe","multinom_norm.stan","Untitled.stan"]}
+  {"type":"character","attributes":{},"value":["categorical_hist","categorical_hist_norm","categorical_hist_norm.exe","categorical_hist_norm.stan","categorical_hist.exe","categorical_hist.stan","histogram-data_files/anchor-4.2.2/anchor.min.js","histogram-data_files/bowser-1.9.3/bowser.min.js","histogram-data_files/distill-2.2.21/template.v2.js","histogram-data_files/figure-html5/unnamed-chunk-1-1.png","histogram-data_files/figure-html5/unnamed-chunk-10-1.png","histogram-data_files/figure-html5/unnamed-chunk-11-1.png","histogram-data_files/figure-html5/unnamed-chunk-6-1.png","histogram-data_files/figure-html5/unnamed-chunk-7-1.png","histogram-data_files/figure-html5/unnamed-chunk-7-2.png","histogram-data_files/figure-html5/unnamed-chunk-8-1.png","histogram-data_files/figure-html5/unnamed-chunk-9-1.png","histogram-data_files/header-attrs-2.13/header-attrs.js","histogram-data_files/jquery-3.6.0/jquery-3.6.0.js","histogram-data_files/jquery-3.6.0/jquery-3.6.0.min.js","histogram-data_files/jquery-3.6.0/jquery-3.6.0.min.map","histogram-data_files/popper-2.6.0/popper.min.js","histogram-data_files/tippy-6.2.7/tippy-bundle.umd.min.js","histogram-data_files/tippy-6.2.7/tippy-light-border.css","histogram-data_files/tippy-6.2.7/tippy.css","histogram-data_files/tippy-6.2.7/tippy.umd.min.js","histogram-data_files/webcomponents-2.0.0/webcomponents.js","manual_probit_categorical.stan","midpoint","midpoint.exe","midpoint.stan","multinom_norm","multinom_norm.exe","multinom_norm.stan","Untitled.stan"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1263,10 +1262,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refs = $(this).attr('data-cites').split(" ");
-        var refHtml = refs.map(function(ref) {
-          return "<p>" + $('#ref-' + ref).html() + "</p>";
-        }).join("\n");
+        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -1437,7 +1433,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="histogram-data_files/header-attrs-2.13/header-attrs.js"></script>
+  <script src="histogram-data_files/header-attrs-2.11.3/header-attrs.js"></script>
   <script src="histogram-data_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <script src="histogram-data_files/popper-2.6.0/popper.min.js"></script>
   <link href="histogram-data_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
@@ -1458,7 +1454,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Histogram data","description":"Modelling and binning Histogram data for fun and profit.","authors":[],"publishedDate":"2022-07-07T00:00:00.000-04:00"}
+{"title":"Histogram data","description":"Modelling and binning Histogram data for fun and profit.","authors":[],"publishedDate":"2022-07-07T00:00:00.000+00:00"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -1488,8 +1484,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <img src="histogram-data_files/figure-html5/unnamed-chunk-1-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rr_cut</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span><span class='op'>)</span>, breaks <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>4</span>, to <span class='op'>=</span> <span class='fl'>4</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>cut_rr_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tibble.tidyverse.org/reference/as_tibble.html'>as_tibble</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span><span class='op'>)</span> |&gt; 
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>low <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>4</span>, to <span class='op'>=</span> <span class='fl'>3.5</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span>,
+<span class='va'>cut_rr_tbl</span> <span class='op'>&lt;-</span> <span class='fu'>as_tibble</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span><span class='op'>)</span> |&gt; 
+  <span class='fu'>mutate</span><span class='op'>(</span>low <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>4</span>, to <span class='op'>=</span> <span class='fl'>3.5</span>, by <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span>,
          up <span class='op'>=</span> <span class='va'>low</span> <span class='op'>+</span> <span class='fl'>.5</span>,
          mid <span class='op'>=</span> <span class='op'>(</span><span class='va'>low</span><span class='op'>+</span><span class='va'>up</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>2</span><span class='op'>)</span>
 
@@ -1497,12 +1493,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>rr_mean</span>
 </code></pre>
 </div>
-<pre><code>[1] -0.019</code></pre>
+<pre><code>[1] -0.0035</code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span><span class='op'>(</span><span class='va'>cut_rr_tbl</span>, <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>up</span><span class='op'>*</span><span class='va'>n</span><span class='op'>)</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1] 0.231</code></pre>
+<pre><code>[1] 0.2465</code></pre>
 </div>
 <p>Can we do this same trick with the variance</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -1510,7 +1506,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span><span class='op'>(</span><span class='va'>cut_rr_tbl</span>, <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>mid</span> <span class='op'>-</span> <span class='va'>rr_mean</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>*</span><span class='va'>n</span><span class='op'>)</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1] 1.013389</code></pre>
+<pre><code>[1] 0.9838628</code></pre>
 </div>
 <p>yes for sure.</p>
 <p>Now let’s try something in Stan</p>
@@ -1526,26 +1522,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>rr_cut</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>  [1] 17 15 17 15 14 14 17 13 19 13 14 17 15 14 15 15 16 13 17 11 21
- [22] 16 14 12 12 16 17 11 12 10 15 11 16 18 16 12 11 16 16 14 16 13
- [43] 17 13 13 16 15 18 14 15 12 19 15 12 17 16 17 17 13 12 14 13 11
- [64] 11 17  9 15 12 16 14 14 16 13 11 15 15 14 19 16 13 16 15 15 16
- [85] 14 11 11 18 16 13 15 12 17 14 12 16 15 14 14 13 16 15 14 16 18
-[106] 11 15 13 15 16 13 15 15 14 17 15 15 17 11 15 11 14 10 14 13 16
-[127] 16 15 13 16 16 16 17 17 18 16 15 18 14 16 14 17 15 15 14 18 16
-[148] 16 13 13 15 17 17 17 12 16 15 18 14 12 14 15 15 16 19 17 17 12
-[169] 14 13 14 16 14 13 19 15 14 12 14 15 13 13  7 17 13 14 10 16 13
-[190] 13 12 18 14 12 11 13 17 13 14 13 15 13 15 15 13 15 14 14 14 12
-[211] 12 14 14 16 13 15 10 18 14 16 16 16 18 18 15 19 12 16 16 14 12
-[232] 15 15 12 15 13 16 13 15 14 14 13 16 18 16 15 15 14 13 15 16 13
-[253] 18 18 15 12 13 14 14 16 15 16 15 17 15 13 13 14 11 15 16 15 12
-[274] 20 14 20 16 17 13 15 13 13 14 12 12 17 11 15 15 17 11 18 11 17
-[295] 14 14 13 12 13 16 11 13 19 11 13 15 14 16 15 17 15 17 17 15 14
-[316] 13 15 13 15 13 14 19 17 12 10 15 15 12 14 15 17 13 10 13 16 13
-[337] 16 15 18  9 16 14 14 15 12 10 11 15 14 16 15 12 18 12 16 15 11
-[358] 17 15 15 14 14 14 12 14 15 16 14 15 16 15 16 13 16 13 16 12 15
-[379] 11 14 17 17 15 15 13 14 16 15 15 18 14 16 15 16 18 16 14 15 16
-[400] 15</code></pre>
+<pre><code>  [1] 14 11 16 17 11 15 14 15  9 17 13 14 14 17 11 11 14 13 17 12 16
+ [22] 12 13 14 15 14 12 15 16 17 16 11 14 16 13 15 16 12 14 15 13 12
+ [43] 13 14 17 13 14 12 14 13 15 11 16 16 14 12 11 17 16 16 11 15 13
+ [64] 14 15 15 16 15 17 12 15 13 14 12 15 16 21 16 15 13 12 13 15 17
+ [85] 18  9 16 13 12 16 13 15 15 16 15 15 14 11 15 21 12 11 11 15 15
+[106] 14 15 15 15 14 15 16 10 12 16 11 12 14 16 11 15 16 20 13 13  9
+[127] 17 14 14 14 14 12 14 15 17 12 12 17 13 15 16 13 15 17 18 12 13
+[148] 13 13 13 14 14 13 14 12 16 15 16 11 14 15 15 14 13 16 18 15 13
+[169] 16 13 13 15 14 14 13 14 14 15 14 14 15 18 11 16 14 14 15 14 11
+[190] 16 13 13 14 15 14 18 17 13 15 15 15 17 14 11 13 16 16 17 11 19
+[211] 14 13 11 17 14 14 11 15 18 14 16 12 16 16 15 17 16 15 16 15 14
+[232] 18 16 14 15 13 14 16 17 15 11 13 15 15 11 14 15 16 10 11 13 17
+[253] 14 13 17 14 16 15 17 15 18 14 14 16 14 12 16 14 18 17 18 16 13
+[274] 13 13 16 15 18 11 18 14 15 14 13 14 13 15 17 17 11 15 19 12 12
+[295] 13 15 15 13 16 16 14 14 17 13 17 13 15 16 16 14 11 13 15 15 12
+[316] 15 16 12 14 17 14 15 16 15 14 12 14 16 14 14 14 11 12 13 15 16
+[337] 17 15 15 17 13 13 14 13 14 15 13 14 15 14 12 17 13 16 12 15 16
+[358] 15 13 17 13 10 12 15 15 15 12 12 18 14 12 16 17 15 13 13 11 15
+[379] 15 17 11 16 14 15 12 13 15 12 12 14 15 16 17 13 17 16 15 12 15
+[400] 13</code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>breaks</span>
 </code></pre>
@@ -1590,104 +1586,6 @@ parameter end up being so HIGH??</p>
 <span class='va'>cat_samp</span> <span class='op'>&lt;-</span> <span class='va'>categorical_hist_norm</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>Running MCMC with 4 sequential chains...
-
-Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
-Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
-Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
-Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
-Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 1 finished in 0.3 seconds.
-Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
-Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
-Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
-Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
-Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 2 finished in 0.3 seconds.
-Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
-Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
-Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
-Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
-Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 3 finished in 0.3 seconds.
-Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
-Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
-Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
-Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
-Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 4 finished in 0.3 seconds.
-
-All 4 chains finished successfully.
-Mean chain execution time: 0.3 seconds.
-Total execution time: 2.0 seconds.</code></pre>
 </div>
 <h2 id="via-multinomial">via multinomial</h2>
 <div class="layout-chunk" data-layout="l-body">
@@ -1731,7 +1629,7 @@ Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling)
 Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 1 finished in 0.3 seconds.
+Chain 1 finished in 0.4 seconds.
 Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
 Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
@@ -1754,7 +1652,7 @@ Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling)
 Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 2 finished in 0.3 seconds.
+Chain 2 finished in 0.4 seconds.
 Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
 Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
@@ -1804,7 +1702,7 @@ Chain 4 finished in 0.3 seconds.
 
 All 4 chains finished successfully.
 Mean chain execution time: 0.3 seconds.
-Total execution time: 1.9 seconds.</code></pre>
+Total execution time: 1.7 seconds.</code></pre>
 </div>
 <h2 id="sampling-midpoints">sampling midpoints</h2>
 <div class="layout-chunk" data-layout="l-body">
@@ -1843,21 +1741,21 @@ Total execution time: 1.9 seconds.</code></pre>
 <pre><code>Running MCMC with 4 sequential chains...
 
 Chain 1 finished in 0.0 seconds.
-Chain 2 finished in 0.0 seconds.
+Chain 2 finished in 0.1 seconds.
 Chain 3 finished in 0.0 seconds.
 Chain 4 finished in 0.0 seconds.
 
 All 4 chains finished successfully.
 Mean chain execution time: 0.0 seconds.
-Total execution time: 1.0 seconds.</code></pre>
+Total execution time: 0.6 seconds.</code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>mid_samp</span>
 </code></pre>
 </div>
 <pre><code> variable  mean median   sd  mad    q5   q95 rhat ess_bulk ess_tail
-    lp__  74.88  75.19 1.01 0.70 72.91 75.82 1.00     1993     2569
-    mu    -0.05  -0.05 0.03 0.02 -0.09 -0.01 1.00     2901     2645
-    sigma  0.50   0.50 0.02 0.02  0.47  0.53 1.00     3271     2724</code></pre>
+    lp__  56.75  57.06 0.99 0.71 54.77 57.67 1.00     2106     2388
+    mu    -0.07  -0.07 0.03 0.03 -0.11 -0.03 1.00     3469     2740
+    sigma  0.53   0.52 0.02 0.02  0.50  0.56 1.00     3013     2666</code></pre>
 </div>
 <p>lcdf</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -1893,8 +1791,8 @@ dataset</p>
 
 
 <span class='va'>rr_df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/spread_draws.html'>spread_draws</a></span><span class='op'>(</span><span class='va'>mid_samp</span>, <span class='va'>mu</span>, <span class='va'>sigma</span>, ndraws <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span> |&gt; 
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rowwise.html'>rowwise</a></span><span class='op'>(</span><span class='op'>)</span> |&gt; 
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>fake_rr <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>400</span>, mean <span class='op'>=</span> <span class='va'>mu</span>, sd <span class='op'>=</span> <span class='va'>sigma</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='fu'>rowwise</span><span class='op'>(</span><span class='op'>)</span> |&gt; 
+  <span class='fu'>mutate</span><span class='op'>(</span>fake_rr <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>400</span>, mean <span class='op'>=</span> <span class='va'>mu</span>, sd <span class='op'>=</span> <span class='va'>sigma</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 
 <span class='va'>rr_rep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>rbind</span>, <span class='va'>rr_df</span><span class='op'>$</span><span class='va'>fake_rr</span><span class='op'>)</span>
@@ -1932,7 +1830,7 @@ get the variance right</p>
 <span class='op'>}</span>
 
 <span class='va'>rr_df_cut</span> <span class='op'>&lt;-</span> <span class='va'>rr_df</span> |&gt; 
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>fake_cut <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'>make_midpoints</span><span class='op'>(</span><span class='va'>fake_rr</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>fake_cut <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'>make_midpoints</span><span class='op'>(</span><span class='va'>fake_rr</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='va'>rr_rep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>rbind</span>, <span class='va'>rr_df_cut</span><span class='op'>$</span><span class='va'>fake_cut</span><span class='op'>)</span>
 
@@ -1957,40 +1855,40 @@ from a gamma model.</p>
 <span class='va'>rg</span>
 </code></pre>
 </div>
-<pre><code>  [1]  9.289292 12.005772 15.541549 14.980485 11.488991 11.948976
-  [7]  9.487503  7.662266 18.546547 11.489544 14.869158 18.736340
- [13] 15.707466 13.809892 20.783606 14.438024 13.958879 13.410187
- [19] 22.043260 13.798665 10.202253 14.089952 17.929055 13.230669
- [25] 11.284036 13.396635 10.799423 18.174829 14.923843  8.848020
- [31] 10.383358 12.992467 11.395996 11.558869 13.541719 11.765742
- [37] 12.436771 12.565700 12.066943 11.785912 19.395157  9.069380
- [43] 14.240775 11.556181  9.796395  9.173772 12.682824 14.053368
- [49] 13.385641 10.604164 14.384053 11.994542 16.057552 12.556576
- [55] 14.882514 10.996791 15.321617 10.368076  9.013996 18.477871
- [61] 14.678023 16.707531 17.489532 10.750675 15.325352 12.291395
- [67] 15.459565 13.802409 11.659279 13.836612 22.812591  9.228545
- [73] 13.937347 15.593809 11.479727 11.200488 13.554615 14.849177
- [79] 17.070892  8.600793 16.594254 14.951677 15.086493 15.871966
- [85] 13.633733 14.737208  7.846880  9.885185 18.636334 10.495094
- [91] 12.485707 14.801332  8.006695 11.482000 12.195254 11.679477
- [97] 14.715254 11.532013 17.193781 12.417665 12.189632 14.358531
-[103] 11.453968 17.587934 14.867578 16.956199 16.923981  9.869954
-[109]  8.577644 13.398736 11.836296 15.221882 19.210164 11.455254
-[115] 13.990316 17.934294  9.388319 17.738331 12.076512 18.437756
-[121] 10.266981 15.553978 12.962641 12.760626 14.602645 11.515444
-[127] 21.516318 12.051242 15.435814 16.865909  8.998165 11.689229
-[133] 10.839428 10.192649 12.205751  9.851865 14.375486 21.696634
-[139] 15.401531 14.375573 15.478977 14.445968  8.903392 11.117990
-[145] 13.575826 11.332529 22.840403 21.264014 16.355886 14.270868
-[151] 16.800814 11.982217 12.808654 10.477125 14.503280 12.510864
-[157] 16.950217 17.215710 14.206901 12.101521  9.089875 18.375612
-[163] 10.159642 12.931993  9.461659  9.811084 11.266697 16.730067
-[169]  9.836313 16.163374 13.903650 20.468218 16.273985 14.534679
-[175] 17.165503 14.502727 20.263376 16.316309 12.384848 14.704404
-[181] 14.742249 19.045397 15.404344 18.465592 10.330374 12.494951
-[187] 15.831452 15.656513 14.408881 19.616974 14.326729 11.372435
-[193] 16.931427 13.043372 16.255045 15.020328 12.956769 15.679852
-[199] 15.745649 16.054832</code></pre>
+<pre><code>  [1] 11.148810 14.387708  9.674238 16.320391 10.985600 16.090211
+  [7]  9.844958 12.681727 16.916489 15.497908 11.429322 14.987521
+ [13] 13.129644 16.368250 14.049850 13.855158 14.490142 14.068424
+ [19] 10.360314 15.766586 12.837461 13.882887 14.158766 11.218009
+ [25] 14.461096 17.497223 12.568905 12.037941 13.418572 18.931769
+ [31] 12.187666 16.182908 13.733514 12.467907 13.918203 10.461181
+ [37] 16.061186 11.080066 14.767174 14.817881 10.695555 14.475702
+ [43] 12.798636 13.688472  9.978134 10.769746 12.172767 12.318955
+ [49] 17.488327 14.144807 12.309059 11.632788 15.724272 14.635524
+ [55] 12.778258 14.358757 12.528137 13.290445 14.776833 12.201565
+ [61] 12.805420 17.237798 12.977225 14.721596 11.559610 12.415062
+ [67] 11.879814 13.291033 13.051943 14.478101 12.050201 17.085692
+ [73] 14.789540 12.881336 23.875107 14.468617 14.299199 14.845624
+ [79] 11.916287 17.818554 16.530512 14.219394 18.419465  8.146202
+ [85] 10.673557 12.787082 10.876239 17.137757 17.362005 15.106563
+ [91] 11.140694  9.649191  9.509588  9.692800 15.189504 10.950806
+ [97] 13.463674 13.707915 15.124237 10.259639 15.974895 18.695081
+[103] 16.774661 13.892157 11.132691 14.011527 14.351958 12.789202
+[109] 15.360404 13.277811  9.077692 16.762473 16.945595 11.155106
+[115] 12.034736 11.688088 15.570362 11.062725 11.493504 16.649076
+[121] 10.527650 12.727167 14.616723 17.841274 13.870529 14.153206
+[127] 20.112672 14.637118 16.599819 14.828167 12.051345 13.764439
+[133] 17.336369 11.117833 11.432366 10.058832 11.991344 13.469665
+[139] 12.740424 13.155095  9.466576 16.002379 16.228421 15.816786
+[145] 20.341883 17.782296 14.164214 16.668841 15.057313 12.258890
+[151] 14.337697 10.959833  8.436382 12.901918  6.918244 12.462276
+[157] 13.315163 10.857098 10.604356  9.428877 12.309459  9.692284
+[163] 13.101679 14.563190 18.377334 12.584356  8.941269 19.201679
+[169] 12.423915 16.032962 12.552300  9.649493 10.844850 14.613292
+[175] 16.208037 21.645321 10.889439 14.872369  7.557834 14.366689
+[181] 17.113496 11.945323 13.111013 11.485111 15.330432  8.584282
+[187] 11.498198 13.584622 14.827059 15.074608  9.017077 12.021029
+[193] 17.700476 12.543842 16.218981 18.931989  9.573988 18.691450
+[199] 16.557631 11.311648</code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># checking growth every even-numbered day</span>
 
@@ -2029,21 +1927,18 @@ from a gamma model.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>mids</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>rg_evencut</span><span class='op'>)</span><span class='op'>]</span>
 </code></pre>
 </div>
-<pre><code>  [1]  9 13 15 15 11 11  9  7 19 11 15 19 15 13 21 15 13 13 23 13 11
- [22] 15 17 13 11 13 11 19 15  9 11 13 11 11 13 11 13 13 13 11 19  9
- [43] 15 11  9  9 13 15 13 11 15 11 17 13 15 11 15 11  9 19 15 17 17
- [64] 11 15 13 15 13 11 13 23  9 13 15 11 11 13 15 17  9 17 15 15 15
- [85] 13 15  7  9 19 11 13 15  9 11 13 11 15 11 17 13 13 15 11 17 15
-[106] 17 17  9  9 13 11 15 19 11 13 17  9 17 13 19 11 15 13 13 15 11
-[127] 21 13 15 17  9 11 11 11 13  9 15 21 15 15 15 15  9 11 13 11 23
-[148] 21 17 15 17 11 13 11 15 13 17 17 15 13  9 19 11 13  9  9 11 17
-[169]  9 17 13 21 17 15 17 15 21 17 13 15 15 19 15 19 11 13 15 15 15
-[190] 19 15 11 17 13 17 15 13 15 15 17</code></pre>
+<pre><code>  [1] 11 15  9 17 11 17  9 13 17 15 11 15 13 17 15 13 15 15 11 15 13
+ [22] 13 15 11 15 17 13 13 13 19 13 17 13 13 13 11 17 11 15 15 11 15
+ [43] 13 13  9 11 13 13 17 15 13 11 15 15 13 15 13 13 15 13 13 17 13
+ [64] 15 11 13 11 13 13 15 13 17 15 13 23 15 15 15 11 17 17 15 19  9
+ [85] 11 13 11 17 17 15 11  9  9  9 15 11 13 13 15 11 15 19 17 13 11
+[106] 15 15 13 15 13  9 17 17 11 13 11 15 11 11 17 11 13 15 17 13 15
+[127] 21 15 17 15 13 13 17 11 11 11 11 13 13 13  9 17 17 15 21 17 15
+[148] 17 15 13 15 11  9 13  7 13 13 11 11  9 13  9 13 15 19 13  9 19
+[169] 13 17 13  9 11 15 17 21 11 15  7 15 17 11 13 11 15  9 11 13 15
+[190] 15  9 13 17 13 17 19  9 19 17 11</code></pre>
 </div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<div class="sourceCode" id="cb20"><pre
+<div class="sourceCode" id="cb19"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

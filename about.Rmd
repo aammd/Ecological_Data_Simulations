@@ -1,9 +1,11 @@
 ---
-title: "About this blog"
+title: "Welcome to Simulation of Ecological Data"
 description: |
-  Some additional details about the blog
+  Simulations of ecological data for validating, teaching, and understanding models. 
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
+Hello! My name is Andrew MacDonald; currently a Profesionel de Recherche at the Université de Sherbrooke. This website is a collection of notes taken during my work with reserchers in the ecology research group, CREUS. These notes are informal, and usually show the whole scientific process, with all its imperfections and errors. Every so often in this work, I find something I wish I could tell more people -- or something I hope I never forget. I take such things and write about them [here](). 

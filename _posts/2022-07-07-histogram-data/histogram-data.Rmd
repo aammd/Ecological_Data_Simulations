@@ -73,7 +73,7 @@ This is bizarre because WHY does the sum of the probabilities parameter end up b
 
 
 
-```{r}
+```{r eval=FALSE}
 categorical_hist_norm <- cmdstanr::cmdstan_model(stan_file = here::here(
   "_posts", "2022-07-07-histogram-data", "categorical_hist_norm.stan"))
 
@@ -247,10 +247,6 @@ mids <- (evenbreaks[-1] + evenbreaks[-length(evenbreaks)])/2
 mids
 
 mids[as.numeric(rg_evencut)]
-
-```
-
-```{r}
 
 ```
 
