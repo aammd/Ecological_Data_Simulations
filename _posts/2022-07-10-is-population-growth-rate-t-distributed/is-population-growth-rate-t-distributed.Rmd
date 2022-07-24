@@ -1,0 +1,259 @@
+---
+title: "Is population growth rate t-distributed"
+description: |
+  What happens when you make measurements over different sizes of time interval?
+  
+draft: true
+author:
+  - name: Andrew and Will
+    url: {}
+date: 07-10-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+```{r}
+# simulate a population that is growing 
+r_mean <- .3
+r_sd <- .1
+
+curve(30*exp(r_mean*x), xlim = c(0, 10))
+```
+
+random variation across years (see also Pielou)
+
+```{r}
+r_t <- rnorm(10, mean = r_mean, sd = r_sd)
+
+library(purrr)
+
+plot(imap_dbl(r_t, ~ 30*exp(.x*.y)), type = "l")
+
+
+```
+
+* years are variable. 
+* all plots get the same r each year
+* plots have different starting amounts
+* maybe even different starting years!
+
+```{r}
+nyears <- 100
+years <- 1:nyears
+r_mean <- .2
+r_sd <- .1
+r_t <- rnorm(nyears, mean = r_mean, sd = r_sd)
+nplot <- 5000
+
+start_years <- sample(1:(nyears/2), size = nplot, replace = TRUE)
+
+sample_interval <- sample(c(2,5,10,15), size = nplot, prob = c(.2,.5,.3,.1), replace = TRUE)
+
+N0 <- rpois(n = nplot, 120)
+
+plots_years <- tibble(plot_id = 1:nplot,
+                      startyear= start_years, 
+                      t_between = sample_interval, 
+                      N0) |> 
+  rowwise() |> 
+  mutate(year = list(startyear:nyears)) |> 
+  unnest(year) |> 
+  mutate(r = r_t[year])
+```
+
+give each a random starting size
+check after an sampled number of years
+
+```{r}
+plot_nest <- plots_years |> 
+  nest_by(plot_id)
+
+run_growth <- function(tt){
+  tt <- tt |> 
+    mutate(N = if_else(year == startyear, N0, 0L))
+  
+  for (i in 2:nrow(tt)){
+    tt$N[i] = with(tt, N[i-1]*exp(r[i]))
+  }
+  
+  return(tt)
+}
+
+growth_df <- plot_nest |> 
+  mutate(grow = list(run_growth(data))) |> 
+  select(-data) |> 
+  unnest(grow)
+
+
+```
+
+
+```{r}
+r_df <- growth_df |> 
+  filter(year %in% c(startyear, startyear+t_between)) |> 
+  mutate(time = if_else(year == startyear, "N0", "Nt")) |> 
+  select(-r, -year, -N0) |> 
+  pivot_wider(names_from = time, values_from = N) |> 
+  mutate(sample_r = log(Nt/N0)/t_between)
+```
+
+
+
+```{r}
+r_df |> 
+  ggplot(aes(x = sample_r)) + 
+  geom_density() + 
+  stat_function(fun= function(x) dnorm(x, mean = r_mean, sd = r_sd))
+```
+
+```{r}
+r_df |> 
+  ggplot(aes(x = sample_r, y = ..density..)) + 
+  geom_histogram() + 
+  stat_function(fun= function(x) dnorm(x, mean = r_mean, sd = r_sd), inherit.aes = FALSE, xlim =  c(r_mean - 3*r_sd, r_mean + 3*r_sd) )  +
+  coord_cartesian(xlim = c(r_mean - 3*r_sd, r_mean + 3*r_sd)) + 
+  stat_function(fun = function(x) dt(x, 5, ncp = .2), inherit.aes = FALSE)
+```
+
+That's not quite what I expected -- why isn't it flatter in the sample? 
+
+
+```{r}
+tibble(xx = rnorm(10000)) |> 
+  ggplot(aes(x = xx)) + geom_density() + 
+  stat_function(fun = function(x) dnorm(x))
+```
+
+
+```{r}
+tibble(x = colMeans(replicate(1000, rnorm(5)))) |> 
+  ggplot(aes(x = x)) + 
+  geom_density() + 
+    stat_function(fun = function(x) dnorm(x)) + 
+  stat_function(fun = function(x) dt(x, 4)) + 
+  stat_function(fun = function(x) dt(x, 4)*5^.5)
+```
+
+```{r}
+tibble(x = replicate(2000, rnorm(5), simplify = FALSE)) |> 
+  rowwise() |> 
+  mutate(m = mean(x),
+         s = sd(x),
+         t = m/(s/sqrt(5)))  |> 
+  ggplot(aes(x = t)) + 
+  geom_density(col = "red") + 
+  stat_function(fun = function(x) dnorm(x), col = "blue") + 
+  stat_function(fun = function(x) dt(x, 4), col = "orange")
+
+```
+
+```{r}
+curve(extraDistr::dinvgamma(x, alpha = 5/2, beta = 5/2), xlim = c(0, 5))
+```
+
+```{r}
+precisions <- rgamma(50, 4, 4/2)
+
+curve(dnorm(x), xlim = c(-4,4), col = "white", ylim = c(0, 1))
+for(p in precisions){
+  curve(dnorm(x, mean = 0, sd = 1/sqrt(p)), add = TRUE)
+}
+```
+
+
+so maybe the right way to think about it is as a compound distribution . Just as the gamma-poisson happens, when you have a poisson count but the rate parameter varies -- here you have a normal value but the variance parameter varies. and we just don't know which is which, and the result is a t-distribution
+
+just as in the neg-binomial case, there is another solution -- fine control, with random effects for sites, species, years, etc. 
+
+but i still find it unsatisfying that the `nu` parameter, the degrees of freedon, doesn't factor into this model in the same way! 
+
+
+is the inverse gamma a distribution of sample standard deviations? 
+
+The mean of the inverse gamma rows with $\nu$ like this:
+
+$$
+\mu  = \frac{\beta}{\alpha + 1} = \frac{\nu\sigma^2/2}{\nu/2 + 1} = \frac{\nu\sigma^2}{\nu  + 2}
+$$
+
+
+```{r}
+tibble(x = rep(seq(from = 2, to = 20, by = 2), each = 800)) |> 
+  rowwise() |> 
+  mutate(rr = list(rnorm(n = x, sd = 2)),
+         s = var(rr)) |> 
+  ggplot(aes(x = x, y = s)) + 
+  # stat_bin_hex() + 
+  stat_pointinterval(point_interval = mean_hdi, .width = .89) + 
+  # geom_point(alpha = 0.2, size = 2) + 
+  stat_function(fun = function(x) x*4/(x + 2))
+```
+
+Of course that makes sense -- why would the sample standard deviation be biased in any way? 
+
+
+
+
+```{r}
+sig <- 1.2
+v <- 5
+precisions <- rgamma(5000, v/2, (v*sig^2)/2)
+
+yy <- rnorm(5000, mean  = 0, sd = 1/sqrt(precisions))
+
+
+plot(density(yy))
+curve(rethinking::dstudent(x, nu = v, mu = 0, sigma = sig), add = TRUE)
+
+```
+
+inspired by here:
+https://www.sumsar.net/blog/2013/12/t-as-a-mixture-of-normals/
+
+```{r}
+s=3
+v=2
+tau <- rgamma(n = 3e3, shape = v/2, rate=s^2*v/2)
+
+yy <- rnorm(3e3, mean =0, sd = 1/sqrt(tau))
+
+plot(density(yy), xlim = c(-20, 20))
+curve(rethinking::dstudent(x, nu = v, mu = 0, sigma = s), add = TRUE)
+```
+
+But is it related to sample size?
+
+```{r}
+five_avg <- replicate(6000, mean(rnorm(5, mean = 0, sd = 1.5)))
+
+plot(density(five_avg))
+curve(rethinking::dstudent(x, nu = 5, mu = 0, sigma = 1.5/sqrt(5)), add = TRUE)
+curve(dnorm(x, mean = 0, sd = 1.5/sqrt(5)), add = TRUE, col = "orange")
+```
+
+oh wow it just the sampling distribution of the central limit theorem
+
+```{r}
+library(ggridges)
+r_df |> 
+  ungroup() |> 
+  ggplot(aes(x = sample_r, y = ..density..)) + 
+  geom_histogram(bins = 30) + 
+  facet_wrap(~t_between) +
+  geom_line(aes(y = dens),
+            data = r_df |> 
+              ungroup() |> 
+              modelr::data_grid(t_between, sample_r = modelr::seq_range(sample_r, n = 20)) |> 
+              mutate(dens = dnorm(sample_r, mean = r_mean, sd = r_sd/sqrt(t_between)))
+  )
+
+```
+
+it looks like -- mayyybe this is it. definitely something to think about more! 

@@ -28,8 +28,7 @@ form_fit4 <- bf(FID    ~ inv_logit(logitM) * 1000 * (1 - inv_logit(logitp)*num_o
 * i for observations (obs, exposure)
 * j for individuals / groups / units (individual chipmunks)
 * k for risk
-* 
-* k, l, m etc for others
+
 
 $$
 \begin{align}
@@ -44,7 +43,6 @@ p_{k}\\
 d_{k}\\
 \end{bmatrix} \sim& \text{multivariate normal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \text{diag}(\sigma)\times \textbf{R}\times\text{diag}(\sigma)\right) \\ 
 \bar{m}, \beta_k^m \sim& \text{normal}(.5, .5)\\
-
 \bar{p},\beta_k^p \sim& \text{normal}(-1, .2)\\
 
 \bar{d},\beta_k^d \sim& \text{normal}(1.5, .5)\\
@@ -54,43 +52,3 @@ d_{k}\\
 \beta_k
 \end{align}
 $$
-
-
-All models were fit with the following priors: the fixed effects had normal distributions (logitM: mean = 0.5, sd = 0.5; logitp: mean = – 1, sd = 0.2; logd: mean = 1.5, sd = 0.5), the random effects had exponential distributions (lamda = 2), the shape parameter had a gamma distribution (alpha = 6.25, beta = 0.25)[CCH1] , and the covariance matrix had a Lewandowski-Kurowicka-Joe (LKJ) distribution (eta = 2) .
-
-
-
-
-
----------------------
-
-$$
-\begin{align}
-\text{FID}_i \sim& \text{Gamma}\left(\frac{\mu_i}{\sigma^2}, \frac{\mu_i^2}{\sigma^2}\right)\\
-\mu_i =& m_i \times 1000 \times \left( 1 - \frac{p_i \times \text{Obs}}{d_i + \text{Obs}}  \right) \\
-\text{logit}(m_i) =& \bar{m} + \beta_{m,\text{risk}[i]} + m_{\text{tamia}[i], \text{risk}[i]}\\
-\text{logit}(p_i) =& \bar{p} + \beta_{p,\text{risk}[i]} + p_{\text{tamia}[i], \text{risk}[i]}\\
-\text{log}(d_i)   =& \bar{d} + \beta_{d,\text{risk}[i]} + d_{\text{tamia}[i], \text{risk}[i]}\\
-\begin{bmatrix}
-m_{\text{tamia}, \text{risk}[i]}\\
-p_{\text{tamia}, \text{risk}[i]}\\
-d_{\text{tamia}, \text{risk}[i]}
-\end{bmatrix} &\sim \text{MVnormal}\left(\begin{bmatrix}0\\0\\0\end{bmatrix}, \textbf{S}_{\text{risk}[i]}\right)
-\end{align}
-$$
-
-$j$ indicates the chipmunks present in each treatment, of which there are $J_r$
-
-put real numbers in? why not?
-
- <!-- \begin{bmatrix}\sigma_{m, \text{risk}[i]}\\\sigma_{p, \text{risk}[i]}\\\sigma_{d, \text{risk}[i]}\end{bmatrix}, R_{\text{risk}[i]}\right -->
-
-```{r}
-mygamma <- function(x, a, u){
-  (a/u)^a/gamma(a)*x^(a-1)*exp(-a*x/u)
-}
-
-curve(mygamma(x, 50, 10), xlim = c(0, 24))
-
-```
-

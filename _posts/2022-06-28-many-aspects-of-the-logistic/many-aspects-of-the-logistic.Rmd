@@ -130,4 +130,113 @@ curve(plogis(2*(x-(-1))) * plogis(-1*(x - (+1))),
 
 ```
 
+## 
+
+Consider HOF functions, which are two typical logistic curves merged together. 
+
+ther I used two different logistic functions
+
+HOF functions by constraining one slope to be positive and the other negative, ut regularizd towards 0 so that it is possible to have an animal that 
+
+never thought of that before but I wonder if it is harder to get that regularization towards 0 for a normal vs an an exponential or invese prior. 
+
+The other functions we tried was a gaussian process 
+
+and a modified logistic. 
+
+We try to compare these three models because the inference we make about food web structure is continent on these
+
+We could even perform bayesian model averaging over the predictions from all three models, in terms of their netowrk properties. 
+
+we just need a probabilistic way to express whatever thing is it waht we are daling about. 
+
+I know one food web metric, which is fundamental to all others, involfes computing some property of the matrix of predictions -- i wonder if this could be done in program, or if there is some analytical statement for the variance or I mean for the distribution of that matrix statistic.   definitely more to learn there. 
+
+### why hrudle models
+
+I wanted to completely separate the two parts of the model, on the owe hand the incidence and on the other the abundance. 
+
+We are , I am I guess making the assumption that there's something different about the patches where there are soe number of individuals. 
+
+Also mand Andrew it is time to write Stan programs for your thesis chapters and just .. get those damned things out. 
+
+Why not be the leader of your own life Andrew. Like you got a phd because why. what is it giving you. because I wanted to deeply understand. and now I hav an angle into to things that I never get tired of more deeply grasping. But still, it is time to start opeing up and sharing what you've seen with others. 
+Come at it from this place of confidence. That oweds nothing to anyone outside you -- you are generating the systems and the reinforcements that are going to get you to your goal. My short term goal right now is to publish all my thesis chapters and to get this bromeliad paper out. 
+
+my heart is full of discomfort still about all of this. 
+about connections that I falied to make, with people 
+
+projects I decided to drift away from. 
+
+I'm feeling some strong things right now and I just want to take care of myself and protect him. its not wrong to offer yourself some kindness
+its not wrong to offer yourself some kindness. 
+
+its very good to offer oneself some kindness. 
+
+and with kindness might also come leadership, a sense that I know what I want and what I am inviting myself to.
+
+if you go log(e^(-a*(x-b))) it is log(e^-a) + log(x - b) and thervore just 
+-a + log(x - b) 
+or 
+-a + log_diff_exp(log(x), log(b))
+but like why would you do that second thing? 
+
+```{r}
+curve(plogis(x), xlim = c(-4, 4))
+curve(plogis(x) - plogis(x-1), xlim = c(-4, 4), ylim   = c(0, 1))
+curve(plogis(x) - plogis(x-4), xlim = c(-4, 4), add = TRUE)
+curve(plogis(x) - plogis(x-6), xlim = c(-4, 4), add = TRUE)
+curve(plogis(x) - plogis(x-4), xlim = c(-4, 4), add = FALSE)
+```
+
+
+
+$$
+\begin{align}
+\end){align}
+$$
+
+```{r}
+curve(exp(-2*(x-1)^2), xlim = c(-4, 4))
+```
+
+
+Anyway, we are going to thing about hte incidence fucntiosn fro bromeliad food webs
+
+We compare these three ways of modelling incidence. 
+
+then we put the preedicitons.,
+
+well then we make predictions, get eh posterior preeictive density for the species richness of a bromeliad. This gives us the posterior distribution of the probability of each link of the food web (to do this might )
+
+
+wait, the best choice might be to consider each species indepentendly -- ie marginalizing over the probability that its link exises in the first place. the probability of that link is then jus tthe probability that each species in present times the probability that they interact. 
+So you would just predict each of these and then their pairwise product. 
+
+there should be an equation for that given the two parametric models
+
+And for a gaussian process choice that might even be the main thing, that might be the parameter that the multivariate gaussian process spots out -- how correlated are psecies in their distirbution. 
+
+Because by furnishing the correlation matrix between species in their incidence -- like that is exactly what we are trying to accomplish
+
+so correlation combined with variance is covariance. 
+
+But yeah, for example what is the matematical form of omnivory, and what do we need to calculate it? the other statistics seem to flow pretty directly from omnivory. If there's a clear way to get a posterior for that, then we only have to make sure to condition it on everything we have -- the data, the traits, the feeding trials and gut stuff. 
+
+remember the loop to calculate the distribution of feeding trials. or not loop, conditional statement: if we know these two soecies were in a trial, then for god's sake just update with that. 
+
+post-stratification is essential probably: if we want to make inference about the population beta diversity, we will need to guess at the real-worls distribution of bromeliads present in a site: at least guess. For example, if the Richardson's can assert that they sampled at random, then we can use that as a kind of pror for the standard deviation of the lognarmal distribution that will describe everything. different sites will have different means, but we will use that standard deviation for post strat. 
+
+and then, it will be a calcuation of beta diversity at the popualtion level among all the bromeliads in terms of species compositon. 
+
+But in those sites with the bigger species pool or wider traits -- or some other environmental factor -- we will find perhaps differences. spcies will have a different rate of accumulation, or a different distributions of traits relative to distributions of dipfferences in species composition. that will lead to differences in feedin trials. 
+
+in some very high-level sense: calculate the correaltion between how a trait affects incidence and how it affects feeding dinteractions, and then you would have an idea of how much species turnove, in a deterministic sense would in turn influence food web characteristics. 
+
+And everyin else would be intermediate steps. 
+
+the "Discrimination" and its partition
+the minimum and the width
+
+could be the like the position of the 5th percentile (ie the 5th quantile) of the cdf of the logistic -- that would involve both steepness and postion
 

@@ -1,7 +1,7 @@
 ---
-title: "Nonlinear functions for growth"
+title: "The 4 parameter logistic"
 description: |
-  Bayesian models for nonlinear functions in a few dimensions.
+  Growth and change between a minimum and a maximum.
 author:
   - name: Andrew and Will
     url: {}
