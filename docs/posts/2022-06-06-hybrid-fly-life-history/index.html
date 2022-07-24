@@ -1871,10 +1871,7 @@ function init_distill() {
 
     // hoverable references
     $('span.citation[data-cites]').each(function() {
-      var refs = $(this).attr('data-cites').split(" ");
-      var refHtml = refs.map(function(ref) {
-        return "<p>" + $('#ref-' + ref).html() + "</p>";
-      }).join("\n");
+      var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
       window.tippy(this, {
         allowHTML: true,
         content: refHtml,
@@ -2066,7 +2063,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Hybrid fly life history","description":"A short description of the post.","authors":[{"author":"Allen and Andrew","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-06-06T00:00:00.000-04:00","citationText":"Andrew, 2022"}
+{"title":"Hybrid fly life history","description":"A short description of the post.","authors":[{"author":"Allen and Andrew","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-06-06T00:00:00.000+00:00","citationText":"Andrew, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->

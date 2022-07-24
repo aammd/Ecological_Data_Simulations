@@ -2,8 +2,6 @@
 title: "Is population growth rate t-distributed"
 description: |
   What happens when you make measurements over different sizes of time interval?
-  
-draft: true
 author:
   - name: Andrew and Will
     url: {}
@@ -45,12 +43,12 @@ plot(imap_dbl(r_t, ~ 30*exp(.x*.y)), type = "l")
 * maybe even different starting years!
 
 ```{r}
-nyears <- 100
+nyears <- 30
 years <- 1:nyears
 r_mean <- .2
 r_sd <- .1
 r_t <- rnorm(nyears, mean = r_mean, sd = r_sd)
-nplot <- 5000
+nplot <- 50
 
 start_years <- sample(1:(nyears/2), size = nplot, replace = TRUE)
 
@@ -185,13 +183,14 @@ $$
 
 
 ```{r}
+library(tidybayes)
 tibble(x = rep(seq(from = 2, to = 20, by = 2), each = 800)) |> 
   rowwise() |> 
   mutate(rr = list(rnorm(n = x, sd = 2)),
          s = var(rr)) |> 
   ggplot(aes(x = x, y = s)) + 
   # stat_bin_hex() + 
-  stat_pointinterval(point_interval = mean_hdi, .width = .89) + 
+  tidybayes::stat_pointinterval(point_interval = mean_hdi, .width = .89) + 
   # geom_point(alpha = 0.2, size = 2) + 
   stat_function(fun = function(x) x*4/(x + 2))
 ```
@@ -234,23 +233,25 @@ But is it related to sample size?
 five_avg <- replicate(6000, mean(rnorm(5, mean = 0, sd = 1.5)))
 
 plot(density(five_avg))
-curve(rethinking::dstudent(x, nu = 5, mu = 0, sigma = 1.5/sqrt(5)), add = TRUE)
+curve(rethinking::dstudent(x, nu = 5, mu = 0, sigma = 1.5/sqrt(5)), add = TRUE, lwd  = 3)
 curve(dnorm(x, mean = 0, sd = 1.5/sqrt(5)), add = TRUE, col = "orange")
 ```
 
-oh wow it just the sampling distribution of the central limit theorem
+oh wow it just the sampling distribution of the mean according to the central limit theorem
 
 ```{r}
 library(ggridges)
 r_df |> 
   ungroup() |> 
   ggplot(aes(x = sample_r, y = ..density..)) + 
-  geom_histogram(bins = 30) + 
+  # geom_histogram(bins = 30) + 
+  stat_density_ridges() + 
   facet_wrap(~t_between) +
   geom_line(aes(y = dens),
             data = r_df |> 
               ungroup() |> 
-              modelr::data_grid(t_between, sample_r = modelr::seq_range(sample_r, n = 20)) |> 
+              modelr::data_grid(t_between, 
+                                sample_r = modelr::seq_range(sample_r, n = 20)) |> 
               mutate(dens = dnorm(sample_r, mean = r_mean, sd = r_sd/sqrt(t_between)))
   )
 
