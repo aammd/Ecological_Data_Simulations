@@ -14,6 +14,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+source(here::here("_posts/helper_fns.R"))
 ```
 
 I want to fit a four parameter equation like this:
@@ -221,4 +222,428 @@ $$
 
 So depending on what you want to model you could just do that! 
 
+## trying it out
+
+```{r eval=FALSE, include=FALSE}
+log_sum_exp_ln_model <- cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/log_sum_exp_ln_model.stan"))
+
+
+datlist <- list(n = 50,
+                x = seq(from = -40, to = 40, length.out = 50),
+                yy = demo_dots |> filter(.draw == max(.draw)) |> pull(.value)
+                )
+model_samples <- log_sum_exp_ln_model$sample(data = datlist, refresh = 0)
+
+model_samples
+
+```
+
+fake data
+
+```{r}
+library(ggplot2)
+
+L <- 3
+U <- 16
+f <- log(U/L - 1)
+alpha <- 1.2
+beta <- -1
+
+x <- runif(420, -2, 5)
+meanlog <- log(L) + log1p(exp(f + plogis(alpha*(x - beta), log.p = TRUE)))
+
+qplot(x, meanlog, geom = "line")
+
+sdlog <- .7
+y_obs <- rlnorm(420, ln_a(meanlog, sdlog), ln_b(meanlog, sdlog))
+
+data.frame(x, mean = exp(meanlog)) |> 
+  ggplot(aes(x = x, y = mean))+ geom_line() + 
+  geom_point(aes(y = y_obs)) + 
+  geom_hline(yintercept = c(L, U), lty = 2)+ 
+  geom_vline(xintercept = beta, lty = 3) + 
+  theme_minimal()
+```
+
+
+```{r}
+# simulation in R 
+m <- rnorm(1, -1, 1)
+f <- rnorm(1, 7, .5)
+alpha <- rnorm(1, 0, .5)
+beta  <- rnorm(1, -2, .2)
+
+curve(exp(m + log(1 + exp(f + log(plogis(exp(alpha) * (x - beta)))))), xlim = c(-3, 5))
+
+```
+
+
+
+```{r eval=FALSE}
+library(cmdstanr)
+pl_compfun <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_compfun.stan"))
+
+
+datlist <- list(N = length(x),
+                x = x,
+                y_obs = y_obs
+                )
+model_samples <- pl_compfun$sample(data = datlist, parallel_chains = 4)
+
+model_samples
+```
+
+
+```{r eval=FALSE}
+library(tidybayes)
+
+
+model_draws <- gather_draws(model_samples, log_mu[i], ndraws = 45)
+model_draws  |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y = exp(.value), group = .draw)) + 
+  geom_line() + NULL
+  geom_point(aes(x = x, y = yy), inherit.aes = FALSE,
+             data = as.data.frame(datlist))
+  
+model_mean <- gather_rvars(model_samples, log_mu[i])
+model_mean |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, dist = exp(.value))) + 
+  stat_dist_lineribbon() + 
+  geom_point(aes(x = x, y = y_obs), inherit.aes = FALSE,
+             data = as.data.frame(datlist))
+
+```
+
+
+could the logistic lpdf be used there?
+
+```{r}
+
+library(cmdstanr)
+pl_compfun <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/logistic_lpdf.stan"))
+
+
+datlist <- list(N = length(x),
+                x = x,
+                y_obs = y_obs
+                )
+model_samples <- pl_compfun$sample(data = datlist, refresh = 0)
+
+model_samples
+```
+
+
+
+## again
+
+
+```{r}
+library(cmdstanr)
+pl_compfun_mat <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_compfun_mat.stan"))
+
+
+datlist <- list(N = length(x),
+                x = cbind(1,x),
+                y_obs = y_obs
+                )
+model_samples <- pl_compfun_mat$sample(data = datlist, parallel_chains = 4)
+
+model_samples
+```
+
+
+
+
+## make my onw
+
+
+```{r}
+library(cmdstanr)
+pl_compfun_noinv <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_compfun_noinvlogit.stan"))
+
+
+datlist <- list(N = length(x),
+                x = cbind(1,x),
+                y_obs = y_obs
+                )
+model_samples <- pl_compfun_mat$sample(data = datlist, parallel_chains = 4)
+
+model_samples
+```
+
+
+#### get simpler
+
+I'm not satisfied with how these are working, so here is two simplifications of the above
+
+1. simulating the data from the prior and fitting a model using the same prior
+1. switching to `poisson_log` to save the parameter that I'm not interested in right now
+
+Also, just to write in math what I was expressing in Stan above
+
+$$
+\begin{align}
+\text{log_inv_logit}(x) &= \ln\left(\frac{1}{1 + e^{-\alpha}}\right) \\
+ &= -1 \times \ln(1 + e^{-\alpha}) \\
+ &= -\text{log1p_exp}(-\alpha)
+\end{align}
+$$
+
+
+so the expression for the log of the mean becomes:
+
+$$
+\begin{align}
+\ln(Y) &= m + \text{log1p_exp}(f + \text{log_inv_logit}(\alpha(x - \beta))) \\
+&= m + \text{log1p_exp}(f - \text{log1p_exp}(-\alpha(x - \beta))) \\
+\end{align}
+$$
+
+
+Simulate this in R
+
+```{r}
+m <- rnorm(1, log(2), sd = .1)
+f <- rnorm(1, log(10), sd = .1)
+a <- rnorm(1, 0, .1)
+b <- 0
+
+x_vals <- runif(50, -6, 12)
+y_mean <- m + log1p(exp(f - log1p(exp(-exp(a)*(x_vals - b)))))
+
+plot(x_vals, exp(y_mean))
+```
+
+simulate data with this
+
+```{r}
+y_count <- rpois(length(y_mean), exp(y_mean))
+
+plot(x_vals, y_count)
+```
+
+And fit with a Stan program that uses these same priors:
+
+
+```{r}
+library(cmdstanr)
+pl_poissonlog <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_poissonlog.stan"))
+
+
+datlist <- list(N = length(x_vals),
+                x_vals = x_vals,
+                y_count = y_count
+                )
+model_samples <- pl_poissonlog$sample(data = datlist, parallel_chains = 4)
+
+model_samples
+
+```
+
+Now I want to look at the parameters and also see the curve:
+
+```{r}
+
+library(tidyverse)
+
+plot_model_curve <- function(model_samples, datlist){
+  model_mean <- gather_rvars(model_samples, log_mu[i])
+  model_mean |> 
+    ungroup() |> 
+    mutate(x = datlist$x_vals[i]) |> 
+    ggplot(aes(x = x, dist = exp(.value))) + 
+    stat_dist_lineribbon() + 
+    geom_point(aes(x = x_vals, y = y_count), inherit.aes = FALSE,
+               data = as.data.frame(datlist))
+}
+  
+plot_model_curve(model_samples = model_samples, datlist = datlist)
+  
+```
+
+parameter recovery
+
+```{r}
+get_variables(model_samples)
+
+gather_rvars(model_samples, m, f, log_alpha) |> 
+  ggplot(aes(dist = .value)) + 
+  stat_dist_halfeye() + 
+  facet_wrap(~.variable) + 
+  geom_hline(aes(yintercept = trueval), 
+             data = tribble(
+               ~.variable, ~trueval,
+               "f",        f,
+               "m",        m,
+               "log_alpha",a
+             ))
+
+```
+
+How does this compare to just writing the 4PL model directly?  Keep the same parameters but just swap the `log1p_exp` part for writing that in readable math.
+
+### simple but with lognormal errors
+
+OK so the poisson_log version works as intended. Does a lognormal have the same ease?
+
+```{r}
+y_meas <- rlnorm(length(x_vals), ln_a(y_mean, .5), ln_b(y_mean, .5))
+
+plot(x_vals, y_meas)
+
+```
+
+```{r}
+library(cmdstanr)
+pl_lognormalfixvar <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_lognormalfixvar.stan"))
+
+
+datlist <- list(N = length(x_vals),
+                x_vals = x_vals,
+                y_meas = y_meas
+                )
+model_samples_ln <- pl_lognormalfixvar$sample(data = datlist, parallel_chains = 4)
+
+model_samples_ln
+```
+
+```{r}
+
+model_mean <- gather_rvars(model_samples_ln, post_log_mu[i])
+
+dd <- model_mean |> 
+  ungroup() |> 
+  mutate(x = datlist$x_vals[i])
+
+dd |> 
+  filter(i == 8) |> 
+  ggplot(aes(x = x, dist = exp(.value))) + 
+  stat_dist_halfeye()
+
+model_mean |> 
+  ungroup() |> 
+  mutate(x = datlist$x_vals[i]) |> 
+  ggplot(aes(x = x, dist = exp(.value))) + 
+  stat_dist_lineribbon() + 
+  geom_point(aes(x = x_vals, y = y_count), inherit.aes = FALSE,
+             data = as.data.frame(datlist))
+```
+
+
+```{r}
+gather_rvars(model_samples_ln, m, f, log_alpha) |> 
+  ggplot(aes(dist = .value)) + 
+  stat_dist_halfeye() + 
+  facet_wrap(~.variable) + 
+  geom_hline(aes(yintercept = trueval), 
+             data = tribble(
+               ~.variable, ~trueval,
+               "f",        f,
+               "m",        m,
+               "log_alpha",a
+             ))
+
+```
+
+
+## different species have different parameters:
+
+```{r}
+sp_m <- rnorm(12, log(5), sd = .1)
+sp_f <- rnorm(12, log(10), sd = .1)
+sp_a <- rnorm(12, 0, 1)
+sp_b <- 0
+
+sp_curves <- expand_grid(x_vals = runif(50, -6, 12),
+            sp = 1:12) |> 
+  mutate(y_mean = sp_m[sp] + log1p(exp(sp_f[sp] - log1p(exp(-exp(sp_a[sp])*(x_vals - b))))),
+         y_meas = rlnorm(length(x_vals), ln_a(y_mean, .5), ln_b(y_mean, .5))
+  )
+
+sp_curves |> 
+  ggplot(aes(x = x_vals, y = exp(y_mean), group = sp)) + 
+  geom_line() + 
+  geom_point(aes(y = y_meas))
+```
+
+
+thisnk of L, or m, the minimum , as something that is going to vary by species AND by site. 
+L isnt really L per se, its the means of shifting hte whole function up or down. 
+
+f is t;he factore by which U is bigge than L. fixed by a species. could think of it as a specie's shade tolerance
+
+alpha is the species stage descrimination  
+
+```{r}
+library(cmdstanr)
+multispp <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/multisp_logistic_curve.stan"), pedantic = TRUE)
+
+
+datlist <- list(N = nrow(sp_curves),
+                S = max(sp_curves$sp),
+                sp = sp_curves$sp,
+                x_vals = sp_curves$x_vals,
+                y_meas = sp_curves$y_meas
+                )
+model_samples_ln <- multispp$sample(data = datlist,
+                                    parallel_chains = 4,
+                                    iter_sampling = 500)
+
+model_samples_ln
+```
+
+
+```{r}
+library(tidybayes)
+model_mean <- gather_rvars(model_samples_ln, post_log_mu[i])
+
+dd <- model_mean |> 
+  ungroup() |> 
+  mutate(x = datlist$x_vals[i])
+
+dd |> 
+  filter(i == 8) |> 
+  ggplot(aes(x = x, dist = exp(.value))) + 
+  stat_dist_halfeye()
+
+model_mean |> 
+  ungroup() |> 
+  mutate(x = datlist$x_vals[i],
+         sp = datlist$sp) |> 
+  ggplot(aes(x = x, dist = exp(.value), group = sp)) + 
+  stat_dist_lineribbon() + 
+  geom_point(aes(x = x_vals, y = y_meas), inherit.aes = FALSE,
+             data = sp_curves)
+```
+
+try via diag post multiply
+
+```{r}
+library(cmdstanr)
+multispp_diag <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/multisp_diag_pre.stan"), pedantic = TRUE)
+
+
+datlist <- list(N = nrow(sp_curves),
+                S = max(sp_curves$sp),
+                sp = sp_curves$sp,
+                x_vals = sp_curves$x_vals,
+                y_meas = sp_curves$y_meas
+                )
+model_samples_ln <- multispp_diag$sample(data = datlist,
+                                    parallel_chains = 4,
+                                    iter_sampling = 500, iter_warmup = 500, 
+                                    output_dir = "_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/")
+
+model_samples_ln$profiles()
+```
+
+that doesn't sample NOTICABLY faster but the divergences are far fewer.
+
+```{r}
+model_samples_ln <- model_samples_ln$save_output_files("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/")
+```
 

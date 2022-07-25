@@ -261,11 +261,55 @@ model_samples
 
 model_mean <- gather_rvars(model_samples, log_mu[i])
 
-model_mean |> 
+model_draws <- gather_draws(model_samples, log_mu[i], ndraws = 3)
+model_draws  |> 
   ungroup() |> 
   mutate(x = datlist$x[i]) |> 
-  ggplot(aes(x = x, dist = exp(.value))) + 
+  ggplot(aes(x = x, y = exp(.value), group = .draw)) + 
+  geom_line() + NULL
+  geom_point(aes(x = x, y = yy), inherit.aes = FALSE,
+             data = as.data.frame(datlist))
+```
+
+```{r}
+
+model_pred <- gather_rvars(model_samples, y_obs[i])
+
+model_pred |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, dist = .value)) + 
   stat_dist_lineribbon() + 
+  geom_point(aes(x = x, y = yy), inherit.aes = FALSE,
+             data = as.data.frame(datlist), pch = 21, fill = "orange") + 
+  scale_fill_brewer(palette = "Greens")
+```
+
+
+
+```{r}
+log_sum_exp_ln_model <- cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/log_sum_exp_ln_model.stan"))
+
+
+datlist <- list(n = 50,
+                x = seq(from = -40, to = 40, length.out = 50),
+                yy = demo_dots |> filter(.draw == max(.draw)) |> pull(.value)
+                )
+model_samples <- log_sum_exp_ln_model$sample(data = datlist, refresh = 0)
+
+model_samples
+```
+
+```{r}
+
+model_mean <- gather_rvars(model_samples, log_mu[i])
+
+model_draws <- gather_draws(model_samples, log_mu[i], ndraws = 3)
+model_draws  |> 
+  ungroup() |> 
+  mutate(x = datlist$x[i]) |> 
+  ggplot(aes(x = x, y = exp(.value), group = .draw)) + 
+  geom_line() + NULL
   geom_point(aes(x = x, y = yy), inherit.aes = FALSE,
              data = as.data.frame(datlist))
 ```
