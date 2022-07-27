@@ -1,7 +1,7 @@
 ---
 title: "One Weird Trick: The 4 parameter logistic"
 description: |
-  A short description of the post.
+  Reparameterizing the 4-parameter logistic
 author: Andrew
 date: 2022-07-22
 output:
@@ -15,6 +15,9 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source(here::here("_posts/helper_fns.R"))
+library(cmdstanr)
+library(tidybayes)
+library(tidyverse)
 ```
 
 I want to fit a four parameter equation like this:
@@ -176,6 +179,7 @@ abline(v = 0, lty = 2)
 ```
 
 
+putting them all together, here is a curve with the new parameterization:
 
 ```{r}
 L <- 1
@@ -220,25 +224,17 @@ L\left(1 + e^{\ln(.5) + f}\right) &= h \\
 \end{align}
 $$
 
-So depending on what you want to model you could just do that! 
+This could be useful if it makes more sense to set a prior on a midpoint, rather than on a lower bound. 
 
-## trying it out
+## Trying it out
 
-```{r eval=FALSE, include=FALSE}
-log_sum_exp_ln_model <- cmdstan_model(stan_file = here::here("_posts/2022-06-28-nonlinear-functions-for-growth/log_sum_exp_ln_model.stan"))
+**NOTE** as very often happens, my first attempts to work with this model weren't very successful. 
+The models below fit, but only slowly and with many divergent iterations.
 
-
-datlist <- list(n = 50,
-                x = seq(from = -40, to = 40, length.out = 50),
-                yy = demo_dots |> filter(.draw == max(.draw)) |> pull(.value)
-                )
-model_samples <- log_sum_exp_ln_model$sample(data = datlist, refresh = 0)
-
-model_samples
-
+```{r}
+knitr::opts_chunk$set(eval = FALSE)
 ```
 
-fake data
 
 ```{r}
 library(ggplot2)
@@ -278,7 +274,6 @@ curve(exp(m + log(1 + exp(f + log(plogis(exp(alpha) * (x - beta)))))), xlim = c(
 ```
 
 
-
 ```{r eval=FALSE}
 library(cmdstanr)
 pl_compfun <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_compfun.stan"))
@@ -288,7 +283,7 @@ datlist <- list(N = length(x),
                 x = x,
                 y_obs = y_obs
                 )
-model_samples <- pl_compfun$sample(data = datlist, parallel_chains = 4)
+model_samples <- pl_compfun$sample(data = datlist, parallel_chains = 4, refresh=0)
 
 model_samples
 ```
@@ -319,27 +314,7 @@ model_mean |>
 ```
 
 
-could the logistic lpdf be used there?
-
-```{r}
-
-library(cmdstanr)
-pl_compfun <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/logistic_lpdf.stan"))
-
-
-datlist <- list(N = length(x),
-                x = x,
-                y_obs = y_obs
-                )
-model_samples <- pl_compfun$sample(data = datlist, refresh = 0)
-
-model_samples
-```
-
-
-
-## again
-
+Using matrix algebra instead
 
 ```{r}
 library(cmdstanr)
@@ -350,16 +325,12 @@ datlist <- list(N = length(x),
                 x = cbind(1,x),
                 y_obs = y_obs
                 )
-model_samples <- pl_compfun_mat$sample(data = datlist, parallel_chains = 4)
+model_samples <- pl_compfun_mat$sample(data = datlist, parallel_chains = 4, refresh=0)
 
 model_samples
 ```
 
-
-
-
-## make my onw
-
+avoiding `log_inv_logit` and instead using `-log1p_exp()`
 
 ```{r}
 library(cmdstanr)
@@ -370,13 +341,18 @@ datlist <- list(N = length(x),
                 x = cbind(1,x),
                 y_obs = y_obs
                 )
-model_samples <- pl_compfun_mat$sample(data = datlist, parallel_chains = 4)
+model_samples <- pl_compfun_mat$sample(data = datlist, parallel_chains = 4, refresh=0)
 
 model_samples
 ```
 
 
-#### get simpler
+```{r eval=TRUE}
+knitr::opts_chunk$set(eval = TRUE)
+```
+
+
+## Starting Simple: simulations and parameter recovery
 
 I'm not satisfied with how these are working, so here is two simplifications of the above
 
@@ -438,9 +414,11 @@ datlist <- list(N = length(x_vals),
                 x_vals = x_vals,
                 y_count = y_count
                 )
-model_samples <- pl_poissonlog$sample(data = datlist, parallel_chains = 4)
+model_samples <- pl_poissonlog$sample(data = datlist, parallel_chains = 4, init=0)
 
 model_samples
+
+model_samples$profiles()
 
 ```
 
@@ -484,9 +462,134 @@ gather_rvars(model_samples, m, f, log_alpha) |>
 
 ```
 
-How does this compare to just writing the 4PL model directly?  Keep the same parameters but just swap the `log1p_exp` part for writing that in readable math.
+It works, samples swiftly too!
 
-### simple but with lognormal errors
+
+## Comparison with a direct parameterization
+
+How does this compare to just writing the 4PL model directly?  
+To keep it a fair comparison I'll try to define all the parameters in the same or similar ways, and use the same likelihood as above.
+
+Keep the same parameters but just swap the `log1p_exp` part for writing that in readable math.
+
+```{r}
+pl_poissonlog_direct <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_poissonlog_direct.stan"))
+
+
+datlist <- list(N = length(x_vals),
+                x_vals = x_vals,
+                y_count = y_count
+                )
+direct_model_samples <- pl_poissonlog_direct$sample(data = datlist, parallel_chains = 4, init = 0)
+
+direct_model_samples$profiles()
+
+model_samples$profiles()
+
+direct_model_samples$summary()
+
+model_samples$summary()
+
+```
+
+use the refactored parameterization but write the functions by hand:
+
+```{r}
+pl_poissonlog_a_la_mitten <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_poissonlog_a_la_mitten.stan"))
+
+
+datlist <- list(N = length(x_vals),
+                x_vals = x_vals,
+                y_count = y_count
+                )
+
+pl_poissonlog_a_la_mitten_samples <- pl_poissonlog_a_la_mitten$sample(data = datlist, parallel_chains = 4, init = 0)
+
+direct_model_samples$profiles()
+model_samples$profiles()
+pl_poissonlog_a_la_mitten_samples$profiles()
+
+direct_model_samples$summary()
+
+model_samples$summary()
+
+```
+
+
+
+```{r}
+pl_poissonlog_invlogit <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_poissonlog_inv_logit.stan"))
+
+
+datlist <- list(N = length(x_vals),
+                x_vals = x_vals,
+                y_count = y_count
+                )
+invlog_model_samples <- pl_poissonlog_invlogit$sample(data = datlist, parallel_chains = 4, init = 0)
+
+direct_model_samples$profiles()
+
+invlog_model_samples$profiles()
+
+model_samples$summary()
+
+```
+
+using `log1p` instead of `log1p_exp`. could the difference be in there?
+
+```{r}
+pl_poissonlog_invlogit_log1p <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_poissonlog_inv_logit_log1p.stan"))
+
+
+datlist <- list(N = length(x_vals),
+                x_vals = x_vals,
+                y_count = y_count
+                )
+invlog_log1p_model_samples <- pl_poissonlog_invlogit_log1p$sample(data = datlist, parallel_chains = 4)
+
+invlog_model_samples$profiles()
+direct_model_samples$profiles()
+invlog_log1p_model_samples$profiles()
+model_samples$profiles()
+
+```
+
+
+```{r}
+pl_poissonlog_loginvlogit <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_poissonlog_loginvlogit.stan"))
+
+
+datlist <- list(N = length(x_vals),
+                x_vals = x_vals,
+                y_count = y_count
+                )
+pl_poissonlog_loginvlogit_samples <- pl_poissonlog_loginvlogit$sample(data = datlist, parallel_chains = 4)
+
+pl_poissonlog_loginvlogit_samples$profiles()
+invlog_model_samples$profiles()
+direct_model_samples$profiles()
+invlog_log1p_model_samples$profiles()
+pl_poissonlog_u_not_f_samples$profiles()
+model_samples$profiles()
+
+```
+
+
+compare sample ESS
+
+```{r}
+direct_model_samples$summary(variables = c("m", "u", "log_alpha"))
+invlog_model_samples$summary(variables = c("m", "u", "log_alpha"))
+invlog_log1p_model_samples$summary(variables = c("m", "f", "log_alpha"))
+pl_poissonlog_loginvlogit_samples$summary(variables = c("m", "f", "log_alpha"))
+
+```
+
+
+
+
+
+### Lognormal errors
 
 OK so the poisson_log version works as intended. Does a lognormal have the same ease?
 
@@ -550,7 +653,7 @@ gather_rvars(model_samples_ln, m, f, log_alpha) |>
 ```
 
 
-## different species have different parameters:
+### Multiple species
 
 ```{r}
 sp_m <- rnorm(12, log(5), sd = .1)
@@ -635,15 +738,8 @@ datlist <- list(N = nrow(sp_curves),
                 )
 model_samples_ln <- multispp_diag$sample(data = datlist,
                                     parallel_chains = 4,
-                                    iter_sampling = 500, iter_warmup = 500, 
-                                    output_dir = "_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/")
+                                    iter_sampling = 500, iter_warmup = 500)
 
 model_samples_ln$profiles()
-```
-
-that doesn't sample NOTICABLY faster but the divergences are far fewer.
-
-```{r}
-model_samples_ln <- model_samples_ln$save_output_files("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/")
 ```
 

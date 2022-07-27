@@ -89,7 +89,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_meta_tags-->
 <title>Simulation of Ecological Data: One Weird Trick: The 4 parameter logistic</title>
 
-<meta property="description" itemprop="description" content="A short description of the post."/>
+<meta property="description" itemprop="description" content="Reparameterizing the 4-parameter logistic"/>
 
 
 <!--  https://schema.org/Article -->
@@ -100,25 +100,25 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
 <meta property="og:title" content="Simulation of Ecological Data: One Weird Trick: The 4 parameter logistic"/>
 <meta property="og:type" content="article"/>
-<meta property="og:description" content="A short description of the post."/>
+<meta property="og:description" content="Reparameterizing the 4-parameter logistic"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="Simulation of Ecological Data"/>
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary"/>
 <meta property="twitter:title" content="Simulation of Ecological Data: One Weird Trick: The 4 parameter logistic"/>
-<meta property="twitter:description" content="A short description of the post."/>
+<meta property="twitter:description" content="Reparameterizing the 4-parameter logistic"/>
 
 <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","editor_options"]}},"value":[{"type":"character","attributes":{},"value":["One Weird Trick: The 4 parameter logistic"]},{"type":"character","attributes":{},"value":["A short description of the post."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Andrew"]}]}]},{"type":"character","attributes":{},"value":["2022-07-22"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["chunk_output_type"]}},"value":[{"type":"character","attributes":{},"value":["console"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","editor_options"]}},"value":[{"type":"character","attributes":{},"value":["One Weird Trick: The 4 parameter logistic"]},{"type":"character","attributes":{},"value":["Reparameterizing the 4-parameter logistic"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Andrew"]}]}]},{"type":"character","attributes":{},"value":["2022-07-22"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["chunk_output_type"]}},"value":[{"type":"character","attributes":{},"value":["console"]}]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["one-weird-trick-the-4-parameter-logistic_files/anchor-4.2.2/anchor.min.js","one-weird-trick-the-4-parameter-logistic_files/bowser-1.9.3/bowser.min.js","one-weird-trick-the-4-parameter-logistic_files/distill-2.2.21/template.v2.js","one-weird-trick-the-4-parameter-logistic_files/figure-html5/curve-4p-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-1-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-2-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-3-1.png","one-weird-trick-the-4-parameter-logistic_files/header-attrs-2.13/header-attrs.js","one-weird-trick-the-4-parameter-logistic_files/jquery-3.6.0/jquery-3.6.0.js","one-weird-trick-the-4-parameter-logistic_files/jquery-3.6.0/jquery-3.6.0.min.js","one-weird-trick-the-4-parameter-logistic_files/jquery-3.6.0/jquery-3.6.0.min.map","one-weird-trick-the-4-parameter-logistic_files/popper-2.6.0/popper.min.js","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy-bundle.umd.min.js","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy-light-border.css","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy.css","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy.umd.min.js","one-weird-trick-the-4-parameter-logistic_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["4pl_compfun","4pl_compfun.exe","4pl_compfun.stan","4pl_compfun_mat","4pl_compfun_mat.stan","4pl_compfun_noinvlogit","4pl_compfun_noinvlogit.stan","4pl_lognormalfixvar","4pl_lognormalfixvar.stan","4pl_poissonlog","4pl_poissonlog.stan","logistic_lpdf.stan","multisp_diag_pre","multisp_diag_pre.stan","multisp_logistic_curve","multisp_logistic_curve.exe","multisp_logistic_curve.stan","one-weird-trick-the-4-parameter-logistic_files/anchor-4.2.2/anchor.min.js","one-weird-trick-the-4-parameter-logistic_files/bowser-1.9.3/bowser.min.js","one-weird-trick-the-4-parameter-logistic_files/distill-2.2.21/template.v2.js","one-weird-trick-the-4-parameter-logistic_files/figure-html5/curve-4p-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-1-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-2-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-3-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-4-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-4-2.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-5-1.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-5-2.png","one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-6-1.png","one-weird-trick-the-4-parameter-logistic_files/header-attrs-2.13/header-attrs.js","one-weird-trick-the-4-parameter-logistic_files/jquery-3.6.0/jquery-3.6.0.js","one-weird-trick-the-4-parameter-logistic_files/jquery-3.6.0/jquery-3.6.0.min.js","one-weird-trick-the-4-parameter-logistic_files/jquery-3.6.0/jquery-3.6.0.min.map","one-weird-trick-the-4-parameter-logistic_files/popper-2.6.0/popper.min.js","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy-bundle.umd.min.js","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy-light-border.css","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy.css","one-weird-trick-the-4-parameter-logistic_files/tippy-6.2.7/tippy.umd.min.js","one-weird-trick-the-4-parameter-logistic_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -1038,6 +1038,10 @@ figure img.external {
   margin-top: 1.5em;
 }
 
+.figure img {
+  width: 100%;
+}
+
 .figure .caption {
   color: rgba(0, 0, 0, 0.6);
   font-size: 12px;
@@ -1867,12 +1871,6 @@ function init_distill() {
 
     // hoverable references
     $('span.citation[data-cites]').each(function() {
-      if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
-        var fn = $(this).children()[0]
-        $(this).html(fn.shadowRoot.querySelector("sup"))
-        $(this).id = fn.id
-        fn.remove()
-      }
       var refs = $(this).attr('data-cites').split(" ");
       var refHtml = refs.map(function(ref) {
         return "<p>" + $('#ref-' + ref).html() + "</p>";
@@ -1887,31 +1885,6 @@ function init_distill() {
         placement: 'bottom-start'
       });
     });
-
-    // fix footnotes in tables (#411)
-    // replacing broken distill.pub feature
-    $('table d-footnote').each(function() {
-      // we replace internal showAtNode methode which is triggered when hovering a footnote
-      this.hoverBox.showAtNode = function(node) {
-        // ported from https://github.com/distillpub/template/pull/105/files
-        calcOffset = function(elem) {
-            let x = elem.offsetLeft;
-            let y = elem.offsetTop;
-            // Traverse upwards until an `absolute` element is found or `elem`
-            // becomes null.
-            while (elem = elem.offsetParent && elem.style.position != 'absolute') {
-                x += elem.offsetLeft;
-                y += elem.offsetTop;
-            }
-
-            return { left: x, top: y };
-        }
-        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
-        const bbox = node.getBoundingClientRect();
-        const offset = calcOffset(node);
-        this.show([offset.left + bbox.width, offset.top + bbox.height]);
-      }
-    })
 
     // clear polling timer
     clearInterval(tid);
@@ -2011,8 +1984,6 @@ function init_common() {
   // mark non-body figures created by knitr chunks as 100% width
   $('.layout-chunk').each(function(i, val) {
     var figures = $(this).find('img, .html-widget');
-    // ignore leaflet img layers (#106)
-    figures = figures.filter(':not(img[class*="leaflet"])')
     if ($(this).attr('data-layout') !== "l-body") {
       figures.css('width', '100%');
     } else {
@@ -2035,7 +2006,7 @@ function init_common() {
   // get rid of index.html references in header
   if (window.location.protocol !== "file:") {
     $('.distill-site-header a[href]').each(function(i,val) {
-      $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
+      $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
     });
   }
 
@@ -2095,7 +2066,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"One Weird Trick: The 4 parameter logistic","description":"A short description of the post.","authors":[{"author":"Andrew","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-22T00:00:00.000-04:00","citationText":"Andrew, 2022"}
+{"title":"One Weird Trick: The 4 parameter logistic","description":"Reparameterizing the 4-parameter logistic","authors":[{"author":"Andrew","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-22T00:00:00.000-04:00","citationText":"Andrew, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2121,7 +2092,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <h1>One Weird Trick: The 4 parameter logistic</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>A short description of the post.</p></p>
+<p><p>Reparameterizing the 4-parameter logistic</p></p>
 </div>
 
 <div class="d-byline">
@@ -2308,6 +2279,8 @@ scale:</p>
 </div>
 <p><img src="one-weird-trick-the-4-parameter-logistic_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
 </div>
+<p>putting them all together, here is a curve with the new
+parameterization:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>L</span> <span class='op'>&lt;-</span> <span class='fl'>1</span>
@@ -2352,7 +2325,415 @@ L\left(1 + e^{\ln(.5) + f}\right) &amp;= h \\
 \ln(L) = \ln(h) - \text{log1p_exp}(f + \ln(.5))
 \end{align}
 \]</span></p>
-<p>So depending on what you want to model you could just do that!</p>
+<p>This could be useful if it makes more sense to set a prior on a
+midpoint, rather than on a lower bound.</p>
+<h2 id="trying-it-out">Trying it out</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>knitr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/knitr/man/opts_chunk.html'>opts_chunk</a></span><span class='op'>$</span><span class='fu'>set</span><span class='op'>(</span>eval <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span>
+
+<span class='va'>L</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>
+<span class='va'>U</span> <span class='op'>&lt;-</span> <span class='fl'>16</span>
+<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>U</span><span class='op'>/</span><span class='va'>L</span> <span class='op'>-</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>alpha</span> <span class='op'>&lt;-</span> <span class='fl'>1.2</span>
+<span class='va'>beta</span> <span class='op'>&lt;-</span> <span class='op'>-</span><span class='fl'>1</span>
+
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>420</span>, <span class='op'>-</span><span class='fl'>2</span>, <span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>meanlog</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>L</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log1p</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>f</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>*</span><span class='op'>(</span><span class='va'>x</span> <span class='op'>-</span> <span class='va'>beta</span><span class='op'>)</span>, log.p <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>meanlog</span>, geom <span class='op'>=</span> <span class='st'>"line"</span><span class='op'>)</span>
+
+<span class='va'>sdlog</span> <span class='op'>&lt;-</span> <span class='fl'>.7</span>
+<span class='va'>y_obs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Lognormal.html'>rlnorm</a></span><span class='op'>(</span><span class='fl'>420</span>, <span class='fu'>ln_a</span><span class='op'>(</span><span class='va'>meanlog</span>, <span class='va'>sdlog</span><span class='op'>)</span>, <span class='fu'>ln_b</span><span class='op'>(</span><span class='va'>meanlog</span>, <span class='va'>sdlog</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='va'>x</span>, mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>meanlog</span><span class='op'>)</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>mean</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>geom_line</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y_obs</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span>yintercept <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>L</span>, <span class='va'>U</span><span class='op'>)</span>, lty <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_vline</a></span><span class='op'>(</span>xintercept <span class='op'>=</span> <span class='va'>beta</span>, lty <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_minimal</a></span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># simulation in R </span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>7</span>, <span class='fl'>.5</span><span class='op'>)</span>
+<span class='va'>alpha</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>.5</span><span class='op'>)</span>
+<span class='va'>beta</span>  <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>2</span>, <span class='fl'>.2</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>m</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>f</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>)</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>x</span> <span class='op'>-</span> <span class='va'>beta</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>3</span>, <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mc-stan.org/cmdstanr/'>cmdstanr</a></span><span class='op'>)</span>
+<span class='va'>pl_compfun</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span><span class='st'>"_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_compfun.stan"</span><span class='op'>)</span><span class='op'>)</span>
+
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>,
+                x <span class='op'>=</span> <span class='va'>x</span>,
+                y_obs <span class='op'>=</span> <span class='va'>y_obs</span>
+                <span class='op'>)</span>
+<span class='va'>model_samples</span> <span class='op'>&lt;-</span> <span class='va'>pl_compfun</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span>, parallel_chains <span class='op'>=</span> <span class='fl'>4</span>, refresh<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
+
+<span class='va'>model_samples</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mjskay.github.io/tidybayes/'>tidybayes</a></span><span class='op'>)</span>
+
+
+<span class='va'>model_draws</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/spread_draws.html'>gather_draws</a></span><span class='op'>(</span><span class='va'>model_samples</span>, <span class='va'>log_mu</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, ndraws <span class='op'>=</span> <span class='fl'>45</span><span class='op'>)</span>
+<span class='va'>model_draws</span>  |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span><span class='op'>(</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>.value</span><span class='op'>)</span>, group <span class='op'>=</span> <span class='va'>.draw</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>geom_line</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='cn'>NULL</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>yy</span><span class='op'>)</span>, inherit.aes <span class='op'>=</span> <span class='cn'>FALSE</span>,
+             data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>datlist</span><span class='op'>)</span><span class='op'>)</span>
+  
+<span class='va'>model_mean</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/spread_rvars.html'>gather_rvars</a></span><span class='op'>(</span><span class='va'>model_samples</span>, <span class='va'>log_mu</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>
+<span class='va'>model_mean</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span><span class='op'>(</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, dist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>.value</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='http://mjskay.github.io/ggdist/reference/stat_lineribbon.html'>stat_dist_lineribbon</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>y_obs</span><span class='op'>)</span>, inherit.aes <span class='op'>=</span> <span class='cn'>FALSE</span>,
+             data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>datlist</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Using matrix algebra instead</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mc-stan.org/cmdstanr/'>cmdstanr</a></span><span class='op'>)</span>
+<span class='va'>pl_compfun_mat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span><span class='st'>"_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_compfun_mat.stan"</span><span class='op'>)</span><span class='op'>)</span>
+
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>,
+                x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>x</span><span class='op'>)</span>,
+                y_obs <span class='op'>=</span> <span class='va'>y_obs</span>
+                <span class='op'>)</span>
+<span class='va'>model_samples</span> <span class='op'>&lt;-</span> <span class='va'>pl_compfun_mat</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span>, parallel_chains <span class='op'>=</span> <span class='fl'>4</span>, refresh<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
+
+<span class='va'>model_samples</span>
+</code></pre>
+</div>
+</div>
+<p>avoiding <code>log_inv_logit</code> and instead using
+<code>-log1p_exp()</code></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mc-stan.org/cmdstanr/'>cmdstanr</a></span><span class='op'>)</span>
+<span class='va'>pl_compfun_noinv</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span><span class='st'>"_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_compfun_noinvlogit.stan"</span><span class='op'>)</span><span class='op'>)</span>
+
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>,
+                x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>x</span><span class='op'>)</span>,
+                y_obs <span class='op'>=</span> <span class='va'>y_obs</span>
+                <span class='op'>)</span>
+<span class='va'>model_samples</span> <span class='op'>&lt;-</span> <span class='va'>pl_compfun_mat</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span>, parallel_chains <span class='op'>=</span> <span class='fl'>4</span>, refresh<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
+
+<span class='va'>model_samples</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>knitr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/knitr/man/opts_chunk.html'>opts_chunk</a></span><span class='op'>$</span><span class='fu'>set</span><span class='op'>(</span>eval <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h4 id="get-simpler">get simpler</h4>
+<p>I’m not satisfied with how these are working, so here is two
+simplifications of the above</p>
+<ol type="1">
+<li>simulating the data from the prior and fitting a model using the
+same prior</li>
+<li>switching to <code>poisson_log</code> to save the parameter that I’m
+not interested in right now</li>
+</ol>
+<p>Also, just to write in math what I was expressing in Stan above</p>
+<p><span class="math display">\[
+\begin{align}
+\text{log_inv_logit}(x) &amp;= \ln\left(\frac{1}{1 + e^{-\alpha}}\right)
+\\
+&amp;= -1 \times \ln(1 + e^{-\alpha}) \\
+&amp;= -\text{log1p_exp}(-\alpha)
+\end{align}
+\]</span></p>
+<p>so the expression for the log of the mean becomes:</p>
+<p><span class="math display">\[
+\begin{align}
+\ln(Y) &amp;= m + \text{log1p_exp}(f + \text{log_inv_logit}(\alpha(x -
+\beta))) \\
+&amp;= m + \text{log1p_exp}(f - \text{log1p_exp}(-\alpha(x - \beta))) \\
+\end{align}
+\]</span></p>
+<p>Simulate this in R</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>, sd <span class='op'>=</span> <span class='fl'>.1</span><span class='op'>)</span>
+<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, sd <span class='op'>=</span> <span class='fl'>.1</span><span class='op'>)</span>
+<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>.1</span><span class='op'>)</span>
+<span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fl'>0</span>
+
+<span class='va'>x_vals</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>50</span>, <span class='op'>-</span><span class='fl'>6</span>, <span class='fl'>12</span><span class='op'>)</span>
+<span class='va'>y_mean</span> <span class='op'>&lt;-</span> <span class='va'>m</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log1p</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>f</span> <span class='op'>-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log1p</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='va'>x_vals</span> <span class='op'>-</span> <span class='va'>b</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x_vals</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>y_mean</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>simulate data with this</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>y_count</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>y_mean</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>y_mean</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x_vals</span>, <span class='va'>y_count</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>And fit with a Stan program that uses these same priors:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mc-stan.org/cmdstanr/'>cmdstanr</a></span><span class='op'>)</span>
+<span class='va'>pl_poissonlog</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span><span class='st'>"_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_poissonlog.stan"</span><span class='op'>)</span><span class='op'>)</span>
+
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x_vals</span><span class='op'>)</span>,
+                x_vals <span class='op'>=</span> <span class='va'>x_vals</span>,
+                y_count <span class='op'>=</span> <span class='va'>y_count</span>
+                <span class='op'>)</span>
+<span class='va'>model_samples</span> <span class='op'>&lt;-</span> <span class='va'>pl_poissonlog</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span>, parallel_chains <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
+
+<span class='va'>model_samples</span>
+</code></pre>
+</div>
+</div>
+<p>Now I want to look at the parameters and also see the curve:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+
+<span class='va'>plot_model_curve</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>model_samples</span>, <span class='va'>datlist</span><span class='op'>)</span><span class='op'>{</span>
+  <span class='va'>model_mean</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/spread_rvars.html'>gather_rvars</a></span><span class='op'>(</span><span class='va'>model_samples</span>, <span class='va'>log_mu</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>
+  <span class='va'>model_mean</span> |&gt; 
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span><span class='op'>(</span><span class='op'>)</span> |&gt; 
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>$</span><span class='va'>x_vals</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span> |&gt; 
+    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, dist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>.value</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+    <span class='fu'><a href='http://mjskay.github.io/ggdist/reference/stat_lineribbon.html'>stat_dist_lineribbon</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> 
+    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x_vals</span>, y <span class='op'>=</span> <span class='va'>y_count</span><span class='op'>)</span>, inherit.aes <span class='op'>=</span> <span class='cn'>FALSE</span>,
+               data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>datlist</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+  
+<span class='fu'>plot_model_curve</span><span class='op'>(</span>model_samples <span class='op'>=</span> <span class='va'>model_samples</span>, datlist <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>parameter recovery</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/get_variables.html'>get_variables</a></span><span class='op'>(</span><span class='va'>model_samples</span><span class='op'>)</span>
+
+<span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/spread_rvars.html'>gather_rvars</a></span><span class='op'>(</span><span class='va'>model_samples</span>, <span class='va'>m</span>, <span class='va'>f</span>, <span class='va'>log_alpha</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>dist <span class='op'>=</span> <span class='va'>.value</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='http://mjskay.github.io/ggdist/reference/stat_dist_slabinterval.html'>stat_dist_halfeye</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/facet_wrap.html'>facet_wrap</a></span><span class='op'>(</span><span class='op'>~</span><span class='va'>.variable</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>yintercept <span class='op'>=</span> <span class='va'>trueval</span><span class='op'>)</span>, 
+             data <span class='op'>=</span> <span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span>
+               <span class='op'>~</span><span class='va'>.variable</span>, <span class='op'>~</span><span class='va'>trueval</span>,
+               <span class='st'>"f"</span>,        <span class='va'>f</span>,
+               <span class='st'>"m"</span>,        <span class='va'>m</span>,
+               <span class='st'>"log_alpha"</span>,<span class='va'>a</span>
+             <span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>How does this compare to just writing the 4PL model directly? Keep
+the same parameters but just swap the <code>log1p_exp</code> part for
+writing that in readable math.</p>
+<h3 id="simple-but-with-lognormal-errors">simple but with lognormal
+errors</h3>
+<p>OK so the poisson_log version works as intended. Does a lognormal
+have the same ease?</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>y_meas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Lognormal.html'>rlnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x_vals</span><span class='op'>)</span>, <span class='fu'>ln_a</span><span class='op'>(</span><span class='va'>y_mean</span>, <span class='fl'>.5</span><span class='op'>)</span>, <span class='fu'>ln_b</span><span class='op'>(</span><span class='va'>y_mean</span>, <span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x_vals</span>, <span class='va'>y_meas</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mc-stan.org/cmdstanr/'>cmdstanr</a></span><span class='op'>)</span>
+<span class='va'>pl_lognormalfixvar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span><span class='st'>"_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/4pl_lognormalfixvar.stan"</span><span class='op'>)</span><span class='op'>)</span>
+
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x_vals</span><span class='op'>)</span>,
+                x_vals <span class='op'>=</span> <span class='va'>x_vals</span>,
+                y_meas <span class='op'>=</span> <span class='va'>y_meas</span>
+                <span class='op'>)</span>
+<span class='va'>model_samples_ln</span> <span class='op'>&lt;-</span> <span class='va'>pl_lognormalfixvar</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span>, parallel_chains <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
+
+<span class='va'>model_samples_ln</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>model_mean</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/spread_rvars.html'>gather_rvars</a></span><span class='op'>(</span><span class='va'>model_samples_ln</span>, <span class='va'>post_log_mu</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>
+
+<span class='va'>dd</span> <span class='op'>&lt;-</span> <span class='va'>model_mean</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span><span class='op'>(</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>$</span><span class='va'>x_vals</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>
+
+<span class='va'>dd</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>i</span> <span class='op'>==</span> <span class='fl'>8</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, dist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>.value</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='http://mjskay.github.io/ggdist/reference/stat_dist_slabinterval.html'>stat_dist_halfeye</a></span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='va'>model_mean</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span><span class='op'>(</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>$</span><span class='va'>x_vals</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, dist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>.value</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='http://mjskay.github.io/ggdist/reference/stat_lineribbon.html'>stat_dist_lineribbon</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x_vals</span>, y <span class='op'>=</span> <span class='va'>y_count</span><span class='op'>)</span>, inherit.aes <span class='op'>=</span> <span class='cn'>FALSE</span>,
+             data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>datlist</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/spread_rvars.html'>gather_rvars</a></span><span class='op'>(</span><span class='va'>model_samples_ln</span>, <span class='va'>m</span>, <span class='va'>f</span>, <span class='va'>log_alpha</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>dist <span class='op'>=</span> <span class='va'>.value</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='http://mjskay.github.io/ggdist/reference/stat_dist_slabinterval.html'>stat_dist_halfeye</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/facet_wrap.html'>facet_wrap</a></span><span class='op'>(</span><span class='op'>~</span><span class='va'>.variable</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>yintercept <span class='op'>=</span> <span class='va'>trueval</span><span class='op'>)</span>, 
+             data <span class='op'>=</span> <span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span>
+               <span class='op'>~</span><span class='va'>.variable</span>, <span class='op'>~</span><span class='va'>trueval</span>,
+               <span class='st'>"f"</span>,        <span class='va'>f</span>,
+               <span class='st'>"m"</span>,        <span class='va'>m</span>,
+               <span class='st'>"log_alpha"</span>,<span class='va'>a</span>
+             <span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h2 id="different-species-have-different-parameters">different species
+have different parameters:</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>sp_m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>12</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span>, sd <span class='op'>=</span> <span class='fl'>.1</span><span class='op'>)</span>
+<span class='va'>sp_f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>12</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, sd <span class='op'>=</span> <span class='fl'>.1</span><span class='op'>)</span>
+<span class='va'>sp_a</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>12</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>sp_b</span> <span class='op'>&lt;-</span> <span class='fl'>0</span>
+
+<span class='va'>sp_curves</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tidyr.tidyverse.org/reference/expand_grid.html'>expand_grid</a></span><span class='op'>(</span>x_vals <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>50</span>, <span class='op'>-</span><span class='fl'>6</span>, <span class='fl'>12</span><span class='op'>)</span>,
+            sp <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>y_mean <span class='op'>=</span> <span class='va'>sp_m</span><span class='op'>[</span><span class='va'>sp</span><span class='op'>]</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log1p</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>sp_f</span><span class='op'>[</span><span class='va'>sp</span><span class='op'>]</span> <span class='op'>-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log1p</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>sp_a</span><span class='op'>[</span><span class='va'>sp</span><span class='op'>]</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='va'>x_vals</span> <span class='op'>-</span> <span class='va'>b</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,
+         y_meas <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Lognormal.html'>rlnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x_vals</span><span class='op'>)</span>, <span class='fu'>ln_a</span><span class='op'>(</span><span class='va'>y_mean</span>, <span class='fl'>.5</span><span class='op'>)</span>, <span class='fu'>ln_b</span><span class='op'>(</span><span class='va'>y_mean</span>, <span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='op'>)</span>
+
+<span class='va'>sp_curves</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x_vals</span>, y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>y_mean</span><span class='op'>)</span>, group <span class='op'>=</span> <span class='va'>sp</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>geom_line</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y_meas</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>thisnk of L, or m, the minimum , as something that is going to vary
+by species AND by site. L isnt really L per se, its the means of
+shifting hte whole function up or down.</p>
+<p>f is t;he factore by which U is bigge than L. fixed by a species.
+could think of it as a specie’s shade tolerance</p>
+<p>alpha is the species stage descrimination</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mc-stan.org/cmdstanr/'>cmdstanr</a></span><span class='op'>)</span>
+<span class='va'>multispp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span><span class='st'>"_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/multisp_logistic_curve.stan"</span><span class='op'>)</span>, pedantic <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>sp_curves</span><span class='op'>)</span>,
+                S <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>sp_curves</span><span class='op'>$</span><span class='va'>sp</span><span class='op'>)</span>,
+                sp <span class='op'>=</span> <span class='va'>sp_curves</span><span class='op'>$</span><span class='va'>sp</span>,
+                x_vals <span class='op'>=</span> <span class='va'>sp_curves</span><span class='op'>$</span><span class='va'>x_vals</span>,
+                y_meas <span class='op'>=</span> <span class='va'>sp_curves</span><span class='op'>$</span><span class='va'>y_meas</span>
+                <span class='op'>)</span>
+<span class='va'>model_samples_ln</span> <span class='op'>&lt;-</span> <span class='va'>multispp</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span>,
+                                    parallel_chains <span class='op'>=</span> <span class='fl'>4</span>,
+                                    iter_sampling <span class='op'>=</span> <span class='fl'>500</span><span class='op'>)</span>
+
+<span class='va'>model_samples_ln</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mjskay.github.io/tidybayes/'>tidybayes</a></span><span class='op'>)</span>
+<span class='va'>model_mean</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://mjskay.github.io/tidybayes/reference/spread_rvars.html'>gather_rvars</a></span><span class='op'>(</span><span class='va'>model_samples_ln</span>, <span class='va'>post_log_mu</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>
+
+<span class='va'>dd</span> <span class='op'>&lt;-</span> <span class='va'>model_mean</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span><span class='op'>(</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>$</span><span class='va'>x_vals</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>
+
+<span class='va'>dd</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>i</span> <span class='op'>==</span> <span class='fl'>8</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, dist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>.value</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='http://mjskay.github.io/ggdist/reference/stat_dist_slabinterval.html'>stat_dist_halfeye</a></span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='va'>model_mean</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span><span class='op'>(</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>$</span><span class='va'>x_vals</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>,
+         sp <span class='op'>=</span> <span class='va'>datlist</span><span class='op'>$</span><span class='va'>sp</span><span class='op'>)</span> |&gt; 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, dist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>.value</span><span class='op'>)</span>, group <span class='op'>=</span> <span class='va'>sp</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='http://mjskay.github.io/ggdist/reference/stat_lineribbon.html'>stat_dist_lineribbon</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x_vals</span>, y <span class='op'>=</span> <span class='va'>y_meas</span><span class='op'>)</span>, inherit.aes <span class='op'>=</span> <span class='cn'>FALSE</span>,
+             data <span class='op'>=</span> <span class='va'>sp_curves</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>try via diag post multiply</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://mc-stan.org/cmdstanr/'>cmdstanr</a></span><span class='op'>)</span>
+<span class='va'>multispp_diag</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://mc-stan.org/cmdstanr/reference/cmdstan_model.html'>cmdstan_model</a></span><span class='op'>(</span>stan_file <span class='op'>=</span> <span class='fu'>here</span><span class='fu'>::</span><span class='fu'><a href='https://here.r-lib.org//reference/here.html'>here</a></span><span class='op'>(</span><span class='st'>"_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/multisp_diag_pre.stan"</span><span class='op'>)</span>, pedantic <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
+
+<span class='va'>datlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>N <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>sp_curves</span><span class='op'>)</span>,
+                S <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>sp_curves</span><span class='op'>$</span><span class='va'>sp</span><span class='op'>)</span>,
+                sp <span class='op'>=</span> <span class='va'>sp_curves</span><span class='op'>$</span><span class='va'>sp</span>,
+                x_vals <span class='op'>=</span> <span class='va'>sp_curves</span><span class='op'>$</span><span class='va'>x_vals</span>,
+                y_meas <span class='op'>=</span> <span class='va'>sp_curves</span><span class='op'>$</span><span class='va'>y_meas</span>
+                <span class='op'>)</span>
+<span class='va'>model_samples_ln</span> <span class='op'>&lt;-</span> <span class='va'>multispp_diag</span><span class='op'>$</span><span class='fu'>sample</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>datlist</span>,
+                                    parallel_chains <span class='op'>=</span> <span class='fl'>4</span>,
+                                    iter_sampling <span class='op'>=</span> <span class='fl'>500</span>, iter_warmup <span class='op'>=</span> <span class='fl'>500</span>, 
+                                    output_dir <span class='op'>=</span> <span class='st'>"_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/"</span><span class='op'>)</span>
+
+<span class='va'>model_samples_ln</span><span class='op'>$</span><span class='fu'>profiles</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>that doesn’t sample NOTICABLY faster but the divergences are far
+fewer.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>model_samples_ln</span> <span class='op'>&lt;-</span> <span class='va'>model_samples_ln</span><span class='op'>$</span><span class='fu'>save_output_files</span><span class='op'>(</span><span class='st'>"_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
