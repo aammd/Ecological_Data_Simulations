@@ -19,9 +19,9 @@ transformed parameters{
   adj = diag_post_multiply(z, sds);
 }
 model {
-  m_bar ~ normal(.69, .15);
-  l_bar ~ normal(2.3, .1);
-  a_bar ~ normal(0, .1);
+  m_bar ~ normal(4, .5);
+  l_bar ~ normal(-2.3, .5);
+  a_bar ~ normal(0, .5);
   sds ~ exponential(5);
   log_sigma ~ normal(-.7, .2);
   to_vector(z) ~ std_normal();

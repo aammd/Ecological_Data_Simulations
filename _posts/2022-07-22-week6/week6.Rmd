@@ -1,0 +1,56 @@
+---
+title: "Week6"
+description: |
+  A short description of the post.
+author:
+  - name: Andrew
+    url: {}
+date: 2022-07-22
+output:
+  distill::distill_article:
+    self_contained: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+suppressPackageStartupMessages(library(rethinking))
+
+data("reedfrogs")
+
+head(reedfrogs)
+```
+
+using the model described [here](https://speakerdeck.com/rmcelreath/statistical-rethinking-2022-lecture-12?slide=36)
+
+```{r}
+unique(reedfrogs$density)
+```
+
+```{r}
+library(tidyverse)
+
+
+logit_average_survival <- rnorm(1, mean = 0, sd = 1)
+logit_sd_survival <- rexp(1, rate = 1)
+
+reedfrogs |> 
+  select(density) |> 
+  mutate(logit_tank_surv = rnorm(length(density), mean = logit_average_survival, sd = logit_sd_survival))
+```
+
+## lil simulation
+
+```{r}
+data.frame(y = letters) |> 
+  mutate(ff = rnorm(1))
+```
+
+
+
