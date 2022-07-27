@@ -640,10 +640,126 @@ model_samples_ln <- multispp_diag$sample(data = datlist,
 
 model_samples_ln$profiles()
 ```
+```{r}
+
+```
 
 that doesn't sample NOTICABLY faster but the divergences are far fewer.
 
 ```{r}
 model_samples_ln <- model_samples_ln$save_output_files("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/")
+```
+
+
+### yet another way to write it
+
+factor out two things: the maximum, and the proportion of the maximum that is the minimum
+
+$$
+\begin{align}
+Y &= L + \frac{U - L}{1 + e^{-\alpha}} \\
+&= U\left(\frac{L}{U} + \frac{1 - L/U}{1 + e^{-ax}}\right) \\
+&= U\times\frac{L}{U}\times\left(1 + \frac{\left(\frac{1-L/U}{L/U}\right)}{1 + e^{-ax}}\right)
+\end{align}
+$$
+
+
+let's say that $l = L/U$ and model it with a logit link:
+
+$$
+\frac{L}{U} = l = \frac{1}{1 + e^{-l^{\text{logit}}}} = \text{inv_logit}(l^{\text{logit}})
+$$
+
+which means that $l^{\text{logit}}$ is the inverse logit of $l$ : 
+
+$$
+l^{\text{logit}} = log\left(\frac{l}{1-l}\right)
+$$
+
+We could go back to the equation above and write: 
+
+$$
+\begin{align}
+Y &=  U\times\frac{L}{U}\times\left(1 + \frac{\left(\frac{1-L/U}{L/U}\right)}{1 + e^{-ax}}\right) \\
+&= U \times l \times \left(1 + \left(\frac{1-l}{l}\right)\times \text{inv_logit}(ax) \right) \\
+\ln(Y) &= \ln(U) + \text{log_inv_logit}(l^{\text{logit}}) +  \ln\left(1 + e^{\ln\left(\frac{1-l}{l}\right) + \text{log_inv_logit}(ax)} \right) \\
+\ln(Y) &= \ln(U) + \text{log_inv_logit}(l^{\text{logit}}) +  \text{log1p_exp}\left(-l^{\text{logit}} + \text{log_inv_logit}(ax) \right) \\
+\end{align}
+$$
+
+```{r}
+# make data with known parameters
+sp_max_log <- rnorm(12, log(60), sd = .5)
+sp_low_prop_logit <- rnorm(12, -2, sd = .5)
+sp_a <- rnorm(12, 0, 1)
+sp_b <- 0
+
+
+
+sp_curves <- expand_grid(x_vals = runif(50, -6, 12),
+            sp = 1:12) |> 
+  mutate(y_mean = sp_m[sp] + log1p(exp(sp_f[sp] - log1p(exp(-exp(sp_a[sp])*(x_vals - b))))),
+         y_meas = rlnorm(length(x_vals), ln_a(y_mean, .5), ln_b(y_mean, .5))
+  )
+
+sp_curves |> 
+  ggplot(aes(x = x_vals, y = exp(y_mean), group = sp)) + 
+  geom_line() + 
+  geom_point(aes(y = y_meas))
+
+
+
+library(cmdstanr)
+multispp_diag_linvlogit <- cmdstan_model(stan_file = "_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/multisp_logistic_curve_loginvlogit.stan", pedantic = TRUE)
+
+
+datlist <- list(N = nrow(sp_curves),
+                S = max(sp_curves$sp),
+                sp = sp_curves$sp,
+                x_vals = sp_curves$x_vals,
+                y_meas = sp_curves$y_meas
+                )
+multispp_diag_linvlogit_results <- multispp_diag_linvlogit$sample(data = datlist,
+                                    parallel_chains = 4,
+                                    output_dir = "_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/")
+
+multispp_diag_linvlogit_results$profiles()
+```
+
+```{r}
+
+library(tidybayes)
+model_mean <- gather_rvars(multispp_diag_linvlogit_results, post_log_mu[i])
+
+model_mean |> 
+  ungroup() |> 
+  mutate(x = datlist$x_vals[i],
+         sp = datlist$sp) |> 
+  ggplot(aes(x = x, dist = exp(.value), group = sp)) + 
+  stat_dist_lineribbon() + 
+  geom_point(aes(x = x_vals, y = y_meas), inherit.aes = FALSE,
+             data = sp_curves)
+
+```
+
+now trying it with `diag_pre_multiply` and a few other tweaks:
+
+```{r}
+
+library(cmdstanr)
+multispp_diag_pre_loginvlogit <- cmdstan_model(stan_file = "_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/multisp_diag_pre_loginvlogit.stan", pedantic = TRUE)
+
+
+datlist <- list(N = nrow(sp_curves),
+                S = max(sp_curves$sp),
+                sp = sp_curves$sp,
+                x_vals = sp_curves$x_vals,
+                y_meas = sp_curves$y_meas
+                )
+multispp_diag_pre_results <- multispp_diag_pre_loginvlogit$sample(data = datlist,
+                                    parallel_chains = 4,
+                                    output_dir = "_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/")
+
+
 ```
 
