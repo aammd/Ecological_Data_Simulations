@@ -749,11 +749,6 @@ model_samples_ln$profiles()
 
 that doesn't sample NOTICABLY faster but the divergences are far fewer.
 
-```{r}
-model_samples_ln <- model_samples_ln$save_output_files("_posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/")
-```
-
-
 ### yet another way to write it
 
 factor out two things: the maximum, and the proportion of the maximum that is the minimum
@@ -865,6 +860,6 @@ datlist <- list(N = nrow(sp_curves),
 multispp_diag_pre_results <- multispp_diag_pre_loginvlogit$sample(data = datlist,
                                                                   chains = 1, iter_sampling = 500)
 
-
+multispp_diag_pre_results
 ```
 

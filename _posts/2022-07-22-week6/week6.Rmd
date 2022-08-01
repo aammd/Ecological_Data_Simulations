@@ -54,3 +54,71 @@ data.frame(y = letters) |>
 
 
 
+```{r}
+library(cmdstanr)
+
+trt_effects <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-week6/random_effects.stan"), pedantic = TRUE)
+
+```
+
+
+
+```{r}
+d <- reedfrogs
+dat <- list(
+S = d$surv,
+D = d$density,
+T = 1:nrow(d),
+P = ifelse( d$pred=="no" , 1L , 2L ),
+G = ifelse( d$size=="small" , 1L , 2L ) )
+m2 <- ulam(
+alist(
+S ~ binomial( D , p ),
+logit(p) <- a[T] + b[P,G],
+a[T] ~ normal( 0 , sigma ),
+matrix[P,G]:b ~ normal( 0 , 1 ),
+sigma ~ exponential( 1 )
+), data=dat , chains=4 , cores=4 , log_lik=TRUE , sample = FALSE)
+
+
+stancode(m2)
+```
+
+```{r}
+reed_data <- with(reedfrogs, 
+                  list(
+                    n = length(surv),
+                    surv = surv,
+                    density = density,
+                    n_size = nlevels(size),
+                    n_pred = nlevels(pred),
+                    size_id = as.numeric(size),
+                    pred_id = as.numeric(pred)
+))
+
+trt_effects$sample(data = reed_data)
+
+```
+
+
+```{r}
+
+trt_effects <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-week6/random_effects.stan"), pedantic = TRUE)
+trt_samples <- trt_effects$sample(data = reed_data, refresh = 0)
+trt_samples$summary()
+
+
+```
+
+* here we could learn how to "decorate" a model with the factor levels from the data, using [`tidybayes::recover_types`](https://mjskay.github.io/tidybayes/reference/recover_types.html) 
+
+* I used indexing in this model, expecting it to work on arrays as it does in vectors -- and it didn't!
+
+## treatments as random effects
+
+treatments can also be considered random effects! 
+
+
+
+### 
+
