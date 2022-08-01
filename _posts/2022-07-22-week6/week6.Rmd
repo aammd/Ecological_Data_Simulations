@@ -103,12 +103,26 @@ trt_effects$sample(data = reed_data)
 
 ```{r}
 
-trt_effects <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-week6/random_effects.stan"), pedantic = TRUE)
+trt_effects <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-week6/treatment_effects.stan"), pedantic = TRUE)
 trt_samples <- trt_effects$sample(data = reed_data, refresh = 0)
 trt_samples$summary()
 
 
 ```
+
+
+
+add back in random effects for tanks
+
+```{r}
+
+tank_trt_effects <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-week6/tank_trt.stan"), pedantic = TRUE)
+tank_trt_samples <- tank_trt_effects$sample(data = reed_data, refresh = 0)
+tank_trt_samples$summary() |> View()
+```
+
+
+
 
 * here we could learn how to "decorate" a model with the factor levels from the data, using [`tidybayes::recover_types`](https://mjskay.github.io/tidybayes/reference/recover_types.html) 
 
@@ -118,6 +132,11 @@ trt_samples$summary()
 
 treatments can also be considered random effects! 
 
+
+
+```{r}
+purrr::walk(1:500, ~ rnorm(10, mean = 0, sd = rexp(1, .5)))
+```
 
 
 ### 
