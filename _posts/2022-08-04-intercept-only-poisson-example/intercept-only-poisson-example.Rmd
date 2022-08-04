@@ -1,0 +1,38 @@
+---
+title: "Intercept only poisson example"
+description: |
+  Where do counts vary the most?.
+author:
+  - name: Andrew and Will
+    url: {}
+date: 2022-08-04
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+$$
+\begin{align}
+\text{recruits} \sim& \text{Poisson}(\lambda) \\
+\lambda =& \beta_0 + \beta_{spp} + \beta_{plot} + \beta_{year} + \ln(\text{Area}) \\
+\beta_{spp} \sim& \text{normal}(0, \sigma_{spp})\\
+\beta_{plot} \sim& \text{normal}(0, \sigma_{plot})\\
+\beta_{year} \sim& \text{normal}(0, \sigma_{year})\\
+\sigma_{spp} , \sigma_{plot}, \sigma_{year} \sim&
+\text{exponential}(1)\\
+\beta_0\sim&\text{normal}(3,1)\\
+\end{align}
+$$
+
+Simulations! 
+
+```{r}
+
+```
+

@@ -1,5 +1,22 @@
 [
   {
+    "path": "posts/2022-08-04-intercept-only-poisson-example/",
+    "title": "Intercept only poisson example",
+    "description": "Where do counts vary the most?.",
+    "author": [
+      {
+        "name": "Andrew and Will",
+        "url": {}
+      }
+    ],
+    "date": "2022-08-04",
+    "categories": [],
+    "contents": "\n\\[\n\\begin{align}\n\\text{recruits} \\sim& \\text{Poisson}(\\lambda) \\\\\n\\lambda =& \\beta_0 + \\beta_{spp} + \\beta_{plot} + \\beta_{year} +\n\\ln(\\text{Area}) \\\\\n\\beta_{spp} \\sim& \\text{normal}(0, \\sigma_{spp})\\\\\n\\beta_{plot} \\sim& \\text{normal}(0, \\sigma_{plot})\\\\\n\\beta_{year} \\sim& \\text{normal}(0, \\sigma_{year})\\\\\n\\sigma_{spp} , \\sigma_{plot}, \\sigma_{year} \\sim&\n\\text{exponential}(1)\\\\\n\\beta_0\\sim&\\text{normal}(3,1)\\\\\n\\end{align}\n\\]\nSimulations!\n\n\n\n\n\n\n",
+    "preview": {},
+    "last_modified": "2022-08-04T13:47:22-04:00",
+    "input_file": "intercept-only-poisson-example.knit.md"
+  },
+  {
     "path": "posts/2022-07-22-one-weird-trick-the-4-parameter-logistic/",
     "title": "One Weird Trick: The 4 parameter logistic",
     "description": "Reparameterizing the 4-parameter logistic",
