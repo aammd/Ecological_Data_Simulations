@@ -36,3 +36,13 @@ Simulations!
 
 ```
 
+## a simple stan program
+
+```{r}
+library(here)
+library(cmdstanr)
+poisson_model <- cmdstan_model(stan_file = here::here("_posts/2022-08-04-intercept-only-poisson-example/poisson_intercept_only.stan"),
+                               pedantic = TRUE)
+
+```
+
