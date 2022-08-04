@@ -141,3 +141,41 @@ purrr::walk(1:500, ~ rnorm(10, mean = 0, sd = rexp(1, .5)))
 
 ### 
 
+```{r}
+
+ordinal_trt_effects <- cmdstan_model(stan_file = here::here("_posts/2022-07-22-week6/ordinal_treat.stan"), pedantic = TRUE)
+
+reed_data <- purrr::list_modify(reed_data,
+               dens_id = reedfrogs$density %/% 10,
+               n_dens = 3)
+
+ordinal_trt_effects_samples <- ordinal_trt_effects$sample(data = reed_data,
+                                                          refresh = 0)
+ordinal_trt_effects_samples$summary() |> View()
+```
+
+```{r}
+rvars <- cbind(
+  ordinal_trt_effects_samples |> 
+    gather_rvars(pred[h]),
+  expand_grid(dens = 1:3, pred = 1:2, size = 1:2) 
+)  
+
+
+probability_plot <- rvars |> 
+  ggplot(aes(x = dens, dist = brms::inv_logit_scaled(.value), colour = pred)) + 
+  facet_wrap(~size) +
+  stat_dist_gradientinterval() + 
+  theme_bw()
+```
+
+```{r}
+reedfwogs <- reedfrogs |> 
+  mutate(dens = density %/% 10,
+         size = as.numeric(size),
+         pred = as.numeric(pred))
+
+probability_plot + 
+  geom_point(aes(x = dens, y = propsurv, colour = pred), data = reedfwogs, inherit.aes = FALSE)
+```
+
