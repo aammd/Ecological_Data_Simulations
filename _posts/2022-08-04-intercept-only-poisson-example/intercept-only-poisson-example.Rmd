@@ -33,6 +33,24 @@ $$
 Simulations! 
 
 ```{r}
+nspp <- 10
+nplot <- 5
+nyear <- 40
+
+avg <- log(2.3) # how many on average per square meter
+
+betaspp <- rnorm(nspp, 0, 2)
+betaplot <- rnorm(nplot, 0, .2)
+betyear <- rnorm(nyear, 0, 1)
+
+# intervals for each plot:
+deltayears <- sample(c(5, 10, 13),size=nplot, replace = TRUE)
+
+library(tidyverse)
+
+
+
+
 
 ```
 
@@ -46,3 +64,113 @@ poisson_model <- cmdstan_model(stan_file = here::here("_posts/2022-08-04-interce
 
 ```
 
+
+```{r}
+
+```
+
+
+### side note -- survivorship every year
+
+an average of $\lambda$ seedlings grow every year and $p$ survive to the next generation
+
+The number surviving after t years is 
+
+$$
+\begin{align}
+p^t \times \lambda
+\end{align}
+$$
+
+
+which is another, smaller poisson distribution. 
+
+What happens if you keep adding more individuals? every year you add on average $\lambda$ new individuals who survive as described above. 
+
+so if that happens every year for $t$ years then you have 
+
+$$
+\left(\sum_{i = 0}^t p^i\right) \times \lambda
+$$
+
+So every year we get on average $\lambda$ new recruits and they have to survive up to the present to get counted.
+
+$$
+\begin{align}
+\text{recruits} &= \left(\sum_{i = 0}^t p^i\right) \times \lambda \\
+&= \left(\sum_{i = 0}^t p^{i-1}p\right) \times \lambda \\
+&= \left(\sum_{i = 0}^t p^{i-1}\right) \times p\lambda \\
+&=  p\lambda \frac{1 - p^{t}}{1 - p} \\
+\end{align}
+$$
+
+
+Is that correct? let's see with a simulation!
+
+```{r}
+
+library(tidyverse)
+
+# simulate just one cohort:
+make_surviving_vec <- function(years, lambda, psurv){
+  
+  # how many survive each year -- 
+  # include the start (so for 3 years we have 4 spaces: t0, t1, t2, t3)
+  surviving <- numeric(years + 1)
+  starting <- rpois(n = 1, lambda =lambda)
+  surviving[1] <- starting 
+  for(i in 1:years){
+    surviving[i+1] <- rbinom(n = 1, prob = psurv, size = surviving[i])
+  }
+  return(surviving)
+}
+
+
+
+make_surviving_vec(5, 20, .92)
+
+# so how many ultimately survive? -- just take the end of the vector
+
+make_surviving_vec(15, 20, .92) |> tail(1)
+
+### repeat this for every cohort produced in the t years:
+
+all_cohorts_total <- function(year, ...){
+  each_year <- numeric(year)
+  
+  # for each year, simulate one surviving cohort
+  for (y in 1:year){
+    each_year[y] <- make_surviving_vec(y, ...) |> tail(1)
+  }
+  
+  # return(each_year)
+  
+  total <- sum(each_year)
+
+  return(total)
+}
+
+all_cohorts_total(10, lambda = 33, psurv = .7)
+
+
+# now do this for every year, and repeat the process:
+
+p <- .7
+lambda <- 15
+
+curve_data <- tibble(t = 1:30) |> 
+  rowwise() |> 
+  mutate(surv = list(replicate(30, 
+                               all_cohorts_total(t, lambda = lambda, psurv = p)))) |> 
+  unnest(surv) 
+
+
+curve_data |> 
+  ggplot(aes(x = t, y = surv)) + 
+  geom_count(alpha = .4, col = "darkgreen") + 
+  stat_function(fun = \(x) (1 - p^x)/(1 - p )*lambda*p, col = "orange", lwd = 2) + 
+  theme_bw()
+
+```
+
+Looks encouraging! 
