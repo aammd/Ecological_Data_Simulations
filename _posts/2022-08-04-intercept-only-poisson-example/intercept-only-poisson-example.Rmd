@@ -49,9 +49,6 @@ deltayears <- sample(c(5, 10, 13),size=nplot, replace = TRUE)
 library(tidyverse)
 
 
-
-
-
 ```
 
 ## a simple stan program
@@ -98,9 +95,7 @@ So every year we get on average $\lambda$ new recruits and they have to survive 
 $$
 \begin{align}
 \text{recruits} &= \left(\sum_{i = 0}^t p^i\right) \times \lambda \\
-&= \left(\sum_{i = 0}^t p^{i-1}p\right) \times \lambda \\
-&= \left(\sum_{i = 0}^t p^{i-1}\right) \times p\lambda \\
-&=  p\lambda \frac{1 - p^{t}}{1 - p} \\
+&=  \lambda \frac{1 - p^{t+1}}{1 - p} \\
 \end{align}
 $$
 
@@ -111,23 +106,29 @@ Is that correct? let's see with a simulation!
 
 library(tidyverse)
 
-# simulate just one cohort:
+# simulate just one cohort
+# "years" is delta-t
 make_surviving_vec <- function(years, lambda, psurv){
   
   # how many survive each year -- 
-  # include the start (so for 3 years we have 4 spaces: t0, t1, t2, t3)
-  surviving <- numeric(years + 1)
+  # include the CURRENT year (so for 3 years we have 3 spaces: t0, t1, t2)
+  surviving <- numeric(years)
   starting <- rpois(n = 1, lambda =lambda)
-  surviving[1] <- starting 
-  for(i in 1:years){
-    surviving[i+1] <- rbinom(n = 1, prob = psurv, size = surviving[i])
-  }
+  surviving[1] <- starting
+  
+  if(years > 0 )
+    for(i in 1:years){
+      surviving[i+1] <- rbinom(n = 1, prob = psurv, size = surviving[i])
+    }
+  
   return(surviving)
 }
 
 
 
 make_surviving_vec(5, 20, .92)
+
+make_surviving_vec(2, 10, .3)
 
 # so how many ultimately survive? -- just take the end of the vector
 
@@ -136,29 +137,49 @@ make_surviving_vec(15, 20, .92) |> tail(1)
 ### repeat this for every cohort produced in the t years:
 
 all_cohorts_total <- function(year, ...){
-  each_year <- numeric(year)
+  
+  # how many survive to present from each cohort?
+  each_cohort <- numeric(year+1)
   
   # for each year, simulate one surviving cohort
-  for (y in 1:year){
-    each_year[y] <- make_surviving_vec(y, ...) |> tail(1)
+  # assuming that mortality has happend for this year! 
+  for (y in 0:year){
+    each_cohort[y+1] <- make_surviving_vec(y, ...) |> tail(1)
   }
   
   # return(each_year)
   
-  total <- sum(each_year)
+  total <- sum(each_cohort)
 
   return(total)
 }
+```
 
-all_cohorts_total(10, lambda = 33, psurv = .7)
+I want to demonstrate that these functions work as intended! 
+At time $t=0$, an average of $\lambda$ trees are born but none have died yet. So the average surviving from a cohort should be $\lambda$
 
+```{r surv-t0}
+hist(replicate(1000, all_cohorts_total(0, lambda = 33, psurv = .7)))
+abline(v = 33)
+```
 
+Meanwhile if one year passes, the cohort from last year has one chance to die. 
+Now we should have $\lambda + p\lambda$ trees to look at:
+
+```{r surv-t1}
+hist(replicate(1000, all_cohorts_total(1, lambda = 33, psurv = .7)))
+abline(v = 33*.7 + 33, lwd = 2, col = "red")
+```
+
+Finally, lets simulate many observations made of many plots, with increasingly long intervals between observations:
+
+```{r math-sim-match}
 # now do this for every year, and repeat the process:
 
-p <- .7
-lambda <- 15
+p <- .8
+lambda <- 30
 
-curve_data <- tibble(t = 1:30) |> 
+curve_data <- tibble(t = 0:31) |> 
   rowwise() |> 
   mutate(surv = list(replicate(30, 
                                all_cohorts_total(t, lambda = lambda, psurv = p)))) |> 
@@ -168,7 +189,7 @@ curve_data <- tibble(t = 1:30) |>
 curve_data |> 
   ggplot(aes(x = t, y = surv)) + 
   geom_count(alpha = .4, col = "darkgreen") + 
-  stat_function(fun = \(x) (1 - p^x)/(1 - p )*lambda*p, col = "orange", lwd = 2) + 
+  stat_function(fun = \(x) (1 - p^(x+1))/(1 - p )*lambda, col = "orange", lwd = 2) + 
   theme_bw()
 
 ```
@@ -177,4 +198,12 @@ Looks encouraging!
 
 This is modelling the number of recruits made each year. Of course the distribution of individuals of EVERY size category is a balance of two processes. however for most large trees we have individual-level differences. 
 
-It's important to know if we are modelling *number of new recruits* or simply the number of small trees. This is an expression for the former. But if it is the latter, then you would I guess let t go to 
+It's important to know if we are modelling *number of new recruits* or simply the number of small trees. This is an expression for the former. But if it is the latter, then you would I guess let t go to infinity.  In this case the expression goes to:
+
+$$
+\text{recruits} = \lambda \times \frac{1}{1-p}
+$$
+
+
+
+
