@@ -174,3 +174,7 @@ curve_data |>
 ```
 
 Looks encouraging! 
+
+This is modelling the number of recruits made each year. Of course the distribution of individuals of EVERY size category is a balance of two processes. however for most large trees we have individual-level differences. 
+
+It's important to know if we are modelling *number of new recruits* or simply the number of small trees. This is an expression for the former. But if it is the latter, then you would I guess let t go to 
