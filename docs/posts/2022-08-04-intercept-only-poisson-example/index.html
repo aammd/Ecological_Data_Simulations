@@ -2235,19 +2235,19 @@ survive up to the present to get counted.</p>
 <span class='fu'>make_surviving_vec</span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>20</span>, <span class='fl'>.92</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1] 17 16 14 12  9  9</code></pre>
+<pre><code>[1] 20 19 19 19 19 16</code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>make_surviving_vec</span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>10</span>, <span class='fl'>.3</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1] 10  6  2</code></pre>
+<pre><code>[1] 9 1 0</code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># so how many ultimately survive? -- just take the end of the vector</span>
 
 <span class='fu'>make_surviving_vec</span><span class='op'>(</span><span class='fl'>15</span>, <span class='fl'>20</span>, <span class='fl'>.92</span><span class='op'>)</span> |&gt; <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1] 5</code></pre>
+<pre><code>[1] 7</code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'>### repeat this for every cohort produced in the t years:</span>
 
@@ -2328,7 +2328,27 @@ differences.</p>
 <p>It’s important to know if we are modelling <em>number of new
 recruits</em> or simply the number of small trees. This is an expression
 for the former. But if it is the latter, then you would I guess let t go
-to</p>
+to infinity. In this case the expression goes to:</p>
+<p><span class="math display">\[
+\text{recruits} = \lambda \times \frac{1}{1-p}
+\]</span></p>
+<p>the number of seedlings doesn’t start at 0 however, it starts at the
+number of seedlings which we last observed in this plot! except the
+first time.</p>
+<p>$$ <span class="math display">\[\begin{align}
+N_s &amp;\sim \text{Poisson}(\mu) \\
+
+\mu &amp; =
+\begin{cases}
+\lambda \frac{1}{1-p} \text{for } s = 0 \\
+N_{s-1} + \lambda \frac{1 - p^{\Delta t+1}}{1 - p} \text{for } s \gt0
+\end{cases}
+\end{align}\]</span> $$</p>
+<p>here <span class="math inline">\(s\)</span> is just an index to count
+which sampling we are at; <span class="math inline">\(s = 0\)</span>
+means the first sampling. For every sampling after the first, <span
+class="math inline">\(\Delta t\)</span> is the time between sampling
+<span class="math inline">\(s\)</span> and the previous sampling.</p>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->

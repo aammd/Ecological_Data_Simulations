@@ -6,14 +6,14 @@
       "description": "Simulations of ecological data for validating, teaching, and understanding models. ",
       "author": [],
       "contents": "\nHello! My name is Andrew MacDonald; currently a Profesionel de\nRecherche at the Université de Sherbrooke. This website is a collection\nof notes taken during my work with reserchers in the ecology research\ngroup, CREUS. These notes are informal, and usually show the whole\nscientific process, with all its imperfections and errors. Every so\noften in this work, I find something I wish I could tell more people –\nor something I hope I never forget. I take such things and write about\nthem here.\n\n\n\n",
-      "last_modified": "2022-08-05T15:15:01-04:00"
+      "last_modified": "2022-08-08T15:53:06-04:00"
     },
     {
       "path": "index.html",
       "title": "Simulation of Ecological Data",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2022-08-05T15:15:02-04:00"
+      "last_modified": "2022-08-08T15:53:07-04:00"
     }
   ],
   "collections": ["posts/posts.json"]

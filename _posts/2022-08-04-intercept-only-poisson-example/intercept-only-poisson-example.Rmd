@@ -204,6 +204,18 @@ $$
 \text{recruits} = \lambda \times \frac{1}{1-p}
 $$
 
+the number of seedlings doesn't start at 0 however, it starts at the number of seedlings which we last observed in this plot! except the first time.
 
+$$
+\begin{align}
+N_s &\sim \text{Poisson}(\mu) \\
 
+\mu & = 
+\begin{cases}
+\lambda \frac{1}{1-p} \text{for } s = 0 \\
+N_{s-1} + \lambda \frac{1 - p^{\Delta t+1}}{1 - p} \text{for } s \gt0
+\end{cases}
+\end{align}
+$$
 
+here $s$ is just an index to count which sampling we are at; $s = 0$ means the first sampling. For every sampling after the first, $\Delta t$ is the time between sampling $s$ and the previous sampling.
