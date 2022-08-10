@@ -213,7 +213,7 @@ N_s &\sim \text{Poisson}(\mu) \\
 \mu & = 
 \begin{cases}
 \lambda \frac{1}{1-p} \text{for } s = 0 \\
-N_{s-1} + \lambda \frac{1 - p^{\Delta t+1}}{1 - p} \text{for } s \gt0
+N_{s-1}p^{\Delta t} + \lambda \frac{1 - p^{\Delta t+1}}{1 - p} \text{for } s \gt0
 \end{cases}
 \end{align}
 $$
