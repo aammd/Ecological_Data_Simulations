@@ -62,11 +62,6 @@ poisson_model <- cmdstan_model(stan_file = here::here("_posts/2022-08-04-interce
 ```
 
 
-```{r}
-
-```
-
-
 ### side note -- survivorship every year
 
 an average of $\lambda$ seedlings grow every year and $p$ survive to the next generation
@@ -189,7 +184,6 @@ curve_data <- tibble(t = 0:31) |>
 curve_data |> 
   ggplot(aes(x = t, y = surv)) + 
   geom_count(alpha = .4, col = "darkgreen") + 
-  stat_function(fun = \(x) (1 - p^(x+1))/(1 - p )*lambda, col = "orange", lwd = 2) + 
   theme_bw()
 
 ```
@@ -219,3 +213,230 @@ N_{s-1}p^{\Delta t} + \lambda \frac{1 - p^{\Delta t+1}}{1 - p} \text{for } s \gt
 $$
 
 here $s$ is just an index to count which sampling we are at; $s = 0$ means the first sampling. For every sampling after the first, $\Delta t$ is the time between sampling $s$ and the previous sampling.
+
+### simulation of sampling and parameter recovery
+
+can we simulate observations and recover known parameters? How incorrect are we if we use a model other than the data generating process?
+
+pseudocode and steps for this simulation
+
+* define $N$ years
+* use the approach above to simulate one cohort for each year. before a cohort is born, it contributes 0 individuals to the population. after it is born, it contributes $n$ individuals to the population (which will eventually be 0 after they all die).
+* sum across all cohorts to find out how many are alive at a given time
+* allow time for it to reach a balance between births and deaths
+* simulate sampling -- draw some years, but not all.
+
+incidentally, what happens if you go back every year? then the expected number becomes:
+
+$$
+\begin{align}
+N_{t-1}p + \lambda \\
+\lambda(p + 1)
+\end{align}
+$$
+
+```{r}
+N <- 200
+lambda <-  120
+psurvival <- .7
+
+make_cohort_matrix <- function(N, lambda_birth, psurvival){
+  
+  individuals <- matrix(0, nrow = N+1, ncol = N+1)
+  
+  for(y in N:0){
+    after_born <- make_surviving_vec(y, lambda = lambda_birth, psurv = psurvival) 
+    z <- rep(0, times = N +1 - length(after_born))
+    individuals[y + 1, ] <- c(z, after_born)
+  }
+  
+  return(individuals)  
+}
+
+one_plot <- make_cohort_matrix(N, lambda_birth = 42, psurvival = .8)
+
+plot(colSums(one_plot), type = "l")
+```
+
+This simulates yearly changes in a single plot. I can collect this in a vector and make it a dataframe.
+
+
+```{r}
+
+# simulate, then drop the first half -- call it a "burn in" or call it regeneration
+fake_seedlings <- tibble(abd = colSums(make_cohort_matrix(1000,
+                                                          lambda_birth = 42,
+                                                          psurvival = .8)),
+       year = seq_along(abd)) |> 
+  filter(year > 200/2)
+
+fake_seedlings |> 
+  ggplot(aes(x = year, y = abd)) + geom_line() + 
+  geom_point() + 
+  theme_bw()
+```
+
+Fit correct stan program
+
+Things we need to know for each observation (ie the data we need):
+
+* is this the first observation or not
+* what was the abundance at the previous observation
+* how much time has elapsed (deltaT)
+
+```{r}
+fake_seedling_modeldata <- fake_seedlings |> 
+  filter(year %in% seq(from = min(year), to = max(year), by = 2)) |> 
+  mutate(last_abd = lag(abd, default = -99),
+         deltaT = year - lag(year, default = 999),
+         is_first = if_else(last_abd <0, true = 1, false = 0))
+```
+
+```{r}
+library(cmdstanr)
+
+poisson_unmarked_survival <- cmdstan_model(here::here("_posts/2022-08-04-intercept-only-poisson-example/poisson_unmarked_survival.stan"), pedantic = TRUE)
+
+recruit_samples <- poisson_unmarked_survival$sample(data = with(fake_seedling_modeldata, 
+                                                                list(n = length(abd),
+                                                                     abd = abd,
+                                                                     last_abd = last_abd, 
+                                                                     is_first = is_first,
+                                                                     deltaT = deltaT
+                                                                )),
+                                                    parallel_chains = 4)
+
+
+recruit_samples
+
+```
+
+## Ingrow -- starting from 0
+
+Suppose we start from 0! this is the case when measuring *ingrow* counts -- that is, the number of trees which grow into the "adult" size class. 
+In this case, we start every year from 0 because we have completely searched the plot for trees at the last sampling. The next time we sample that plot, we know all the new trees have grown since then.
+
+In other words, instead of focussing on the "equilibrium" as above, we focus on the part where the trees are still growing:
+
+```{r}
+
+make_ingrow_cohort <- function(years, lambda, psurv){
+  if(years==0) stop("you can't come back after 0 years!")
+  # how many survive each year -- 
+  # include the CURRENT year 
+  # (so for 3 years we have 3 spaces: t0, t1, t2)
+  # in R vectors this is position 1, 2, and 3
+  
+  # make an empty vector
+  surviving <- numeric(years)
+  # the first year trees are born
+  surviving[1] <- rpois(n = 1, lambda =lambda)
+  # every year after, they die
+  if(years > 1 )
+    for(i in 1:(years-1)){
+      surviving[i+1] <- rbinom(n = 1, prob = psurv, size = surviving[i])
+    }
+  return(surviving)
+}
+
+# should be 1 number
+make_ingrow_cohort(1, 5, .7)
+
+# should be 2 numbers
+make_ingrow_cohort(2, 5, .7)
+
+
+```
+
+store it in a matrix
+
+```{r}
+
+c(rep(0, times = 3-1), make_ingrow_cohort(1, 5, .7))
+
+
+make_ingrow_matrix <- function(N, lambda_birth, psurvival){
+  
+  individuals <- matrix(0, nrow = N, ncol = N)
+  
+  for(y in N:1){
+    after_born <- make_ingrow_cohort(y, lambda = lambda_birth, psurv = psurvival) 
+    z <- rep(0, times = N - length(after_born))
+    individuals[, y] <- rev(c(z, after_born))
+  }
+  
+  return(individuals)  
+}
+
+make_ingrow_matrix(7,9, .3)
+
+```
+
+To get the total at time T we just sum across all columns (ie the sums of the rows)
+
+```{r}
+
+rowSums(make_ingrow_matrix(7,9, .9))
+```
+
+And the first element is the total found after $t$ years
+
+Now simulate many observations
+
+```{r}
+set.seed(4567)
+ingrow_time_interval <- sample(c(1, 5, 10, 15),
+                               size = 100, prob = c(.1, .4, .3, .2), 
+                               replace = TRUE)
+hist(ingrow_time_interval)
+```
+
+```{r}
+# for every sampling make a cohort matrix and sum it
+
+library(purrr)
+ingrow <- ingrow_time_interval |> 
+  map(~ make_ingrow_matrix(.x, lambda_birth = 25, psurvival = .25)) |> 
+  map(rowSums) |> 
+  map_dbl(~.x[1])
+
+```
+
+plot to confirm it is working
+
+```{r}
+
+tibble(dt = ingrow_time_interval, 
+       ingrow) |> 
+  ggplot(aes(x = dt, y = ingrow)) + 
+  geom_count() + 
+  stat_function(fun = \(x) 25*(1 - .25^x)/(1 - .25), lwd = 2, col = "orange")
+
+```
+
+
+
+
+now we can try to fit this in Stan and recover the parameters (hopefully!)
+
+```{r}
+poisson_ingrow <- cmdstan_model(here::here(
+  "_posts/2022-08-04-intercept-only-poisson-example/poisson_ingrow.stan"),
+  pedantic = TRUE)
+
+recruit_samples <- poisson_ingrow$sample(data =  
+                                           list(n = length(ingrow_time_interval),
+                                                abd = ingrow,
+                                                deltaT = ingrow_time_interval),
+                                         parallel_chains = 4)
+
+
+recruit_samples
+```
+
+```{r, results='asis'}
+poisson_ingrow
+```
+
+
+
