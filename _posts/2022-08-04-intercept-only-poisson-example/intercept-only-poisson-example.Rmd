@@ -304,7 +304,7 @@ recruit_samples <- poisson_unmarked_survival$sample(data = with(fake_seedling_mo
                                                                      is_first = is_first,
                                                                      deltaT = deltaT
                                                                 )),
-                                                    parallel_chains = 4)
+                                                    parallel_chains = 4, refresh = 0)
 
 
 recruit_samples
@@ -428,15 +428,153 @@ recruit_samples <- poisson_ingrow$sample(data =
                                            list(n = length(ingrow_time_interval),
                                                 abd = ingrow,
                                                 deltaT = ingrow_time_interval),
-                                         parallel_chains = 4)
+                                         parallel_chains = 4, refresh = 0)
 
 
 recruit_samples
 ```
 
-```{r, results='asis'}
+```{r, results='markup'}
 poisson_ingrow
 ```
 
 
+## working on the log scale
+
+Does it make a difference to work completely on the log scale and use `poisson_log`? 
+This could be helpful for example when modelling hierarchy
+
+```{r}
+poisson_log_ingrow <- cmdstan_model(here::here(
+  "_posts/2022-08-04-intercept-only-poisson-example/poisson_log_ingrow.stan"),
+  pedantic = TRUE)
+
+
+```
+
+In some simple simulations, this seems to give better Rhat values but worse ESS.  
+However, working entirely on the log scale makes it easier to add hierarchical effects. 
+
+
+### adding plot as a random effect
+
+```{r}
+poisson_log_ingrow_plotid <- cmdstan_model(here::here(
+  "_posts/2022-08-04-intercept-only-poisson-example/poisson_log_ingrow_plotid.stan"),
+  pedantic = TRUE)
+
+log_recruit_samples <- poisson_log_ingrow$sample(data =  
+                                           list(n = length(ingrow_time_interval),
+                                                abd = ingrow,
+                                                deltaT = ingrow_time_interval),
+                                         parallel_chains = 4, refresh = 0)
+
+
+log_recruit_samples
+```
+
+
+### correlated species effects
+
+We'd like to have a more detailed simulation: different plots and species. 
+
+* Each species should have a correlated $m$ and $p$ value
+* each plot should have its own differences in survivorship $p$
+* also $\Delta t$ should be different for different plots
+
+let's try to put things in a tibble
+
+```{r}
+
+nplot <- 100
+nspp <- 20
+
+species_plots <- expand_grid(nesting(plot_id_num = 1:nplot, 
+                    deltaT = sample(c(1, 5, 10, 15),
+                               size = nplot, prob = c(.1, .4, .3, .2), 
+                               replace = TRUE)),
+            spp_id_num = 1:nspp)
+
+plot_p_offsets <- rnorm(nplot, 0, .5)
+```
+
+The next step is to make species offsets
+
+```{r}
+set.seed(1234)
+# define 2D Gaussian with correlation 0.6
+sigmaM <- .7
+sigmaP <- .3
+rho <- -0.6
+
+# independent z-scores
+z_spp <- matrix(rnorm(nspp*2), ncol = 2)
+
+# use Cholesky to blend in correlation
+sds <- diag(c(sigmaM, sigmaP))
+corrmat <- matrix(c(1, rho, rho, 1), ncol = 2)
+spp_m_and_p <- z_spp %*% chol(sds %*% corrmat %*% sds)
+
+cor(spp_m_and_p[,1], spp_m_and_p[,2])
+
+plot(spp_m_and_p[,1], spp_m_and_p[,2])
+
+```
+
+
+now put these on the dataset and simulate
+
+```{r}
+
+mbar <- log(5)
+pbar <- qlogis(.8)
+
+simulations <- species_plots |> 
+  mutate(plot_p_offsets = plot_p_offsets[plot_id_num],
+         spp_m_offset = spp_m_and_p[spp_id_num,1],
+         spp_p_offset = spp_m_and_p[spp_id_num,2],
+         m = exp(mbar + spp_m_offset),
+         p = plogis(pbar + spp_p_offset + plot_p_offsets)) |> 
+  rowwise() |> 
+  mutate(ingrow_matrix = list(make_ingrow_matrix(N = deltaT, lambda_birth = m, psurvival = p)),
+         # calculate the recruits
+         abd = rowSums(ingrow_matrix)[1]
+         )
+
+datlist <- simulations |> 
+  ungroup() |> 
+  as.data.frame() |> 
+  select(plot_id_num, deltaT, spp_id_num, abd) |> 
+  as.list() |> 
+  purrr::splice(n = nrow(simulations), nspp = nspp, nplot = nplot)
+
+```
+
+finally sample
+
+```{r}
+poisson_log_ingrow_2D <- cmdstan_model(here::here(
+  "_posts/2022-08-04-intercept-only-poisson-example/poisson_log_ingrow_2D.stan"),
+  pedantic = TRUE)
+
+rec_random <- poisson_log_ingrow_2D$sample(data = datlist, parallel_chains = 4, refresh = 0)
+
+rec_random$summary(variables = c("sd_plot", "sigma_spp"))
+```
+
+try with no transpose:
+```{r}
+poisson_log_ingrow_2D <- cmdstan_model(here::here(
+  "_posts/2022-08-04-intercept-only-poisson-example/poisson_log_ingrow_2D_notranspose.stan"),
+  pedantic = TRUE)
+
+rec_random <- poisson_log_ingrow_2D$sample(data = datlist, parallel_chains = 4, refresh = 0)
+
+rec_random$summary(variables = c("sd_plot", "sigma_spp"))
+```
+
+
+```{r}
+poisson_log_ingrow_2D
+```
 
