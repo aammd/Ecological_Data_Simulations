@@ -1,0 +1,114 @@
+---
+title: "Marginalizing random effects with a taylor series"
+description: |
+  A short description of the post.
+author:
+  - name: Andrew and Will
+    url: {}
+date: 2022-09-09
+output:
+  distill::distill_article:
+    self_contained: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+simulate some growth, from individuals who are not the same size at the beginning:
+
+```{r}
+nindiv <- 500
+time <- sample(c(1, 5, 7, 12, 15, 20), size = nindiv, replace = TRUE)
+
+true_mean_Lo <- 15
+true_sd_Lo <- 3.5
+
+start_size <- rnorm(nindiv, true_mean_Lo, true_sd_Lo)
+
+true_r <- .06
+true_Lmax <- 62
+true_sd_obs <- 2
+
+library(tidyverse)
+
+simulated_growth <- tibble(id = 1:nindiv, time, start_size) |> 
+  rowwise() |> 
+  mutate(t = list(0:time)) |> 
+  select(-time) |> 
+  unnest(t) |> 
+  mutate(expect_size = start_size * exp(-true_r * t) + true_Lmax * (1 - exp(-true_r * t)),
+         obs_size = rnorm(length(expect_size), mean = expect_size, sd = true_sd_obs))
+
+ggplot(simulated_growth) + 
+  aes(x = t, y = expect_size, group = id) + 
+  geom_line()
+
+ggplot(simulated_growth) + 
+  aes(x = t, y = obs_size, group = id) + 
+  geom_point()
+
+
+```
+
+
+```{r}
+library(cmdstanr)
+growth_normal_errors_Lo <- cmdstan_model(stan_file = here::here("_posts/2022-09-09-marginalizing-random-effects-with-a-taylor-series/growth_normal_errors_Lo.stan"))
+
+
+datlist <- list(N = nrow(simulated_growth),
+                time = simulated_growth$t,
+                obs_size = simulated_growth$obs_size
+                )
+growth_normal_errors_Lo_samples <- growth_normal_errors_Lo$sample(data = datlist, parallel_chains = 4, refresh=1)
+
+growth_normal_errors_Lo_samples
+```
+
+
+experimenting with the same model but work on the log scale for the mean
+
+
+```{r}
+growth_normal_errors_Lo_lnscale <- cmdstan_model(stan_file = here::here("_posts/2022-09-09-marginalizing-random-effects-with-a-taylor-series/growth_normal_errors_Lo_lnscale.stan"))
+
+
+datlist <- list(N = nrow(simulated_growth),
+                time = simulated_growth$t,
+                obs_size = simulated_growth$obs_size
+                )
+growth_normal_errors_Lo_lnscale_samp <- growth_normal_errors_Lo_lnscale$sample(data = datlist, parallel_chains = 4, refresh=1)
+
+growth_normal_errors_Lo_lnscale_samp
+```
+
+
+
+write the alternative and compare -- id the individual level model
+
+
+you get back the mean and variance posterior distributions. Many distributions have means and variances, which means we should be able to calculate the parameters from that pretty directly.
+
+
+marginalization in two dimensions
+
+```{r}
+growth_r_Lo_nocov_lnscale <- cmdstan_model(stan_file = here::here("_posts/2022-09-09-marginalizing-random-effects-with-a-taylor-series/growth_r_Lo_nocov_lnscale.stan"))
+
+
+datlist <- list(N = nrow(simulated_growth),
+                time = simulated_growth$t,
+                obs_size = simulated_growth$obs_size
+                )
+growth_r_Lo_nocov_lnscale <- growth_r_Lo_nocov_lnscale$sample(data = datlist, parallel_chains = 4, refresh=1)
+
+growth_r_Lo_nocov_lnscale
+```
+
+
+
