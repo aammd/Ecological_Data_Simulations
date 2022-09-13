@@ -73,13 +73,13 @@ curve(approx_2nd(1, .4, -2)(x), xlim = c(1,20))
 
 
 n_indiv <- 50
-sd_lnscale <- 1.5
+sd_lnscale <- .58
 ln_ri <- rnorm(n_indiv, mean = 0, sd = sd_lnscale)
-ln_rbar <- -4
+ln_rbar <- -1.2
 M0 <- 200
 
 # add normal errors
-decay <- expand_grid(id = 1:n_indiv, t = 0:50) |>
+decay <- expand_grid(id = 1:n_indiv, t = 0:30) |>
   mutate(r = exp(ln_rbar + ln_ri[id]),
          mass = M0*exp(-r*t),
          obs = rnorm(n = length(mass), mean = mass, sd = 1))
@@ -113,13 +113,19 @@ approx_2nd_notlnorm <- function(M, s, a){
   }
 }
 
-curve(approx_2nd_notlnorm(30, 2, 1.2)(x), xlim = c(0, 30))
+curve(approx_2nd_notlnorm(30, .9, -1.2)(x), xlim = c(0, 30))
+
+sqrt((exp(sd_lnscale) - 1) * exp(sd_lnscale))
+
+sd(exp(ln_ri))
 
 decay |>
   ggplot(aes(x = t, y = mass, group = id)) +
   geom_line() +
   geom_line(aes(x = t, y = mean_avg), inherit.aes = FALSE, data = mean_decay, col = "red", size = 4) +
   stat_function(fun = function(t) M0*exp(-t*exp(ln_rbar)), inherit.aes = FALSE, col = "blue", size = 3) +
-  stat_function(fun = function(x) approx_2nd_notlnorm(M = M0, s = sd_lnscale, a = ln_rbar)(x),
+  stat_function(fun = function(x) approx_2nd_notlnorm(M = M0, s = .6, a = ln_rbar)(x),
                 inherit.aes = FALSE, col = "green", size = 2)
+
+curve(sqrt((exp(x^2) - 1) * exp(x^2)))
 
